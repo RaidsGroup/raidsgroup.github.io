@@ -1,4 +1,4 @@
-# RAIDS Lab Homepage
+# RAIDS Group Homepage
 
 This repository contains a clean, academic-style laboratory homepage inspired by the Stanford REAL Lab page layout.
 
