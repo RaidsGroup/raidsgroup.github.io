@@ -788,10 +788,8 @@ p:last-child {
   background: linear-gradient(180deg, #ffffff 0%, #fafbfc 280px, #f5f6f7 100%);
 }
 
-.publication-page .page-title,
 .publication-page .pub-year-section h2 {
   color: var(--pub-black);
-  font-weight: 600;
 }
 
 .publication-page .page-hero {
