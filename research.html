@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="RAIDS Group research overview">
+  <meta name="description" content="RAIDS Group research overview — human–robot collaboration, smart manufacturing, and industrial embodied intelligence.">
   <title>RAIDS Group | Research</title>
+  <link rel="icon" href="assets/icons/raids.png" type="image/png">
   <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+
+<body class="research-page">
   <header class="site-header">
     <div class="wrap nav-wrap">
-      <a class="brand" href="index.html" aria-label="RAIDS Group Home">
+      <a class="brand" href="index.html" aria-label="RAIDS Home">
+        <img class="brand-logo" src="assets/icons/raids.png" alt="" width="36" height="36">
         <span class="brand-mark">RAIDS</span>
-        <span class="brand-sub">Group</span>
       </a>
       <nav class="top-nav" aria-label="Primary">
         <a href="index.html">Home</a>
@@ -31,43 +34,120 @@
         <p class="eyebrow">Research</p>
         <h1 class="page-title">Core Research Directions</h1>
         <p class="section-lead">
-          We study embodied intelligence, physical reasoning, data-centric learning, and secure AI systems.
+          Three interconnected research themes and four dedicated programs that translate
+          industrial embodied intelligence into deployable systems—from dexterous manipulation
+          and physics-informed manufacturing to human–machine collaboration.
         </p>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section research-themes-section">
       <div class="wrap">
-        <div class="card-grid">
-          <article class="card">
-            <h3>Embodied Intelligence</h3>
-            <p>Skill learning, manipulation policies, and long-horizon agent planning.</p>
-          </article>
-          <article class="card">
-            <h3>Physical Reasoning</h3>
-            <p>Object dynamics prediction, contact reasoning, and interactive world models.</p>
-          </article>
-          <article class="card">
-            <h3>Data-Centric AI</h3>
-            <p>Data construction, benchmark design, and evaluation under distribution shifts.</p>
-          </article>
-          <article class="card">
-            <h3>Secure and Reliable Systems</h3>
-            <p>Reliable deployment, robustness diagnostics, and safety-aware system design.</p>
-          </article>
-        </div>
+        <h2 class="research-section-title">Research Themes</h2>
+        <p class="research-section-lead">
+          RAIDS builds on three interconnected pillars in AI for industrial digital servitization.
+        </p>
+        <ul class="research-themes">
+          <li class="research-theme">
+            <span class="research-theme-num" aria-hidden="true">01</span>
+            <h3>Human-Robot Collaborative Manufacturing</h3>
+            <p>Mutual-cognitive collaboration, vision-language action models, mixed reality, and safe motion generation for human-centric smart manufacturing.</p>
+          </li>
+          <li class="research-theme">
+            <span class="research-theme-num" aria-hidden="true">02</span>
+            <h3>Smart Product-Service Systems</h3>
+            <p>Digital twins, intelligent design, and service-dominant logic toward adaptive, data-driven industrial product-service solutions.</p>
+          </li>
+          <li class="research-theme">
+            <span class="research-theme-num" aria-hidden="true">03</span>
+            <h3>Industrial Embodied Intelligence</h3>
+            <p>Embodied AI, contact-rich robot learning, and physics-informed methods that bridge perception, cognition, and execution on the factory floor.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <section class="section section-alt">
+    <section class="section section-alt research-programs-section">
       <div class="wrap">
-        <h2>Current Focus Topics</h2>
-        <ul class="simple-list">
-          <li>Vision-Language-Action model efficiency and deployment.</li>
-          <li>Interactive physical reasoning for robotics.</li>
-          <li>Failure analysis and correction in embodied tasks.</li>
-          <li>Scalable evaluation datasets for general-purpose agents.</li>
-        </ul>
+        <h2 class="research-section-title">Research Programs</h2>
+        <p class="research-section-lead">
+          Dedicated tracks translating our themes into deployable systems, platforms, and field demonstrations.
+        </p>
+        <div class="research-grid">
+          <article class="research-card">
+            <header class="research-card-head">
+              <span class="research-card-num">01</span>
+              <h3>Glovity</h3>
+            </header>
+            <ul class="research-tags" aria-label="Glovity focus areas">
+              <li>Dexterous manipulation</li>
+              <li>TeleX platform</li>
+              <li>Egocentric sensing</li>
+              <li>Skill transfer</li>
+            </ul>
+            <p class="research-card-desc">
+              Glovity develops precise, dexterous manipulation policies for contact-rich industrial tasks, and
+              translates them through TeleX—proprietary egocentric sensing, multimodal capture, and learning
+              pipelines that turn expert skill into deployable autonomy.
+            </p>
+          </article>
+
+          <article class="research-card">
+            <header class="research-card-head">
+              <span class="research-card-num">02</span>
+              <h3>Cooland</h3>
+            </header>
+            <ul class="research-tags" aria-label="Cooland focus areas">
+              <li>Physics-Informed AI</li>
+              <li>Aerospace manufacturing</li>
+              <li>Human-in-the-Loop</li>
+              <li>Flexible production</li>
+            </ul>
+            <p class="research-card-desc">
+              COOLAND advances intelligent manufacturing for aerospace and high-end equipment through
+              Physics-Informed AI and real-time physical field modeling. An operator-centric Human-in-the-Loop
+              framework, paired with Intelligent Flexible Manufacturing, enables agile reconfiguration of assembly
+              and machining lines.
+            </p>
+          </article>
+
+          <article class="research-card">
+            <header class="research-card-head">
+              <span class="research-card-num">03</span>
+              <h3>AeroDexter</h3>
+            </header>
+            <ul class="research-tags" aria-label="AeroDexter focus areas">
+              <li>Aerial dexterous manipulation</li>
+              <li>UAV–arm co-design</li>
+              <li>Contact-rich flight control</li>
+              <li>Embodied aerial intelligence</li>
+            </ul>
+            <p class="research-card-desc">
+              AeroDexter co-designs micro-UAVs with lightweight manipulators for contact-rich dexterous tasks
+              in hard-to-reach spaces—unifying flight dynamics, force control, and embodied learning toward
+              terrestrial-grade manipulation in free three-dimensional environments.
+            </p>
+          </article>
+
+          <article class="research-card">
+            <header class="research-card-head">
+              <span class="research-card-num">04</span>
+              <h3>HumVe</h3>
+            </header>
+            <ul class="research-tags" aria-label="HumVe focus areas">
+              <li>Human-vehicle interaction</li>
+              <li>Advanced driver assistance</li>
+              <li>Foundation models</li>
+              <li>Multimodal perception</li>
+            </ul>
+            <p class="research-card-desc">
+              HumVe advances human–vehicle interaction for advanced driver assistance systems through large
+              foundation models and cognitive reasoning. A human-centric AI framework, paired with real-time
+              multimodal perception, enables vehicles to understand driver intent and environmental context,
+              ensuring seamless and safe collaboration on the road.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -84,4 +164,5 @@
     </div>
   </footer>
 </body>
+
 </html>

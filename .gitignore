@@ -1,0 +1,22 @@
+# Large / local-only assets (not for GitHub)
+assets/media/originals/
+assets/archive/
+tmp/
+
+# Font source archives & extraction temp (deploy the .ttf/.woff files only)
+assets/fonts/*.zip
+assets/fonts/_extract/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs
+*.log

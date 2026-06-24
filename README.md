@@ -50,3 +50,4 @@ If you want a custom domain:
 1. Add a `CNAME` file in repo root with your domain.
 2. Configure DNS records on your domain provider.
 3. Enable HTTPS in GitHub Pages settings.
+

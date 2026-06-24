@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="RAIDS Group demos">
+  <meta name="description" content="RAIDS Group demos — robot manipulation, human-robot learning, and embodied AI system demonstrations.">
   <title>RAIDS Group | Demos</title>
+  <link rel="icon" href="assets/icons/raids.png" type="image/png">
   <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+<body class="demos-page">
   <header class="site-header">
     <div class="wrap nav-wrap">
-      <a class="brand" href="index.html" aria-label="RAIDS Group Home">
+      <a class="brand" href="index.html" aria-label="RAIDS Home">
+        <img class="brand-logo" src="assets/icons/raids.png" alt="" width="36" height="36">
         <span class="brand-mark">RAIDS</span>
-        <span class="brand-sub">Group</span>
       </a>
       <nav class="top-nav" aria-label="Primary">
         <a href="index.html">Home</a>
@@ -31,43 +32,114 @@
         <p class="eyebrow">Demos</p>
         <h1 class="page-title">Robot and System Demonstrations</h1>
         <p class="section-lead">
-          Real-world experiments and task-level demonstrations from RAIDS Group projects.
+          Task-level demonstrations from RAIDS research programs—covering embodied data acquisition,
+          aerial dexterous manipulation, and human-to-robot skill transfer. All videos play inline;
+          no external links required.
         </p>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section demos-gallery-section">
       <div class="wrap">
-        <div class="demo-grid">
+        <div class="demo-grid demos-gallery-grid">
           <article class="demo-card">
-            <h3>Long-Horizon Manipulation</h3>
-            <p>Multi-step pick-place and tool-use tasks in cluttered environments.</p>
-            <a href="#" aria-label="Open Long-Horizon Manipulation Demo">View Demo</a>
+            <div class="demo-video-wrap">
+              <video
+                controls
+                preload="metadata"
+                playsinline
+                title="TeleX data acquisition terminal demonstration">
+                <source src="assets/media/compressed/telex.mp4" type="video/mp4">
+                Your browser does not support embedded video playback.
+              </video>
+            </div>
+            <div class="demo-card-body">
+              <header class="demo-card-head">
+                <h3>TeleX</h3>
+              </header>
+              <ul class="demo-features" aria-label="TeleX key features">
+                <li>Universal compatibility</li>
+                <li>Comfortable wear</li>
+                <li>Exceptional dexterity</li>
+              </ul>
+              <p class="demo-card-desc">
+                A versatile industrial embodied-intelligence data acquisition terminal for vision–tactile
+                multimodal capture. It integrates readily with diverse general-purpose robotic arms and
+                dexterous hands, and supports egocentric&nbsp;data&nbsp;collection.
+              </p>
+            </div>
           </article>
+
           <article class="demo-card">
-            <h3>Human-Robot Joint Learning</h3>
-            <p>Interactive teleoperation with policy adaptation and online correction.</p>
-            <a href="#" aria-label="Open Human-Robot Joint Learning Demo">View Demo</a>
+            <div class="demo-video-wrap">
+              <video
+                controls
+                preload="metadata"
+                playsinline
+                title="Aerial Dexterous Manipulation demonstration">
+                <source src="assets/media/compressed/aero-manipulate.mp4" type="video/mp4">
+                Your browser does not support embedded video playback.
+              </video>
+            </div>
+            <div class="demo-card-body">
+              <header class="demo-card-head">
+                <h3>Aerial Dexterous Manipulation</h3>
+              </header>
+              <ul class="demo-features" aria-label="Aerial Dexterous Manipulation key features">
+                <li>Embodied Platform</li>
+                <li>Real-2-Sim-2-Real</li>
+              </ul>
+              <p class="demo-card-desc">
+                A novel aerial embodied-intelligence platform for dexterous manipulation and interaction
+                in 3D space. It combines aerial mobility with robotic arm manipulation, supports embodied
+                task learning in both simulation and real-world environments, and enables a Real-2-Sim-2-Real
+                workflow for developing transferable aerial manipulation&nbsp;policies.
+              </p>
+            </div>
           </article>
+
           <article class="demo-card">
-            <h3>Physical Reasoning Engine</h3>
-            <p>Reasoning over contact transitions, object dynamics, and action outcomes.</p>
-            <a href="#" aria-label="Open Physical Reasoning Demo">View Demo</a>
+            <div class="demo-video-wrap">
+              <video
+                controls
+                preload="metadata"
+                playsinline
+                title="Human-to-Robot Skill Transfer demonstration">
+                <source src="assets/media/compressed/tele-realman.mp4" type="video/mp4">
+                Your browser does not support embedded video playback.
+              </video>
+            </div>
+            <div class="demo-card-body">
+              <header class="demo-card-head">
+                <h3>Human-to-Robot Skill Transfer</h3>
+              </header>
+              <ul class="demo-features" aria-label="Human-to-Robot Skill Transfer key features">
+                <li>MR teleoperation</li>
+                <li>Bimanual dexterity</li>
+                <li>Tactile imitation</li>
+              </ul>
+              <p class="demo-card-desc">
+                A human-to-robot skill transfer framework for bimanual dexterous manipulation.
+                MR-assisted teleoperation enables intuitive human demonstrations, while force/tactile-based
+                imitation learning helps the robot acquire and reproduce complex manipulation&nbsp;skills.
+              </p>
+            </div>
           </article>
-          <article class="demo-card">
-            <h3>Failure Diagnosis Pipeline</h3>
-            <p>Visual-symbolic diagnosis and correction for manipulation failures.</p>
-            <a href="#" aria-label="Open Failure Diagnosis Demo">View Demo</a>
-          </article>
-          <article class="demo-card">
-            <h3>Data Distillation Toolkit</h3>
-            <p>Efficient dataset distillation and model adaptation workflow.</p>
-            <a href="#" aria-label="Open Data Distillation Demo">View Demo</a>
-          </article>
-          <article class="demo-card">
-            <h3>Evaluation Dashboard</h3>
-            <p>Benchmark insights for embodied policies and VLA models.</p>
-            <a href="#" aria-label="Open Evaluation Dashboard Demo">View Demo</a>
+
+          <article class="demo-card demo-card--pending">
+            <div class="demo-video-wrap demo-video-wrap--pending">
+              <div class="demo-video-placeholder">
+                <span class="demo-video-placeholder-icon" aria-hidden="true"></span>
+                <span class="demo-video-placeholder-label">Video coming soon</span>
+              </div>
+            </div>
+            <div class="demo-card-body">
+              <header class="demo-card-head">
+                <h3>TBD</h3>
+                <span class="research-badge">Coming soon</span>
+              </header>
+              <p class="demo-card-desc">A new demonstration—details to be announced.</p>
+            </div>
           </article>
         </div>
       </div>

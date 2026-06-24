@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="RAIDS Group homepage">
-  <title>RAIDS Group</title>
+  <meta name="description" content="RAIDS — Research Group of AI for Industrial Digital Servitization at PolyU.">
+  <title>RAIDS</title>
+  <link rel="icon" href="assets/icons/raids.png" type="image/png">
   <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+<body class="home-page">
   <header class="site-header">
     <div class="wrap nav-wrap">
-      <a class="brand" href="index.html" aria-label="RAIDS Group Home">
+      <a class="brand" href="index.html" aria-label="RAIDS Home">
+        <img class="brand-logo" src="assets/icons/raids.png" alt="" width="36" height="36">
         <span class="brand-mark">RAIDS</span>
-        <span class="brand-sub">Group</span>
       </a>
       <nav class="top-nav" aria-label="Primary">
         <a class="active" href="index.html">Home</a>
@@ -26,68 +27,151 @@
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero home-hero">
       <div class="wrap hero-grid">
-        <div>
-          <p class="eyebrow">Research Group</p>
-          <h1>RAIDS Group</h1>
+        <div class="home-hero-copy">
+          <div class="home-hero-brand">
+            <img class="home-hero-logo" src="assets/icons/raids.png" alt="" width="72" height="72">
+            <h1>RAIDS</h1>
+          </div>
+          <p class="hero-tagline">Research Group of AI for Industrial Digital Servitization</p>
           <p class="hero-intro">
-            Research Group of AI for Industrial Digital Servitization.
-            We build reliable embodied and data-centric AI systems that stay robust in dynamic environments,
-            with practical research, reproducible code, and real-world impact.
+            We develop reliable embodied and data-centric AI for industrial digital servitization—
+            bridging human–robot collaboration, smart manufacturing, and deployable systems
+            with rigorous research and real-world validation.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="publication.html">Latest Publications</a>
-            <a class="btn btn-light" href="demos.html">Watch Demos</a>
+            <a class="btn btn-primary" href="demos.html">Watch Demos</a>
+            <a class="btn btn-light" href="research.html">Our Research</a>
           </div>
         </div>
-        <aside class="hero-panel" aria-label="Highlights">
+        <aside class="hero-panel home-highlights" aria-label="Highlights">
           <h2>Highlights</h2>
-          <ul>
-            <li><strong>20+</strong> Active research projects</li>
-            <li><strong>50+</strong> Conference and journal papers</li>
-            <li><strong>Open</strong> recruitment for MSc/PhD/interns</li>
+          <ul class="home-highlight-list">
+            <li>
+              <span class="home-highlight-value">190+</span>
+              <span class="home-highlight-label">SCI-indexed journal papers</span>
+            </li>
+            <li>
+              <span class="home-highlight-value">31</span>
+              <span class="home-highlight-label">PI-led research grants (&gt;50M HKD)</span>
+            </li>
+            <li>
+              <span class="home-highlight-value">2025</span>
+              <span class="home-highlight-label">Clarivate Highly Cited Researcher</span>
+            </li>
+            <li>
+              <span class="home-highlight-value">Open</span>
+              <span class="home-highlight-label">MSc/PhD/intern recruitment</span>
+            </li>
           </ul>
         </aside>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section home-about-section">
       <div class="wrap">
-        <h2>Explore RAIDS</h2>
-        <p class="section-lead">Browse each section from the top navigation. Content is now organized into separate pages.</p>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Research</h3>
-            <p>Research themes, key topics, and current projects.</p>
-            <a class="link-arrow" href="research.html">Go to Research</a>
+        <h2 class="home-section-title">About Us</h2>
+        <p class="home-section-lead about-intro">
+          The Research Group of AI for Industrial Digital Servitization (RAIDS) was established in 2020
+          at The Hong Kong Polytechnic University, Department of Industrial and Systems Engineering.
+        </p>
+
+        <div class="about-pillars home-pillars">
+          <article class="about-pillar home-pillar">
+            <h3>Vision</h3>
+            <p>To become a world-class research group in the industrial digital servitization era.</p>
           </article>
-          <article class="card">
-            <h3>Demos</h3>
-            <p>Robot experiments, videos, and system showcases.</p>
-            <a class="link-arrow" href="demos.html">Go to Demos</a>
+          <article class="about-pillar home-pillar">
+            <h3>Value</h3>
+            <p class="about-value">Difficult, but not impossible.</p>
           </article>
-          <article class="card">
-            <h3>People</h3>
-            <p>Faculty, students, research staff, and alumni.</p>
-            <a class="link-arrow" href="people.html">Go to People</a>
+          <article class="about-pillar about-pillar-wide home-pillar">
+            <h3>Mission</h3>
+            <p>
+              To boost the establishment of a human-machine symbiotic industry environment, by introducing/leveraging
+              advanced manufacturing and robotics technologies, artificial intelligence methodologies, and digitized
+              systems/tools, in a digital servitization manner.
+            </p>
           </article>
-          <article class="card">
-            <h3>Publication & Honors</h3>
-            <p>Recent papers, awards, and important milestones.</p>
-            <a class="link-arrow" href="publication.html">Go to Publication</a>
-          </article>
+        </div>
+
+        <div class="about-scope home-scope">
+          <h3 class="home-subsection-title">Aims &amp; Scope</h3>
+          <figure class="scope-figure">
+            <img
+              src="assets/imgs/RAIDS-scope.png"
+              alt="RAIDS research scope: integrating Industrial Internet, digital technologies, AI, and service-dominant logic toward human-cyber-physical and human-machine symbiotic digitalized service systems"
+              width="1120"
+              height="630"
+              loading="lazy"
+            >
+          </figure>
         </div>
       </div>
     </section>
 
-    <section class="section section-alt">
+    <section class="section section-alt home-updates-section">
       <div class="wrap">
-        <h2>Latest Updates</h2>
-        <ul class="timeline">
-          <li><time datetime="2026-06">2026.06</time> New lab website structure launched.</li>
-          <li><time datetime="2026-05">2026.05</time> New publication and demo entries updated.</li>
-          <li><time datetime="2026-04">2026.04</time> We are actively recruiting students and interns.</li>
+        <div class="home-updates-head">
+          <div>
+            <h2 class="home-section-title">Latest Updates</h2>
+            <p class="home-section-lead">Recent milestones from the group and our community.</p>
+          </div>
+          <a class="home-updates-link link-arrow" href="honors.html">All honors</a>
+        </div>
+        <ol class="honors-timeline home-updates">
+          <li>
+            <div class="honors-timeline-marker" aria-hidden="true"></div>
+            <div class="honors-timeline-body">
+              <time datetime="2026-05">May 2026</time>
+              <p class="honors-timeline-title">CMES delegation visit</p>
+              <p class="honors-timeline-detail">We were honoured to host a delegation from the Chinese Mechanical Engineering Society (CMES).</p>
+            </div>
+          </li>
+          <li>
+            <div class="honors-timeline-marker" aria-hidden="true"></div>
+            <div class="honors-timeline-body">
+              <time datetime="2026-04">Apr 2026</time>
+              <p class="honors-timeline-title">CIRP-CATS conference hosted</p>
+              <p class="honors-timeline-detail">RAIDS successfully hosted the 11th CIRP Conference on Assembly Technologies and Systems (CATS).</p>
+            </div>
+          </li>
+          <li>
+            <div class="honors-timeline-marker" aria-hidden="true"></div>
+            <div class="honors-timeline-body">
+              <time datetime="2026-04">Apr 2026</time>
+              <p class="honors-timeline-title">ASME Fellow election</p>
+              <p class="honors-timeline-detail">Congratulations to Prof. Pai Zheng on his election as an ASME Fellow.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section home-explore-section">
+      <div class="wrap">
+        <h2 class="home-section-title">Explore</h2>
+        <p class="home-section-lead">Learn more about our work across the lab.</p>
+        <ul class="home-explore-grid">
+          <li>
+            <a class="home-explore-card" href="research.html">
+              <span class="home-explore-label">Research</span>
+              <span class="home-explore-desc">Core directions and programs in embodied AI and smart manufacturing.</span>
+            </a>
+          </li>
+          <li>
+            <a class="home-explore-card" href="people.html">
+              <span class="home-explore-label">People</span>
+              <span class="home-explore-desc">Faculty, students, and collaborators driving RAIDS forward.</span>
+            </a>
+          </li>
+          <li>
+            <a class="home-explore-card" href="publication.html">
+              <span class="home-explore-label">Publications</span>
+              <span class="home-explore-desc">Journal and conference outputs from the group.</span>
+            </a>
+          </li>
         </ul>
       </div>
     </section>
