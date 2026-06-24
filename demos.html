@@ -15,7 +15,12 @@
         <img class="brand-logo" src="assets/icons/raids.png" alt="" width="36" height="36">
         <span class="brand-mark">RAIDS</span>
       </a>
-      <nav class="top-nav" aria-label="Primary">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+      </button>
+      <nav class="top-nav" id="site-nav" aria-label="Primary">
         <a href="index.html">Home</a>
         <a href="research.html">Research</a>
         <a class="active" href="demos.html">Demos</a>
@@ -147,15 +152,24 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap footer-grid">
-      <div>
-        <p class="footer-title">RAIDS Group</p>
-        <p>Department of Industrial and System Engineering</p>
+    <div class="wrap footer-inner">
+      <div class="footer-row">
+        <p class="footer-brand">
+          <strong>RAIDS Group</strong>
+          <span>Department of Industrial and System Engineering, PolyU</span>
+        </p>
+        <p class="footer-annals">
+          <span class="footer-label">Annual Reports</span>
+          <a href="assets/annals/RAIDS-Annual-Report-2025.pdf" target="_blank" rel="noopener noreferrer">2025</a>
+          <a href="assets/annals/RAIDS-Annual-Report-2024.pdf" target="_blank" rel="noopener noreferrer">2024</a>
+          <a href="assets/annals/RAIDS-Annual-Report-2023.pdf" target="_blank" rel="noopener noreferrer">2023</a>
+          <a href="assets/annals/RAIDS-Annual-Report-2022.pdf" target="_blank" rel="noopener noreferrer">2022</a>
+          <a href="assets/annals/RAIDS-Annual-Report-2021.pdf" target="_blank" rel="noopener noreferrer">2021</a>
+        </p>
       </div>
-      <div>
-        <p>&copy; RAIDS Group. All rights reserved.</p>
-      </div>
+      <p class="footer-copy">&copy; 2026 RAIDS Group. All rights reserved.</p>
     </div>
   </footer>
+  <script src="scripts/nav.js"></script>
 </body>
 </html>
