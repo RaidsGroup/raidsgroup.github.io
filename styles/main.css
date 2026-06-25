@@ -1202,6 +1202,70 @@ time {
   color: #7a8087;
 }
 
+.back-to-top {
+  position: fixed;
+  right: max(1.15rem, env(safe-area-inset-right, 0px));
+  bottom: max(1.15rem, env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(0.45rem);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  background: var(--accent-2);
+  box-shadow: 0 10px 24px rgba(20, 20, 20, 0.14);
+  outline: none;
+}
+
+.back-to-top-icon {
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.back-to-top-icon path {
+  fill: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: opacity 0.01ms, visibility 0.01ms;
+    transform: none;
+  }
+
+  .back-to-top.is-visible {
+    transform: none;
+  }
+}
+
 .honors-page {
   background: linear-gradient(180deg, #ffffff 0%, #fafbfc 320px, #f3f4f6 100%);
 }
