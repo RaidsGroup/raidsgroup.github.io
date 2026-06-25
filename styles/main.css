@@ -2119,13 +2119,47 @@ time {
     gap: 2.475rem 2.025rem;
   }
 
-  .faculty-profile {
-    grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
-    gap: 1.35rem;
-  }
-
   .hero {
     padding-top: 2.5rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .faculty-profile {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .faculty-summary {
+    max-width: none;
+    width: 100%;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .faculty-summary .profile-image {
+    flex: 0 0 clamp(6.5rem, 28vw, 8.75rem);
+    aspect-ratio: 3 / 4;
+    min-height: 0;
+  }
+
+  .people-page .faculty-summary .profile-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.75rem 0.9rem 0.75rem 0.55rem;
+  }
+
+  .people-page .faculty-detail {
+    border-radius: 12px;
+    padding: 1rem 1.05rem;
+  }
+
+  .people-page .faculty-bio {
+    font-size: 0.9rem;
+    line-height: 1.62;
   }
 }
 
@@ -2200,13 +2234,7 @@ time {
   }
 
   .faculty-profile {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
     padding-bottom: 2rem;
-  }
-
-  .faculty-summary {
-    max-width: 220px;
   }
 
   .people-page .profile-grid {
