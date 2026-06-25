@@ -2414,6 +2414,7 @@ time {
   }
 
   .honors-stats,
+  .projects-stats,
   .pub-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
