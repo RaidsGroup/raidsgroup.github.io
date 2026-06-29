@@ -132,19 +132,32 @@
             </div>
           </article>
 
-          <article class="demo-card demo-card--pending">
-            <div class="demo-video-wrap demo-video-wrap--pending">
-              <div class="demo-video-placeholder">
-                <span class="demo-video-placeholder-icon" aria-hidden="true"></span>
-                <span class="demo-video-placeholder-label">Video coming soon</span>
-              </div>
+          <article class="demo-card">
+            <div class="demo-video-wrap">
+              <video
+                controls
+                preload="metadata"
+                playsinline
+                title="Cooland AR-guided intelligent drilling demonstration">
+                <source src="assets/media/compressed/cooland.mp4" type="video/mp4">
+                Your browser does not support embedded video playback.
+              </video>
             </div>
             <div class="demo-card-body">
               <header class="demo-card-head">
-                <h3>Upcoming Demonstration</h3>
-                <span class="research-badge">Coming soon</span>
+                <h3>Cooland</h3>
               </header>
-              <p class="demo-card-desc">A new demonstration from RAIDS research programs—details forthcoming.</p>
+              <ul class="demo-features" aria-label="Cooland key features">
+                <li>AR-guided drilling</li>
+                <li>LLM parameterization</li>
+                <li>Human-robot collaboration</li>
+              </ul>
+              <p class="demo-card-desc">
+                An AR-guided intelligent drilling system for industrial robotic machining. Target positions
+                are overlaid onto real workpieces for intuitive hole-location confirmation; large language
+                models translate natural-language instructions into structured machining parameters—enabling
+                more efficient, interactive, and flexible human-robot collaboration in drilling&nbsp;tasks.
+              </p>
             </div>
           </article>
         </div>
