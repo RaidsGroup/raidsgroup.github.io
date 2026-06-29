@@ -771,6 +771,69 @@ p:last-child {
   height: 0.88rem;
 }
 
+.alumni-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 1.25rem;
+}
+
+.alumni-item {
+  padding: 0.72rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 1px 6px rgba(20, 20, 20, 0.04);
+}
+
+.alumni-head {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  max-width: 100%;
+}
+
+.alumni-name {
+  margin: 0;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.alumni-role {
+  margin: 0.28rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.people-page .alumni-item .profile-email {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  margin: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.people-page .alumni-item .profile-email:hover {
+  background: rgba(158, 36, 53, 0.08);
+  color: var(--accent);
+}
+
+.people-page .alumni-item .profile-email-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
 .people-page .profile-content a.profile-email,
 .people-page .profile-content a[href^="mailto:"] {
   display: inline-flex;
@@ -2490,6 +2553,10 @@ time {
   .people-page .profile-grid .profile-role,
   .people-page .profile-grid .profile-meta {
     font-size: 0.72rem;
+  }
+
+  .alumni-list {
+    grid-template-columns: 1fr;
   }
 }
 
