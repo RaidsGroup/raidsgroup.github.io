@@ -87,14 +87,21 @@
   var titleTimer = null;
   var publicationClicks = 0;
   var publicationClickTimer = null;
-  var publicationComboTriggered = false;
-  var cobotNavTimer = null;
+  var publicationComboPulseTimer = null;
+  var publicationComboToastTimer = null;
+  var publicationComboTargetTimer = null;
+  var cobotHideTimer = null;
+  var cobotHideCountdownTimer = null;
+  var cobotHideCleanup = null;
+  var cobotHideFound = false;
   var piSummonTimer = null;
   var piMeetingTimer = null;
   var piMeetingSpeechTimer = null;
   var piPatrolTimers = [];
   var piPatrolFrames = [];
   var piSummonRun = 0;
+  var konamiLabTimer = null;
+  var konamiLabTimers = [];
   var body = document.body;
   var konamiSequence = [
     "arrowup",
@@ -112,7 +119,7 @@
   var commands = {
     sure: triggerSureDecoder,
     nightshift: triggerNightShift,
-    cobot: triggerCobotNav,
+    cobot: triggerCobotHideAndSeek,
     paipai: triggerPiSummon,
     debug: triggerDemoDebug
   };
@@ -159,6 +166,21 @@
     }, 28);
   }
 
+  function clearKonamiLab() {
+    window.clearTimeout(konamiLabTimer);
+    konamiLabTimers.forEach(function (timer) {
+      window.clearTimeout(timer);
+    });
+    konamiLabTimers = [];
+    body.classList.remove("egg-konami");
+    nav.querySelectorAll("[data-konami-label]").forEach(function (item) {
+      item.removeAttribute("data-konami-label");
+    });
+    document.querySelectorAll(".egg-konami-panel, .egg-konami-bit, .egg-konami-beacon").forEach(function (item) {
+      item.remove();
+    });
+  }
+
   function triggerSureDecoder() {
     var aboutValue = document.querySelector(".about-value");
     var originalText = aboutValue ? aboutValue.textContent : "";
@@ -180,52 +202,318 @@
     setTempClass("egg-nightshift", 12000);
   }
 
-  function triggerCobotNav() {
-    var labels = {
-      "index.html": ["charging dock", "battery 98%"],
-      "research.html": ["idea reactor", "hypothesis hot"],
-      "project.html": ["grant maze", "route recalculating"],
-      "demos.html": ["robot zoo", "do not feed arms"],
-      "people.html": ["human dataset", "faces recognized"],
-      "people-cobotai.html": ["cobot squad", "sync ready"],
-      "publication.html": ["paper farm", "citation radar on"],
-      "honors.html": ["trophy cabinet", "shine limited"],
-      "honors-cobotai.html": ["shiny objects", "polish mode"]
+  function getVisibleItems(selector) {
+    return Array.prototype.filter.call(document.querySelectorAll(selector), function (item) {
+      var rect = item.getBoundingClientRect();
+      return rect.width > 8 && rect.height > 8;
+    });
+  }
+
+  function pickRandom(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function getCobotIcon(name) {
+    var icons = {
+      bot: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="7" width="14" height="10" rx="3"></rect><path d="M12 7V4"></path><path d="M8 11h.01"></path><path d="M16 11h.01"></path><path d="M9 15h6"></path><path d="M5 12H3"></path><path d="M21 12h-2"></path></svg>',
+      eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>',
+      screw: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>',
+      hand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V8a2 2 0 0 0-4 0v2"></path><path d="M14 10V6a2 2 0 0 0-4 0v8"></path><path d="M10 13.5 8.7 12a2 2 0 0 0-3 2.6l4.1 5A5.5 5.5 0 0 0 14 22h1a5 5 0 0 0 5-5v-5a2 2 0 0 0-4 0"></path></svg>',
+      shadow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18"></path><path d="M7 8h10"></path><path d="M9 16h6"></path><circle cx="12" cy="12" r="2"></circle></svg>',
+      battery: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path><path d="M6 11h6"></path></svg>'
     };
 
-    window.clearTimeout(cobotNavTimer);
-    body.classList.remove("egg-cobot-nav");
-    nav.querySelectorAll("[data-egg-label], [data-egg-status]").forEach(function (item) {
-      item.removeAttribute("data-egg-label");
-      item.removeAttribute("data-egg-status");
+    return icons[name] || icons.bot;
+  }
+
+  function showCobotBrief(titleText, bodyText, countText, state) {
+    var brief = document.querySelector(".egg-cobot-brief");
+    var title = null;
+    var copy = null;
+    var count = null;
+
+    if (!brief) {
+      brief = document.createElement("div");
+      brief.className = "egg-cobot-brief";
+      brief.setAttribute("role", "status");
+      brief.setAttribute("aria-live", "polite");
+      brief.innerHTML = [
+        '<span class="egg-cobot-face" aria-hidden="true">' + getCobotIcon("bot") + '</span>',
+        '<span class="egg-cobot-brief-copy">',
+        '<strong></strong>',
+        '<span></span>',
+        '</span>',
+        '<b class="egg-cobot-count"></b>'
+      ].join("");
+      body.appendChild(brief);
+    }
+
+    brief.classList.toggle("is-success", state === "success");
+    brief.classList.toggle("is-missed", state === "missed");
+    title = brief.querySelector("strong");
+    copy = brief.querySelector(".egg-cobot-brief-copy span");
+    count = brief.querySelector(".egg-cobot-count");
+    title.textContent = titleText;
+    copy.textContent = bodyText;
+    count.textContent = countText;
+  }
+
+  function clearCobotHideAndSeek() {
+    window.clearTimeout(cobotHideTimer);
+    window.clearInterval(cobotHideCountdownTimer);
+    cobotHideTimer = null;
+    cobotHideCountdownTimer = null;
+    cobotHideFound = false;
+
+    if (cobotHideCleanup) {
+      cobotHideCleanup();
+      cobotHideCleanup = null;
+    }
+
+    body.classList.remove("egg-cobot-hide");
+    document.querySelectorAll(".egg-cobot-brief, .egg-cobot-target, .egg-cobot-decoy, .egg-cobot-progress-host").forEach(function (item) {
+      item.remove();
+    });
+    document.querySelectorAll(".is-egg-cobot-host, .is-egg-cobot-decoy-host").forEach(function (item) {
+      item.classList.remove("is-egg-cobot-host", "is-egg-cobot-decoy-host");
+    });
+  }
+
+  function makeCobotTarget(kind, line, disguise, action, iconName) {
+    var target = document.createElement("span");
+
+    target.className = "egg-cobot-target egg-cobot-" + kind;
+    target.setAttribute("role", "button");
+    target.setAttribute("tabindex", "0");
+    target.setAttribute("aria-label", "Find the hidden cobot");
+    target.setAttribute("data-egg-line", line);
+    target.setAttribute("data-egg-disguise", disguise);
+    target.setAttribute("data-egg-action", action);
+    target.innerHTML = getCobotIcon(iconName || kind);
+    return target;
+  }
+
+  function attachCobotTarget(host, target) {
+    host.classList.add("is-egg-cobot-host");
+    host.appendChild(target);
+    return target;
+  }
+
+  function addCobotDecoy(realHost) {
+    var candidates = getVisibleItems(".btn, .nav-dropdown-toggle, .card, .demo-card, .people-card, .brand");
+    var decoy = null;
+    var host = null;
+
+    candidates = candidates.filter(function (item) {
+      return item !== realHost && !item.contains(realHost);
     });
 
-    nav.querySelectorAll("a").forEach(function (link) {
-      var fileName = link.getAttribute("href");
-      if (labels[fileName]) {
-        link.setAttribute("data-egg-label", labels[fileName][0]);
-        link.setAttribute("data-egg-status", labels[fileName][1]);
+    if (!candidates.length) {
+      return;
+    }
+
+    host = pickRandom(candidates);
+    decoy = document.createElement("span");
+    decoy.className = "egg-cobot-decoy";
+    decoy.textContent = Math.random() > 0.5 ? "I am definitely not this button." : "Do not hover me. I am ticklish.";
+    host.classList.add("is-egg-cobot-decoy-host");
+    host.appendChild(decoy);
+  }
+
+  function armCobotTarget(target, action, onFound) {
+    var startX = 0;
+    var startY = 0;
+    var dragging = false;
+
+    function stopEvent(event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    function found(event) {
+      stopEvent(event);
+      onFound();
+    }
+
+    if (action === "hover") {
+      target.addEventListener("pointerenter", found);
+      target.addEventListener("focus", onFound);
+    }
+
+    if (action === "click") {
+      target.addEventListener("click", found);
+    }
+
+    if (action === "drag") {
+      target.addEventListener("pointerdown", function (event) {
+        stopEvent(event);
+        dragging = true;
+        startX = event.clientX;
+        startY = event.clientY;
+        if (target.setPointerCapture) {
+          target.setPointerCapture(event.pointerId);
+        }
+      });
+      target.addEventListener("pointermove", function (event) {
+        if (!dragging) {
+          return;
+        }
+        if (Math.abs(event.clientX - startX) + Math.abs(event.clientY - startY) > 12) {
+          found(event);
+        }
+      });
+      target.addEventListener("pointerup", function () {
+        dragging = false;
+      });
+      target.addEventListener("pointercancel", function () {
+        dragging = false;
+      });
+    }
+
+    target.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        found(event);
       }
     });
-    nav.querySelectorAll(".nav-dropdown-toggle").forEach(function (button) {
-      if (button.textContent.trim() === "People") {
-        button.setAttribute("data-egg-label", "identity router");
-        button.setAttribute("data-egg-status", "humans grouped");
+  }
+
+  function createCobotSpot() {
+    var spots = [
+      function () {
+        var host = pickRandom(getVisibleItems(".btn, .nav-toggle, .nav-dropdown-toggle, .demo-card a, .link-arrow"));
+        if (!host) {
+          return null;
+        }
+        return {
+          host: host,
+          target: attachCobotTarget(host, makeCobotTarget("eye", "I am definitely not this button.", "a tiny eye inside a button", "click", "eye")),
+          action: "click",
+          disguise: "a tiny eye inside a button"
+        };
+      },
+      function () {
+        var host = pickRandom(getVisibleItems(".brand, .home-hero-brand"));
+        if (!host) {
+          return null;
+        }
+        return {
+          host: host,
+          target: attachCobotTarget(host, makeCobotTarget("screw", "Do not hover me. I am ticklish.", "a tiny screw on the logo", "hover", "screw")),
+          action: "hover",
+          disguise: "a tiny screw on the logo"
+        };
+      },
+      function () {
+        var host = pickRandom(getVisibleItems(".scope-figure, .profile-image, .award-media, .home-hero-brand"));
+        if (!host) {
+          return null;
+        }
+        return {
+          host: host,
+          target: attachCobotTarget(host, makeCobotTarget("hand", "You cannot move me unless you actually drag.", "a little hand in an image corner", "drag", "hand")),
+          action: "drag",
+          disguise: "a little hand in an image corner"
+        };
+      },
+      function () {
+        var card = pickRandom(getVisibleItems(".hero-panel, .card, .demo-card, .people-card, .award-card, .research-card"));
+        var rail = null;
+        var target = null;
+        if (!card) {
+          return null;
+        }
+        rail = document.createElement("span");
+        rail.className = "egg-cobot-progress-host is-egg-cobot-host";
+        target = makeCobotTarget("shadow", "Progress: 99%. Cobot: 1%.", "a moving shadow in a progress bar", "hover", "shadow");
+        rail.appendChild(target);
+        card.appendChild(rail);
+        return {
+          host: rail,
+          target: target,
+          action: "hover",
+          disguise: "a moving shadow in a progress bar"
+        };
+      },
+      function () {
+        var target = makeCobotTarget("battery", "Low battery. Excellent acting.", "a tiny battery beside the cursor", "click", "battery");
+        var placeBattery = function (event) {
+          target.style.setProperty("--egg-cobot-x", event.clientX + 18 + "px");
+          target.style.setProperty("--egg-cobot-y", event.clientY + 18 + "px");
+          target.classList.add("is-placed");
+        };
+
+        target.style.setProperty("--egg-cobot-x", Math.round(window.innerWidth * 0.62) + "px");
+        target.style.setProperty("--egg-cobot-y", Math.round(window.innerHeight * 0.48) + "px");
+        body.appendChild(target);
+        document.addEventListener("pointermove", placeBattery, { once: true });
+        cobotHideCleanup = function () {
+          document.removeEventListener("pointermove", placeBattery);
+        };
+
+        return {
+          host: body,
+          target: target,
+          action: "click",
+          disguise: "a tiny battery beside the cursor"
+        };
+      }
+    ];
+    var start = Math.floor(Math.random() * spots.length);
+    var index = 0;
+    var spot = null;
+
+    for (index = 0; index < spots.length; index += 1) {
+      spot = spots[(start + index) % spots.length]();
+      if (spot) {
+        return spot;
+      }
+    }
+
+    return null;
+  }
+
+  function triggerCobotHideAndSeek() {
+    var secondsLeft = 10;
+    var spot = null;
+
+    clearCobotHideAndSeek();
+    body.classList.add("egg-cobot-hide");
+    showCobotBrief("Cobot Hide-and-Seek", "I am hidden. Find me in 10 seconds.", secondsLeft, "");
+
+    spot = createCobotSpot();
+    if (!spot) {
+      showCobotBrief("Cobot went offline", "It could not find a UI element to hide in.", "!", "missed");
+      cobotHideTimer = window.setTimeout(clearCobotHideAndSeek, 2400);
+      return;
+    }
+
+    addCobotDecoy(spot.host);
+    armCobotTarget(spot.target, spot.action, function () {
+      if (cobotHideFound) {
         return;
       }
-      button.setAttribute("data-egg-label", "achievement vault");
-      button.setAttribute("data-egg-status", "badges indexed");
+      cobotHideFound = true;
+      window.clearTimeout(cobotHideTimer);
+      window.clearInterval(cobotHideCountdownTimer);
+      spot.target.classList.add("is-found");
+      showCobotBrief("Found it!", "It was disguised as " + spot.disguise + ".", "OK", "success");
+      cobotHideTimer = window.setTimeout(clearCobotHideAndSeek, 2600);
     });
 
-    body.classList.add("egg-cobot-nav");
+    cobotHideCountdownTimer = window.setInterval(function () {
+      secondsLeft -= 1;
+      showCobotBrief("Cobot Hide-and-Seek", "It is pretending to be UI. Try hover, click, or drag.", Math.max(secondsLeft, 0), "");
+    }, 1000);
 
-    cobotNavTimer = window.setTimeout(function () {
-      body.classList.remove("egg-cobot-nav");
-      nav.querySelectorAll("[data-egg-label], [data-egg-status]").forEach(function (item) {
-        item.removeAttribute("data-egg-label");
-        item.removeAttribute("data-egg-status");
-      });
-    }, 12000);
+    cobotHideTimer = window.setTimeout(function () {
+      if (cobotHideFound) {
+        return;
+      }
+      window.clearInterval(cobotHideCountdownTimer);
+      spot.target.classList.add("is-escaped");
+      showCobotBrief("It escaped", "It says: observe the page more carefully next time.", "0", "missed");
+      cobotHideTimer = window.setTimeout(clearCobotHideAndSeek, 2600);
+    }, 10000);
   }
 
   function setupCobotLongPress() {
@@ -248,7 +536,7 @@
       clearPressTimer();
       pressTimer = window.setTimeout(function () {
         triggered = true;
-        triggerCobotNav();
+        triggerCobotHideAndSeek();
       }, 700);
     });
 
@@ -263,21 +551,86 @@
     });
   }
 
-  function triggerPublicationCombo(event) {
-    if (publicationComboTriggered) {
+  function showPublicationComboToast(message, event) {
+    var toast = document.querySelector(".egg-citation-toast");
+    var x = event && typeof event.clientX === "number" ? event.clientX : window.innerWidth / 2;
+    var y = event && typeof event.clientY === "number" ? event.clientY : 140;
+
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "egg-citation-toast";
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
+      body.appendChild(toast);
+    }
+
+    x = Math.max(120, Math.min(window.innerWidth - 120, x));
+    y = Math.max(96, Math.min(window.innerHeight - 36, y - 14));
+
+    toast.textContent = message;
+    toast.style.setProperty("--egg-combo-x", x + "px");
+    toast.style.setProperty("--egg-combo-y", y + "px");
+    toast.classList.remove("is-visible");
+    window.clearTimeout(publicationComboToastTimer);
+    toast.offsetWidth;
+    toast.classList.add("is-visible");
+
+    publicationComboToastTimer = window.setTimeout(function () {
+      toast.classList.remove("is-visible");
+    }, 2600);
+  }
+
+  function pulsePublicationCombo(strong) {
+    window.clearTimeout(publicationComboPulseTimer);
+    body.classList.remove("egg-citation-combo", "egg-citation-aura");
+    body.offsetWidth;
+    body.classList.add("egg-citation-combo");
+    if (strong) {
+      body.classList.add("egg-citation-aura");
+    }
+
+    publicationComboPulseTimer = window.setTimeout(function () {
+      body.classList.remove("egg-citation-combo", "egg-citation-aura");
+    }, strong ? 3600 : 2600);
+  }
+
+  function markPublicationComboTarget(target) {
+    if (!target) {
       return;
     }
 
+    window.clearTimeout(publicationComboTargetTimer);
+    document.querySelectorAll(".is-citation-combo-target").forEach(function (item) {
+      item.classList.remove("is-citation-combo-target");
+    });
+    target.offsetWidth;
+    target.classList.add("is-citation-combo-target");
+
+    publicationComboTargetTimer = window.setTimeout(function () {
+      target.classList.remove("is-citation-combo-target");
+    }, 900);
+  }
+
+  function triggerPublicationCombo(event) {
+    var comboStep;
+
     window.clearTimeout(publicationClickTimer);
     publicationClicks += 1;
+    comboStep = ((publicationClicks - 1) % 9) + 1;
     publicationClickTimer = window.setTimeout(function () {
       publicationClicks = 0;
-    }, 1600);
+    }, 1500);
 
-    if (publicationClicks === 5 || publicationClicks === 9) {
-      publicationComboTriggered = true;
-      window.clearTimeout(publicationClickTimer);
-      setTempClass("egg-citation-combo", 2800);
+    if (comboStep === 5) {
+      markPublicationComboTarget(event.currentTarget);
+      pulsePublicationCombo(false);
+      showPublicationComboToast("Combo x5: citation farming detected.", event);
+    }
+
+    if (comboStep === 9) {
+      markPublicationComboTarget(event.currentTarget);
+      pulsePublicationCombo(true);
+      showPublicationComboToast("H-index aura increased.", event);
     }
   }
 
@@ -302,6 +655,7 @@
     var wave = document.querySelector(".egg-pi-sound-wave");
     var megaphone = document.querySelector(".egg-pi-megaphone");
     var speech = document.querySelector(".egg-pi-meeting-speech");
+    var hammer = document.querySelector(".egg-pi-hammer");
     var firstStudentGrid = peopleRoot ? peopleRoot.querySelector(".people-block .profile-grid") : null;
     var meetingTarget = firstStudentGrid || peopleRoot;
     var avatarMargin = Math.max(44, Math.min(78, window.innerWidth / 2 - 8, window.innerHeight / 2 - 8));
@@ -355,6 +709,12 @@
     document.querySelectorAll(".is-egg-patrol-stop").forEach(function (card) {
       card.classList.remove("is-egg-patrol-stop");
     });
+    if (hammer) {
+      hammer.classList.add("is-leaving");
+      window.setTimeout(function () {
+        hammer.remove();
+      }, 180);
+    }
 
     if (!avatar) {
       avatar = document.createElement("img");
@@ -363,6 +723,7 @@
       avatar.alt = "";
       body.appendChild(avatar);
     }
+    avatar.classList.remove("is-facing-left");
 
     if (!wave) {
       wave = document.createElement("span");
@@ -439,6 +800,8 @@
     function render(docPoint) {
       var viewportX;
       var viewportY;
+      var megaphoneX;
+      var megaphoneY;
 
       if (!reducedMotion.matches) {
         window.scrollTo(window.scrollX, targetScrollY);
@@ -452,10 +815,12 @@
       avatar.style.setProperty("--egg-drop-y", "0px");
       wave.style.left = viewportX + "px";
       wave.style.top = viewportY + "px";
-      megaphone.style.left = clamp(viewportX + 48, avatarMargin, window.innerWidth - avatarMargin) + "px";
-      megaphone.style.top = clamp(viewportY - 34, avatarMargin, window.innerHeight - avatarMargin) + "px";
-      speech.style.left = clamp(viewportX + 94, avatarMargin, window.innerWidth - avatarMargin) + "px";
-      speech.style.top = clamp(viewportY - 72, avatarMargin, window.innerHeight - avatarMargin) + "px";
+      megaphoneX = clamp(viewportX + 48, avatarMargin, window.innerWidth - avatarMargin);
+      megaphoneY = clamp(viewportY + 4, avatarMargin, window.innerHeight - avatarMargin);
+      megaphone.style.left = megaphoneX + "px";
+      megaphone.style.top = megaphoneY + "px";
+      speech.style.left = clamp(megaphoneX + 28, avatarMargin, window.innerWidth - avatarMargin) + "px";
+      speech.style.top = clamp(megaphoneY + 32, avatarMargin, window.innerHeight - avatarMargin) + "px";
     }
 
     function showMeetingBanner() {
@@ -543,6 +908,12 @@
           item.remove();
         }, 220);
       });
+      document.querySelectorAll(".egg-pi-hammer").forEach(function (item) {
+        item.classList.add("is-leaving");
+        window.setTimeout(function () {
+          item.remove();
+        }, 180);
+      });
       document.querySelectorAll(".egg-pi-meeting-speech").forEach(function (item) {
         item.classList.remove("is-visible");
         window.setTimeout(function () {
@@ -550,7 +921,7 @@
         }, 220);
       });
       document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (item) {
-        item.classList.remove("is-patrolling", "is-raiding", "is-meeting");
+        item.classList.remove("is-patrolling", "is-raiding", "is-meeting", "is-facing-left");
         item.classList.add("is-leaving");
         window.setTimeout(function () {
           item.remove();
@@ -749,6 +1120,9 @@
     document.querySelectorAll(".egg-pi-sound-wave").forEach(function (effect) {
       effect.remove();
     });
+    document.querySelectorAll(".egg-pi-hammer").forEach(function (item) {
+      item.remove();
+    });
 
     body.classList.add("egg-pi-summon");
     if (piCard) {
@@ -779,6 +1153,8 @@
       var activeFrame = null;
       var avatar = document.createElement("img");
       var wave = document.createElement("span");
+      var hammer = document.createElement("span");
+      var facingDirection = 1;
       var scatterScale = window.matchMedia("(max-width: 740px)").matches ? 0.55 : 1;
       var assignedMissions = shuffled(missions);
 
@@ -815,6 +1191,20 @@
         avatar.style.setProperty("--egg-drop-y", "0px");
         wave.style.left = viewportX + "px";
         wave.style.top = viewportY + "px";
+        hammer.style.left = clamp(viewportX + avatarMargin * 0.56 * facingDirection, avatarMargin, maxX) + "px";
+        hammer.style.top = clamp(viewportY + avatarMargin * 0.12, avatarMargin, maxY) + "px";
+      }
+
+      function updateFacing(targetDocPoint) {
+        var deltaX = targetDocPoint.x - currentDocPoint.x;
+
+        if (Math.abs(deltaX) < 8) {
+          return;
+        }
+
+        facingDirection = deltaX < 0 ? -1 : 1;
+        avatar.classList.toggle("is-facing-left", facingDirection < 0);
+        hammer.classList.toggle("is-facing-left", facingDirection < 0);
       }
 
       function pulseWave() {
@@ -837,6 +1227,7 @@
         if (activeFrame) {
           window.cancelAnimationFrame(activeFrame);
         }
+        updateFacing(targetDocPoint);
 
         function step(now) {
           var progress;
@@ -920,6 +1311,7 @@
 
       function moveAvatarTo(card, index, isRaid) {
         avatar.classList.toggle("is-raiding", !!isRaid);
+        hammer.classList.toggle("is-raiding", !!isRaid);
         animateAvatarTo(cardCenter(card), isRaid ? raidTravelDuration : patrolTravelDuration, !isRaid, function () {
           markPatrolStop(card, index, isRaid);
         });
@@ -934,6 +1326,10 @@
       wave.style.left = startPoint.x + "px";
       wave.style.top = startPoint.y + "px";
       body.appendChild(wave);
+
+      hammer.className = "egg-pi-hammer is-visible";
+      hammer.setAttribute("aria-hidden", "true");
+      body.appendChild(hammer);
       renderAvatarAt(currentDocPoint, true);
       if (routeCards[0]) {
         markPatrolStop(routeCards[0], 0, false);
@@ -1002,7 +1398,7 @@
         banner.remove();
       });
       document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (avatar) {
-        avatar.classList.remove("is-patrolling", "is-raiding", "is-meeting");
+        avatar.classList.remove("is-patrolling", "is-raiding", "is-meeting", "is-facing-left");
         avatar.classList.add("is-leaving");
         window.setTimeout(function () {
           avatar.remove();
@@ -1013,6 +1409,12 @@
         window.setTimeout(function () {
           effect.remove();
         }, 260);
+      });
+      document.querySelectorAll(".egg-pi-hammer").forEach(function (item) {
+        item.classList.add("is-leaving");
+        window.setTimeout(function () {
+          item.remove();
+        }, 180);
       });
       document.querySelectorAll(".egg-pi-megaphone").forEach(function (item) {
         item.classList.remove("is-visible");
@@ -1031,6 +1433,7 @@
 
   function triggerDemoDebug() {
     var cards = document.querySelectorAll(".demos-page .demo-card");
+    var videos = document.querySelectorAll(".demos-page .demo-video-wrap video");
     var phrases = [
       "works on my robot",
       "calibrating...",
@@ -1042,6 +1445,10 @@
     if (!cards.length) {
       return;
     }
+
+    videos.forEach(function (video) {
+      video.pause();
+    });
 
     cards.forEach(function (card, index) {
       var title = card.querySelector("h3");
@@ -1064,8 +1471,94 @@
   }
 
   function triggerKonamiLab() {
-    setTempTitle("RAIDS | Secret Lab", 12000);
-    setTempClass("egg-konami", 12000);
+    var duration = reducedMotion.matches ? 8500 : 12500;
+    var aliases = [
+      "warp gate",
+      "paper cannon",
+      "robot runway",
+      "grant vault",
+      "citation radar",
+      "human API",
+      "demo reactor",
+      "badge magnet",
+      "coffee port"
+    ];
+    var lines = [
+      "↑ ↑ ↓ ↓ ← → ← → B A accepted",
+      "calibrating robot swarm...",
+      "unlocking secret RAIDS tunnel...",
+      "rerouting nav through the fun path",
+      "lab mode online"
+    ];
+    var glyphs = ["↑", "↓", "←", "→", "B", "A", "π", "RAIDS", "404", "OK"];
+    var panel = document.createElement("div");
+    var status = document.createElement("div");
+    var eyebrow = document.createElement("p");
+    var title = document.createElement("h2");
+    var list = document.createElement("ol");
+    var meter = document.createElement("div");
+    var fragment = document.createDocumentFragment();
+    var navItems = nav.querySelectorAll("a, .nav-dropdown-toggle");
+    var bitCount = reducedMotion.matches ? 6 : 18;
+
+    clearKonamiLab();
+    setTempTitle("RAIDS | Secret Lab", duration);
+    body.classList.add("egg-konami");
+
+    navItems.forEach(function (item, index) {
+      item.setAttribute("data-konami-label", aliases[index % aliases.length]);
+    });
+
+    panel.className = "egg-konami-panel";
+    panel.setAttribute("role", "status");
+    panel.setAttribute("aria-live", "polite");
+
+    status.className = "egg-konami-status";
+    eyebrow.className = "egg-konami-eyebrow";
+    eyebrow.textContent = "Konami protocol accepted";
+    title.textContent = "Secret Lab is online";
+
+    lines.forEach(function (line, index) {
+      var item = document.createElement("li");
+      item.textContent = line;
+      item.style.setProperty("--line-index", index);
+      list.appendChild(item);
+    });
+
+    meter.className = "egg-konami-meter";
+    status.appendChild(eyebrow);
+    status.appendChild(title);
+    status.appendChild(list);
+    status.appendChild(meter);
+    panel.appendChild(status);
+    fragment.appendChild(panel);
+
+    for (var index = 0; index < bitCount; index += 1) {
+      var bit = document.createElement("span");
+      bit.className = "egg-konami-bit";
+      bit.textContent = glyphs[index % glyphs.length];
+      bit.style.setProperty("--bit-left", 8 + ((index * 19) % 84) + "vw");
+      bit.style.setProperty("--bit-top", 12 + ((index * 29) % 68) + "vh");
+      bit.style.setProperty("--bit-delay", (index % 6) * 0.14 + "s");
+      bit.style.setProperty("--bit-drift", (index % 2 === 0 ? 1 : -1) * (18 + (index % 5) * 8) + "px");
+      fragment.appendChild(bit);
+    }
+
+    ["top-left", "top-right", "bottom-left", "bottom-right"].forEach(function (position) {
+      var beacon = document.createElement("span");
+      beacon.className = "egg-konami-beacon is-" + position;
+      fragment.appendChild(beacon);
+    });
+
+    body.appendChild(fragment);
+
+    konamiLabTimer = window.setTimeout(function () {
+      panel.classList.add("is-leaving");
+      document.querySelectorAll(".egg-konami-bit, .egg-konami-beacon").forEach(function (item) {
+        item.classList.add("is-leaving");
+      });
+      konamiLabTimers.push(window.setTimeout(clearKonamiLab, reducedMotion.matches ? 120 : 420));
+    }, duration);
   }
 
   function handleKonami(event) {
