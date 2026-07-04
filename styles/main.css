@@ -1448,47 +1448,6 @@ time {
   animation: egg-caret 0.75s steps(1) infinite;
 }
 
-body.egg-nightshift {
-  background: #071019;
-}
-
-body.egg-nightshift,
-body.egg-nightshift a,
-body.egg-nightshift .page-title,
-body.egg-nightshift .home-section-title,
-body.egg-nightshift .home-subsection-title {
-  color: #edf4ff;
-}
-
-body.egg-nightshift .site-header,
-body.egg-nightshift .site-footer,
-body.egg-nightshift .hero-panel,
-body.egg-nightshift .card,
-body.egg-nightshift .people-card,
-body.egg-nightshift .demo-card,
-body.egg-nightshift .profile-card,
-body.egg-nightshift .faculty-profile,
-body.egg-nightshift .award-card,
-body.egg-nightshift .research-card,
-body.egg-nightshift .home-explore-card,
-body.egg-nightshift .cobotai-honor-card,
-body.egg-nightshift .section-alt {
-  background: rgba(10, 24, 38, 0.94);
-  border-color: rgba(120, 186, 255, 0.2);
-  color: #edf4ff;
-}
-
-body.egg-nightshift .hero-intro,
-body.egg-nightshift .page-lead,
-body.egg-nightshift .home-section-lead,
-body.egg-nightshift .profile-role,
-body.egg-nightshift .demo-card-desc,
-body.egg-nightshift .cobotai-honor-detail,
-body.egg-nightshift .pub-meta,
-body.egg-nightshift .pub-authors {
-  color: #a9bdd5;
-}
-
 body.egg-cobot-hide .site-header {
   box-shadow: 0 10px 34px rgba(158, 36, 53, 0.14);
 }

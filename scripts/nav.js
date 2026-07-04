@@ -118,7 +118,6 @@
 
   var commands = {
     sure: triggerSureDecoder,
-    nightshift: triggerNightShift,
     cobot: triggerCobotHideAndSeek,
     paipai: triggerPiSummon,
     debug: triggerDemoDebug
@@ -195,11 +194,6 @@
         }, 5200);
       });
     }
-  }
-
-  function triggerNightShift() {
-    setTempTitle("RAIDS | PhD Mode", 12000);
-    setTempClass("egg-nightshift", 12000);
   }
 
   function getVisibleItems(selector) {
