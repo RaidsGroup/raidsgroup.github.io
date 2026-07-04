@@ -119,9 +119,26 @@
   var commands = {
     sure: triggerSureDecoder,
     cobot: triggerCobotHideAndSeek,
-    paipai: triggerPiSummon,
     debug: triggerDemoDebug
   };
+  var hiddenCommands = [
+    { length: 6, hash: "fcc15595", action: triggerPiSummon }
+  ];
+  var hiddenPiShortcut = { length: 3, hash: "4e55ed59", action: triggerPiMeetingShortcut };
+
+  function hashTypedCommand(value) {
+    var hash = 2166136261;
+    for (var index = 0; index < value.length; index += 1) {
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return ("00000000" + (hash >>> 0).toString(16)).slice(-8);
+  }
+
+  function matchesHiddenCommand(command) {
+    var candidate = typedKeys.slice(-command.length);
+    return candidate.length === command.length && hashTypedCommand(candidate) === command.hash;
+  }
 
   function setTempClass(className, duration, onDone) {
     body.classList.add(className);
@@ -1591,7 +1608,18 @@
       return;
     }
 
-    if (typedKeys.endsWith("pai") && body.classList.contains("egg-pi-summon")) {
+    if (hiddenCommands.some(function (command) {
+      if (matchesHiddenCommand(command)) {
+        command.action();
+        typedKeys = "";
+        return true;
+      }
+      return false;
+    })) {
+      return;
+    }
+
+    if (body.classList.contains("egg-pi-summon") && matchesHiddenCommand(hiddenPiShortcut)) {
       triggerPiMeetingShortcut();
       typedKeys = "";
     }
