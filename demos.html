@@ -25,9 +25,21 @@
         <a href="research.html">Research</a>
         <a href="project.html">Projects</a>
         <a class="active" href="demos.html">Demos</a>
-        <a href="people.html">People</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-controls="nav-people-submenu">People</button>
+          <div class="nav-submenu" id="nav-people-submenu" role="group" aria-label="People">
+            <a href="people.html">RAIDS</a>
+            <a href="people-cobotai.html">CobotAI</a>
+          </div>
+        </div>
         <a href="publication.html">Publications</a>
-        <a href="honors.html">Honors</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-controls="nav-honors-submenu">Honors</button>
+          <div class="nav-submenu" id="nav-honors-submenu" role="group" aria-label="Honors">
+            <a href="honors.html">RAIDS</a>
+            <a href="honors-cobotai.html">CobotAI</a>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -138,16 +150,16 @@
                 controls
                 preload="metadata"
                 playsinline
-                title="Cooland AR-guided intelligent drilling demonstration">
+                title="AR-guided intelligent drilling demonstration">
                 <source src="assets/media/compressed/cooland.mp4" type="video/mp4">
                 Your browser does not support embedded video playback.
               </video>
             </div>
             <div class="demo-card-body">
               <header class="demo-card-head">
-                <h3>Cooland</h3>
+                <h3>AR-Guided Intelligent Drilling</h3>
               </header>
-              <ul class="demo-features" aria-label="Cooland key features">
+              <ul class="demo-features" aria-label="AR-Guided Intelligent Drilling key features">
                 <li>AR-guided drilling</li>
                 <li>LLM parameterization</li>
                 <li>Human-robot collaboration</li>
@@ -157,6 +169,33 @@
                 are overlaid onto real workpieces for intuitive hole-location confirmation; large language
                 models translate natural-language instructions into structured machining parameters—enabling
                 more efficient, interactive, and flexible human-robot collaboration in drilling&nbsp;tasks.
+              </p>
+            </div>
+          </article>
+
+          <article class="demo-card">
+            <div class="demo-video-wrap">
+              <video
+                controls
+                preload="metadata"
+                playsinline
+                title="HKPC bimanual package manipulation demonstration">
+                <source src="assets/media/compressed/hkpc.mp4" type="video/mp4">
+                Your browser does not support embedded video playback.
+              </video>
+            </div>
+            <div class="demo-card-body">
+              <header class="demo-card-head">
+                <h3>Bimanual Package Manipulation</h3>
+              </header>
+              <ul class="demo-features" aria-label="Bimanual Package Manipulation key features">
+                <li>Vision-language-action model</li>
+                <li>Robotic manipulation</li>
+              </ul>
+              <p class="demo-card-desc">
+                A bimanual package manipulation demo developed in collaboration with HKPC using the Flexiv AICO 2 robot.
+                The system opens a sealed box and retrieves its contents by learning from teleoperation demonstrations,
+                with stage-wise decomposition and recovery data supporting robust long-horizon&nbsp;execution.
               </p>
             </div>
           </article>
