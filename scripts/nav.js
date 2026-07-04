@@ -84,13 +84,16 @@
   var originalTitle = document.title;
   var typedKeys = "";
   var konamiKeys = [];
-  var toastTimer = null;
-  var panelTimer = null;
   var titleTimer = null;
   var publicationClicks = 0;
   var publicationClickTimer = null;
+  var publicationComboTriggered = false;
   var cobotNavTimer = null;
   var piSummonTimer = null;
+  var piMeetingTimer = null;
+  var piMeetingSpeechTimer = null;
+  var piPatrolTimers = [];
+  var piPatrolFrames = [];
   var piSummonRun = 0;
   var body = document.body;
   var konamiSequence = [
@@ -113,46 +116,6 @@
     paipai: triggerPiSummon,
     debug: triggerDemoDebug
   };
-
-  var toast = document.createElement("div");
-  toast.className = "egg-toast";
-  toast.setAttribute("role", "status");
-  toast.setAttribute("aria-live", "polite");
-  body.appendChild(toast);
-
-  var panel = document.createElement("section");
-  panel.className = "egg-panel";
-  panel.setAttribute("aria-live", "polite");
-  panel.setAttribute("aria-hidden", "true");
-  body.appendChild(panel);
-
-  function showToast(message, duration) {
-    window.clearTimeout(toastTimer);
-    toast.textContent = message;
-    toast.classList.add("is-visible");
-    toastTimer = window.setTimeout(function () {
-      toast.classList.remove("is-visible");
-    }, duration || 2600);
-  }
-
-  function showPanel(title, html, duration) {
-    window.clearTimeout(panelTimer);
-    panel.innerHTML =
-      '<button class="egg-panel-close" type="button" aria-label="Close surprise panel">x</button>' +
-      '<p class="egg-panel-kicker">RAIDS hidden protocol</p>' +
-      "<h2>" + title + "</h2>" +
-      '<div class="egg-panel-body">' + html + "</div>";
-    panel.classList.add("is-visible");
-    panel.setAttribute("aria-hidden", "false");
-    panel.querySelector(".egg-panel-close").addEventListener("click", hidePanel);
-    panelTimer = window.setTimeout(hidePanel, duration || 8000);
-  }
-
-  function hidePanel() {
-    window.clearTimeout(panelTimer);
-    panel.classList.remove("is-visible");
-    panel.setAttribute("aria-hidden", "true");
-  }
 
   function setTempClass(className, duration, onDone) {
     body.classList.add(className);
@@ -201,12 +164,6 @@
     var originalText = aboutValue ? aboutValue.textContent : "";
     var decoded = "SURE = Solid, Unique, Radical, Elite.";
 
-    showPanel(
-      "SURE decoder",
-      '<dl class="egg-sure-list"><div><dt>S</dt><dd>Solid</dd></div><div><dt>U</dt><dd>Unique</dd></div><div><dt>R</dt><dd>Radical</dd></div><div><dt>E</dt><dd>Elite</dd></div></dl><p>Definitely not a backronym. Probably.</p>',
-      8500
-    );
-
     if (aboutValue) {
       aboutValue.classList.add("egg-typewriter");
       typeText(aboutValue, decoded, function () {
@@ -220,11 +177,6 @@
 
   function triggerNightShift() {
     setTempTitle("RAIDS | PhD Mode", 12000);
-    showPanel(
-      "Night-shift lab",
-      '<p class="egg-big-line">PhD mode activated.</p><p>Coffee level: critical. Figure export: still running.</p>',
-      9000
-    );
     setTempClass("egg-nightshift", 12000);
   }
 
@@ -240,7 +192,6 @@
       "honors.html": ["trophy cabinet", "shine limited"],
       "honors-cobotai.html": ["shiny objects", "polish mode"]
     };
-    var hud = document.querySelector(".egg-cobot-hud");
 
     window.clearTimeout(cobotNavTimer);
     body.classList.remove("egg-cobot-nav");
@@ -248,9 +199,6 @@
       item.removeAttribute("data-egg-label");
       item.removeAttribute("data-egg-status");
     });
-    if (hud) {
-      hud.remove();
-    }
 
     nav.querySelectorAll("a").forEach(function (link) {
       var fileName = link.getAttribute("href");
@@ -269,26 +217,7 @@
       button.setAttribute("data-egg-status", "badges indexed");
     });
 
-    hud = document.createElement("aside");
-    hud.className = "egg-cobot-hud";
-    hud.setAttribute("role", "status");
-    hud.innerHTML =
-      '<div class="egg-cobot-face" aria-hidden="true">[cobot]</div>' +
-      '<p class="egg-panel-kicker">CobotAI route planner</p>' +
-      "<h2>Navigation taken over</h2>" +
-      '<ol class="egg-cobot-log">' +
-      "<li><span>01</span> scanning lab corridors</li>" +
-      "<li><span>02</span> renaming boring menu items</li>" +
-      "<li><span>03</span> recommending the least publish-or-perish route</li>" +
-      "</ol>" +
-      '<p class="egg-cobot-note">Mobile shortcut: open menu, long-press People.</p>';
-    body.appendChild(hud);
-
     body.classList.add("egg-cobot-nav");
-    window.setTimeout(function () {
-      hud.classList.add("is-visible");
-    }, 20);
-    showToast("CobotAI is rerouting the lab navigation.", 3200);
 
     cobotNavTimer = window.setTimeout(function () {
       body.classList.remove("egg-cobot-nav");
@@ -296,10 +225,6 @@
         item.removeAttribute("data-egg-label");
         item.removeAttribute("data-egg-status");
       });
-      hud.classList.remove("is-visible");
-      window.setTimeout(function () {
-        hud.remove();
-      }, 260);
     }, 12000);
   }
 
@@ -339,6 +264,10 @@
   }
 
   function triggerPublicationCombo(event) {
+    if (publicationComboTriggered) {
+      return;
+    }
+
     window.clearTimeout(publicationClickTimer);
     publicationClicks += 1;
     publicationClickTimer = window.setTimeout(function () {
@@ -346,65 +275,361 @@
     }, 1600);
 
     if (publicationClicks === 5 || publicationClicks === 9) {
-      var message = publicationClicks === 5
-        ? "Combo x5: citation farming detected."
-        : "Combo x9: H-index aura increased.";
-      showToast(message, 3000);
-      dropBadge(message, event.clientX, event.clientY);
+      publicationComboTriggered = true;
+      window.clearTimeout(publicationClickTimer);
       setTempClass("egg-citation-combo", 2800);
     }
   }
 
-  function dropBadge(message, x, y) {
-    var badge = document.createElement("div");
-    badge.className = "egg-combo-badge";
-    badge.textContent = message;
-    badge.style.left = (x || window.innerWidth / 2) + "px";
-    badge.style.top = (y || window.innerHeight / 2) + "px";
-    body.appendChild(badge);
-    window.setTimeout(function () {
-      badge.remove();
-    }, 1700);
+  function clearPiPatrolTimers() {
+    window.clearTimeout(piMeetingTimer);
+    piMeetingTimer = null;
+    window.clearInterval(piMeetingSpeechTimer);
+    piMeetingSpeechTimer = null;
+    piPatrolTimers.forEach(function (timer) {
+      window.clearTimeout(timer);
+    });
+    piPatrolTimers = [];
+    piPatrolFrames.forEach(function (frame) {
+      window.cancelAnimationFrame(frame);
+    });
+    piPatrolFrames = [];
+  }
+
+  function triggerPiMeetingStage(peopleRoot, piCard, piImage) {
+    var runId = piSummonRun + 1;
+    var avatar = document.querySelector(".egg-pi-drop-avatar");
+    var wave = document.querySelector(".egg-pi-sound-wave");
+    var megaphone = document.querySelector(".egg-pi-megaphone");
+    var speech = document.querySelector(".egg-pi-meeting-speech");
+    var firstStudentGrid = peopleRoot ? peopleRoot.querySelector(".people-block .profile-grid") : null;
+    var meetingTarget = firstStudentGrid || peopleRoot;
+    var avatarMargin = Math.max(44, Math.min(78, window.innerWidth / 2 - 8, window.innerHeight / 2 - 8));
+    var targetRect;
+    var targetDocRect;
+    var targetDocPoint;
+    var targetScrollY;
+    var currentViewportPoint;
+    var currentDocPoint;
+    var meetingLines = [
+      "One more experiment before Friday.",
+      "Where is the baseline?",
+      "Please make the story clearer.",
+      "Everyone update your slides.",
+      "Who owns Figure 3?",
+      "Add a demo video.",
+      "Rebuttal draft tonight.",
+      "Check the novelty again.",
+      "Robot test after lunch.",
+      "Send me the latest results.",
+      "Make the contribution sharper.",
+      "This figure needs a better story.",
+      "Can we compare with one more method?",
+      "Please align the terminology.",
+      "Who will present next week?",
+      "The abstract should be more direct.",
+      "Run it again with another seed.",
+      "Add an ablation table.",
+      "Update the timeline today.",
+      "Please check the related work.",
+      "Can the robot repeat this reliably?",
+      "We need a cleaner video.",
+      "Merge the slides before dinner.",
+      "Do not forget the appendix.",
+      "Please verify the numbers.",
+      "What is the key insight?",
+      "Make the demo more convincing.",
+      "Send the draft to me tonight.",
+      "Everyone has one action item.",
+      "Let's make this publishable."
+    ];
+
+    if (!peopleRoot || body.classList.contains("egg-pi-meeting")) {
+      return;
+    }
+
+    clearPiPatrolTimers();
+    window.clearTimeout(piSummonTimer);
+    piSummonRun = runId;
+    body.classList.add("egg-pi-meeting");
+    document.querySelectorAll(".is-egg-patrol-stop").forEach(function (card) {
+      card.classList.remove("is-egg-patrol-stop");
+    });
+
+    if (!avatar) {
+      avatar = document.createElement("img");
+      avatar.className = "egg-pi-drop-avatar is-patrolling";
+      avatar.src = piImage ? piImage.src : "assets/people/zheng_pai.jpg";
+      avatar.alt = "";
+      body.appendChild(avatar);
+    }
+
+    if (!wave) {
+      wave = document.createElement("span");
+      wave.className = "egg-pi-sound-wave";
+      body.appendChild(wave);
+    }
+
+    if (!megaphone) {
+      megaphone = document.createElement("span");
+      megaphone.className = "egg-pi-megaphone";
+      megaphone.setAttribute("aria-hidden", "true");
+      megaphone.textContent = ")))";
+      body.appendChild(megaphone);
+    }
+
+    if (!speech) {
+      speech = document.createElement("div");
+      speech.className = "egg-pi-meeting-speech";
+      speech.setAttribute("role", "status");
+      speech.setAttribute("aria-live", "polite");
+      body.appendChild(speech);
+    }
+
+    function randomMeetingLine(previousLine) {
+      var line = meetingLines[Math.floor(Math.random() * meetingLines.length)];
+      if (meetingLines.length > 1 && line === previousLine) {
+        return randomMeetingLine(previousLine);
+      }
+      return line;
+    }
+
+    function updateMeetingSpeech() {
+      speech.classList.remove("is-visible");
+      window.setTimeout(function () {
+        if (runId !== piSummonRun || !body.classList.contains("egg-pi-meeting")) {
+          return;
+        }
+        speech.textContent = randomMeetingLine(speech.textContent);
+        speech.classList.add("is-visible");
+      }, 120);
+    }
+
+    speech.textContent = randomMeetingLine("");
+
+    targetRect = meetingTarget ? meetingTarget.getBoundingClientRect() : null;
+    targetDocRect = targetRect ? {
+      left: window.scrollX + targetRect.left,
+      top: window.scrollY + targetRect.top,
+      width: targetRect.width,
+      height: targetRect.height
+    } : null;
+    targetDocPoint = {
+      x: targetDocRect ? targetDocRect.left + targetDocRect.width / 2 : window.scrollX + window.innerWidth / 2,
+      y: targetDocRect ? targetDocRect.top - avatarMargin - 24 : window.scrollY + avatarMargin
+    };
+    targetScrollY = targetDocRect ? clamp(targetDocRect.top - window.innerHeight * 0.34, 0, maxScrollTop()) : 0;
+    currentViewportPoint = {
+      x: parseFloat(avatar.style.left) || window.innerWidth / 2,
+      y: parseFloat(avatar.style.top) || avatarMargin
+    };
+    currentDocPoint = {
+      x: window.scrollX + currentViewportPoint.x,
+      y: window.scrollY + currentViewportPoint.y
+    };
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function maxScrollTop() {
+      return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    }
+
+    function render(docPoint) {
+      var viewportX;
+      var viewportY;
+
+      if (!reducedMotion.matches) {
+        window.scrollTo(window.scrollX, targetScrollY);
+      }
+
+      viewportX = clamp(docPoint.x - window.scrollX, avatarMargin, window.innerWidth - avatarMargin);
+      viewportY = clamp(docPoint.y - window.scrollY, avatarMargin, window.innerHeight - avatarMargin);
+      avatar.style.left = viewportX + "px";
+      avatar.style.top = viewportY + "px";
+      avatar.style.setProperty("--egg-drop-x", "0px");
+      avatar.style.setProperty("--egg-drop-y", "0px");
+      wave.style.left = viewportX + "px";
+      wave.style.top = viewportY + "px";
+      megaphone.style.left = clamp(viewportX + 48, avatarMargin, window.innerWidth - avatarMargin) + "px";
+      megaphone.style.top = clamp(viewportY - 34, avatarMargin, window.innerHeight - avatarMargin) + "px";
+      speech.style.left = clamp(viewportX + 94, avatarMargin, window.innerWidth - avatarMargin) + "px";
+      speech.style.top = clamp(viewportY - 72, avatarMargin, window.innerHeight - avatarMargin) + "px";
+    }
+
+    function showMeetingBanner() {
+      var banner = document.querySelector(".egg-pi-meeting-banner");
+      if (!banner) {
+        banner = document.createElement("div");
+        banner.className = "egg-pi-meeting-banner";
+        banner.setAttribute("role", "status");
+        banner.textContent = "GROUP MEETING STARTED";
+        body.appendChild(banner);
+      }
+      banner.classList.add("is-visible");
+      megaphone.classList.add("is-visible");
+      speech.classList.add("is-visible");
+      window.clearInterval(piMeetingSpeechTimer);
+      piMeetingSpeechTimer = window.setInterval(updateMeetingSpeech, reducedMotion.matches ? 2200 : 1350);
+      wave.classList.remove("is-speaking");
+      void wave.offsetWidth;
+      wave.classList.add("is-speaking");
+    }
+
+    function step(startedAt) {
+      var now = window.performance.now();
+      var duration = reducedMotion.matches ? 1 : 900;
+      var progress = clamp((now - startedAt) / duration, 0, 1);
+      var docPoint = {
+        x: currentDocPoint.x + (targetDocPoint.x - currentDocPoint.x) * progress,
+        y: currentDocPoint.y + (targetDocPoint.y - currentDocPoint.y) * progress
+      };
+
+      if (runId !== piSummonRun) {
+        return;
+      }
+
+      render(docPoint);
+
+      if (progress < 1) {
+        piPatrolFrames.push(window.requestAnimationFrame(function () {
+          step(startedAt);
+        }));
+        return;
+      }
+
+      avatar.classList.add("is-speaking", "is-meeting");
+      showMeetingBanner();
+    }
+
+    if (piCard) {
+      piCard.classList.add("egg-pi-target");
+    }
+    piPatrolFrames.push(window.requestAnimationFrame(function () {
+      step(window.performance.now());
+    }));
+
+    piMeetingTimer = window.setTimeout(function () {
+      if (runId !== piSummonRun) {
+        return;
+      }
+      window.clearInterval(piMeetingSpeechTimer);
+      piMeetingSpeechTimer = null;
+      body.classList.remove("egg-pi-summon", "egg-pi-meeting");
+      document.querySelectorAll("[data-egg-mission], [data-egg-task-badge], [data-egg-work-status]").forEach(function (card) {
+        card.removeAttribute("data-egg-mission");
+        card.removeAttribute("data-egg-task-badge");
+        card.removeAttribute("data-egg-work-status");
+        card.style.removeProperty("--egg-scatter-x");
+        card.style.removeProperty("--egg-scatter-y");
+        card.style.removeProperty("--egg-scatter-rot");
+      });
+      document.querySelectorAll(".is-egg-raid-target, .is-egg-patrol-stop").forEach(function (card) {
+        card.classList.remove("is-egg-raid-target", "is-egg-patrol-stop");
+      });
+      document.querySelectorAll(".egg-pi-target").forEach(function (card) {
+        card.classList.remove("egg-pi-target");
+      });
+      document.querySelectorAll(".egg-pi-meeting-banner").forEach(function (banner) {
+        banner.classList.remove("is-visible");
+        window.setTimeout(function () {
+          banner.remove();
+        }, 220);
+      });
+      document.querySelectorAll(".egg-pi-megaphone").forEach(function (item) {
+        item.classList.remove("is-visible");
+        window.setTimeout(function () {
+          item.remove();
+        }, 220);
+      });
+      document.querySelectorAll(".egg-pi-meeting-speech").forEach(function (item) {
+        item.classList.remove("is-visible");
+        window.setTimeout(function () {
+          item.remove();
+        }, 220);
+      });
+      document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (item) {
+        item.classList.remove("is-patrolling", "is-raiding", "is-meeting");
+        item.classList.add("is-leaving");
+        window.setTimeout(function () {
+          item.remove();
+        }, 420);
+      });
+      document.querySelectorAll(".egg-pi-sound-wave").forEach(function (item) {
+        item.classList.add("is-leaving");
+        window.setTimeout(function () {
+          item.remove();
+        }, 260);
+      });
+    }, 9000);
+  }
+
+  function triggerPiMeetingShortcut() {
+    var peopleRoot = document.querySelector("main.people-page") || (body.classList.contains("people-page") ? document.querySelector("main") : null);
+    var piCard = Array.prototype.find.call((peopleRoot || document).querySelectorAll(".faculty-profile, .profile-card"), function (profile) {
+      return /pai\s+zheng/i.test(profile.textContent);
+    });
+    var piImage = piCard ? piCard.querySelector(".profile-image img") : null;
+
+    if (!peopleRoot || !body.classList.contains("egg-pi-summon")) {
+      return;
+    }
+
+    triggerPiMeetingStage(peopleRoot, piCard, piImage);
   }
 
   function triggerPiSummon() {
     var runId = piSummonRun + 1;
-    var peopleRoot = document.querySelector("main.people-page");
+    var peopleRoot = document.querySelector("main.people-page") || (body.classList.contains("people-page") ? document.querySelector("main") : null);
     var allCards = peopleRoot ? Array.prototype.slice.call(peopleRoot.querySelectorAll(".profile-card")) : [];
-    var piCard = Array.prototype.find.call(document.querySelectorAll(".faculty-profile, .profile-card"), function (profile) {
+    var piCard = Array.prototype.find.call((peopleRoot || document).querySelectorAll(".faculty-profile, .profile-card"), function (profile) {
       return /pai\s+zheng/i.test(profile.textContent);
     });
     var piImage = piCard ? piCard.querySelector(".profile-image img") : null;
     var studentCards = [];
-    var assignedMissions = [];
+    var routeCards = [];
+    var visitedCards = [];
+    var raidEvents = [];
+    var patrolStartDelay = reducedMotion.matches ? 20 : 80;
+    var patrolInterval = reducedMotion.matches ? 360 : 1250;
+    var patrolTravelDuration = reducedMotion.matches ? 1 : 1220;
+    var raidTravelDuration = reducedMotion.matches ? 1 : 220;
+    var raidPause = reducedMotion.matches ? 520 : 1050;
+    var piSummonDuration = reducedMotion.matches ? 7600 : 18500;
     var missions = [
-      "baseline?",
-      "add one more demo",
-      "ablation study",
-      "rewrite intro",
-      "check novelty",
-      "rebuttal tonight",
-      "robot test again",
-      "slides by 6pm"
+      ["URGENT", "baseline?"],
+      ["REVISION", "rewrite intro"],
+      ["DEMO", "add robot video"],
+      ["EXPERIMENT", "ablation study"],
+      ["NOVELTY", "check novelty"],
+      ["TONIGHT", "rebuttal draft"],
+      ["ROBOT", "test again"],
+      ["SLIDES", "slides by 6pm"],
+      ["FIGURE", "fix Figure 3"],
+      ["EMAIL", "reply reviewer"],
+      ["DATA", "one more run"],
+      ["MEETING", "bring updates"]
     ];
-    var speechPool = [
-      "Where is the baseline?",
-      "One more experiment.",
-      "Can we make the story clearer?",
-      "Robot worked yesterday, right?",
-      "Add an ablation study.",
-      "The contribution needs to be sharper.",
-      "Can we have a demo video?",
-      "This figure needs a better story.",
-      "Check the novelty again.",
-      "Rebuttal draft tonight?",
-      "Who owns slide seven?",
-      "Run it one more time."
+    var statuses = [
+      "training model",
+      "debugging",
+      "writing intro",
+      "reading papers",
+      "tuning robot",
+      "plotting results",
+      "pretending busy",
+      "checking email",
+      "running baseline",
+      "fixing slides"
     ];
-    var speechLines = [];
-    var oldAvatar = document.querySelector(".egg-pi-drop-avatar");
 
     if (!peopleRoot) {
+      return;
+    }
+
+    if (body.classList.contains("egg-pi-summon")) {
+      triggerPiMeetingStage(peopleRoot, piCard, piImage);
       return;
     }
 
@@ -414,28 +639,114 @@
       });
     }
 
-    studentCards = shuffled(allCards.filter(function (card) {
+    function buildSnakeRoute(cards, endCard) {
+      var rows = [];
+      var rowTolerance = 28;
+      var route;
+
+      cards.forEach(function (card) {
+        var rect = card.getBoundingClientRect();
+        var top = rect.top + window.scrollY;
+        var row = rows.find(function (item) {
+          return Math.abs(item.top - top) < rowTolerance;
+        });
+
+        if (!row) {
+          row = {
+            top: top,
+            cards: []
+          };
+          rows.push(row);
+        }
+
+        row.cards.push({
+          card: card,
+          left: rect.left
+        });
+      });
+
+      route = rows.sort(function (a, b) {
+        return a.top - b.top;
+      }).reduce(function (items, row, rowIndex) {
+        var rowCards = row.cards.sort(function (a, b) {
+          return a.left - b.left;
+        });
+
+        if (rowIndex % 2 === 1) {
+          rowCards.reverse();
+        }
+
+        return items.concat(rowCards.map(function (item) {
+          return item.card;
+        }));
+      }, []);
+
+      if (endCard && route.indexOf(endCard) > -1 && route[route.length - 1] !== endCard) {
+        route = route.filter(function (card) {
+          return card !== endCard;
+        });
+        route.push(endCard);
+      }
+
+      return route;
+    }
+
+    studentCards = allCards.filter(function (card) {
       return !/pai\s+zheng/i.test(card.textContent);
-    })).slice(0, Math.min(12, allCards.length));
-    assignedMissions = shuffled(missions);
-    speechLines = shuffled(speechPool).slice(0, 3 + Math.floor(Math.random() * 2));
+    });
+    if (studentCards.length) {
+      var researchTitle = Array.prototype.find.call(peopleRoot.querySelectorAll(".people-subtitle"), function (title) {
+        return /research\s+staff/i.test(title.textContent);
+      });
+      var researchGrid = researchTitle ? researchTitle.nextElementSibling : null;
+      var researchCards = researchGrid ? Array.prototype.slice.call(researchGrid.querySelectorAll(".profile-card")) : [];
+      var routeEndCard = researchCards[researchCards.length - 1];
+      var routeEndIndex = routeEndCard ? studentCards.indexOf(routeEndCard) : -1;
+      var raidCount;
+      var raidStepPool;
+
+      routeCards = routeEndIndex >= 0 ? studentCards.slice(0, routeEndIndex + 1) : studentCards.slice(0, Math.min(16, studentCards.length));
+      routeCards = buildSnakeRoute(routeCards, routeEndCard);
+      raidCount = Math.min(routeCards.length, reducedMotion.matches ? 2 : 5);
+      raidStepPool = routeCards.slice(1, Math.max(2, routeCards.length - 1)).map(function (card, index) {
+        return index + 1;
+      });
+
+      shuffled(raidStepPool).slice(0, raidCount).sort(function (a, b) {
+        return a - b;
+      }).forEach(function (step) {
+        raidEvents.push({
+          step: step
+        });
+      });
+    }
+    piSummonDuration = Math.max(piSummonDuration, patrolStartDelay + routeCards.length * patrolInterval + raidEvents.length * raidPause + 1800);
 
     window.clearTimeout(piSummonTimer);
+    clearPiPatrolTimers();
     piSummonRun = runId;
     body.classList.remove("egg-pi-summon");
-    document.querySelectorAll("[data-egg-mission]").forEach(function (card) {
+    document.querySelectorAll("[data-egg-mission], [data-egg-task-badge], [data-egg-work-status]").forEach(function (card) {
       card.removeAttribute("data-egg-mission");
+      card.removeAttribute("data-egg-task-badge");
+      card.removeAttribute("data-egg-work-status");
       card.style.removeProperty("--egg-scatter-x");
       card.style.removeProperty("--egg-scatter-y");
       card.style.removeProperty("--egg-scatter-rot");
     });
+    document.querySelectorAll(".is-egg-patrol-stop").forEach(function (card) {
+      card.classList.remove("is-egg-patrol-stop");
+    });
+    document.querySelectorAll(".is-egg-raid-target").forEach(function (card) {
+      card.classList.remove("is-egg-raid-target");
+    });
     document.querySelectorAll(".egg-pi-target").forEach(function (card) {
       card.classList.remove("egg-pi-target");
     });
-    if (oldAvatar) {
-      oldAvatar.remove();
-    }
-    document.querySelectorAll(".egg-pi-speech, .egg-pi-sound-wave").forEach(function (effect) {
+    document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (avatar) {
+      avatar.remove();
+    });
+    document.querySelectorAll(".egg-pi-sound-wave").forEach(function (effect) {
       effect.remove();
     });
 
@@ -443,140 +754,279 @@
     if (piCard) {
       piCard.classList.add("egg-pi-target");
     }
-
-    if (studentCards[0]) {
-      studentCards[0].scrollIntoView({ block: "center", behavior: reducedMotion.matches ? "auto" : "smooth" });
-    }
+    allCards.forEach(function (card, index) {
+      card.setAttribute("data-egg-work-status", statuses[index % statuses.length]);
+    });
 
     window.setTimeout(function () {
       if (runId !== piSummonRun) {
         return;
       }
 
-      var landingCard = studentCards[Math.min(2, studentCards.length - 1)] || piCard || peopleRoot;
-      var landingRect = landingCard.getBoundingClientRect();
+      var landingCard = routeCards[0] || piCard || peopleRoot;
       var avatarMargin = Math.max(44, Math.min(78, window.innerWidth / 2 - 8, window.innerHeight / 2 - 8));
       var maxX = Math.max(avatarMargin, window.innerWidth - avatarMargin);
       var maxY = Math.max(avatarMargin, window.innerHeight - avatarMargin);
-      var landingX = clamp(landingRect.left + landingRect.width / 2, avatarMargin, maxX);
-      var landingY = clamp(landingRect.top + Math.min(landingRect.height / 2, 160), avatarMargin, maxY);
-      var startX = piImage ? piImage.getBoundingClientRect().left + piImage.getBoundingClientRect().width / 2 : window.innerWidth / 2;
-      var startY = avatarMargin;
+      var startRect = landingCard.getBoundingClientRect();
+      var startPoint = {
+        x: clamp(startRect.left + startRect.width / 2, avatarMargin, maxX),
+        y: clamp(startRect.top + Math.min(startRect.height / 2, 150), avatarMargin, maxY)
+      };
+      var currentDocPoint = {
+        x: window.scrollX + startPoint.x,
+        y: window.scrollY + startRect.top + Math.min(startRect.height / 2, 150)
+      };
+      var activeFrame = null;
       var avatar = document.createElement("img");
       var wave = document.createElement("span");
       var scatterScale = window.matchMedia("(max-width: 740px)").matches ? 0.55 : 1;
+      var assignedMissions = shuffled(missions);
 
       function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
       }
 
-      if (reducedMotion.matches) {
-        startX = landingX;
-        startY = landingY;
-      } else {
-        startX = clamp(startX, avatarMargin, maxX);
+      function maxScrollTop() {
+        return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
       }
 
-      avatar.className = "egg-pi-drop-avatar";
-      avatar.src = piImage ? piImage.src : "assets/people/zheng_pai.jpg";
-      avatar.alt = "";
-      avatar.style.left = startX + "px";
-      avatar.style.top = startY + "px";
-      avatar.style.setProperty("--egg-drop-x", landingX - startX + "px");
-      avatar.style.setProperty("--egg-drop-y", landingY - startY + "px");
-      body.appendChild(avatar);
+      function cardCenter(card) {
+        var rect = card.getBoundingClientRect();
+        return {
+          x: window.scrollX + clamp(rect.left + rect.width / 2, avatarMargin, maxX),
+          y: window.scrollY + rect.top + Math.min(rect.height / 2, 150)
+        };
+      }
 
-      wave.className = "egg-pi-sound-wave";
-      wave.style.left = landingX + "px";
-      wave.style.top = landingY + "px";
-      body.appendChild(wave);
+      function renderAvatarAt(docPoint, followScroll) {
+        var desiredScrollY = clamp(docPoint.y - window.innerHeight * 0.46, 0, maxScrollTop());
+        var viewportX;
+        var viewportY;
 
-      studentCards.forEach(function (card, index) {
+        if (followScroll !== false && !reducedMotion.matches) {
+          window.scrollTo(window.scrollX, desiredScrollY);
+        }
+
+        viewportX = clamp(docPoint.x - window.scrollX, avatarMargin, maxX);
+        viewportY = clamp(docPoint.y - window.scrollY, avatarMargin, maxY);
+        avatar.style.left = viewportX + "px";
+        avatar.style.top = viewportY + "px";
+        avatar.style.setProperty("--egg-drop-x", "0px");
+        avatar.style.setProperty("--egg-drop-y", "0px");
+        wave.style.left = viewportX + "px";
+        wave.style.top = viewportY + "px";
+      }
+
+      function pulseWave() {
+        wave.classList.remove("is-speaking");
+        void wave.offsetWidth;
+        window.setTimeout(function () {
+          if (runId === piSummonRun) {
+            wave.classList.add("is-speaking");
+          }
+        }, 20);
+      }
+
+      function animateAvatarTo(targetDocPoint, duration, followScroll, onDone) {
+        var fromPoint = {
+          x: currentDocPoint.x,
+          y: currentDocPoint.y
+        };
+        var startedAt = window.performance.now();
+
+        if (activeFrame) {
+          window.cancelAnimationFrame(activeFrame);
+        }
+
+        function step(now) {
+          var progress;
+
+          if (runId !== piSummonRun) {
+            return;
+          }
+
+          progress = duration <= 1 ? 1 : clamp((now - startedAt) / duration, 0, 1);
+          currentDocPoint = {
+            x: fromPoint.x + (targetDocPoint.x - fromPoint.x) * progress,
+            y: fromPoint.y + (targetDocPoint.y - fromPoint.y) * progress
+          };
+          renderAvatarAt(currentDocPoint, followScroll);
+
+          if (progress < 1) {
+            activeFrame = window.requestAnimationFrame(step);
+            piPatrolFrames.push(activeFrame);
+            return;
+          }
+
+          activeFrame = null;
+          currentDocPoint = {
+            x: targetDocPoint.x,
+            y: targetDocPoint.y
+          };
+          renderAvatarAt(currentDocPoint, followScroll);
+          if (onDone) {
+            onDone();
+          }
+        }
+
+        activeFrame = window.requestAnimationFrame(step);
+        piPatrolFrames.push(activeFrame);
+      }
+
+      function pickNearbyRaidTarget(anchorCard) {
+        var visibleCards = routeCards.filter(function (card) {
+          var rect = card.getBoundingClientRect();
+          return card !== anchorCard && rect.bottom > avatarMargin && rect.top < window.innerHeight - avatarMargin;
+        });
+
+        if (!visibleCards.length) {
+          return anchorCard;
+        }
+
+        return visibleCards.sort(function (a, b) {
+          var aPoint = cardCenter(a);
+          var bPoint = cardCenter(b);
+          var aDistance = Math.abs(aPoint.x - currentDocPoint.x) + Math.abs(aPoint.y - currentDocPoint.y);
+          var bDistance = Math.abs(bPoint.x - currentDocPoint.x) + Math.abs(bPoint.y - currentDocPoint.y);
+          return aDistance - bDistance;
+        })[0];
+      }
+
+      function markPatrolStop(card, index, isRaid) {
+        var mission = assignedMissions[index % assignedMissions.length];
         var direction = index % 4;
         var row = Math.floor(index / 4);
         var x = direction < 2 ? -1 : 1;
         var y = row % 2 === 0 ? 1 : -1;
 
-        if (index > 0 && index % assignedMissions.length === 0) {
-          assignedMissions = shuffled(missions);
+        avatar.classList.add("is-speaking");
+        pulseWave();
+
+        visitedCards.forEach(function (visitedCard) {
+          visitedCard.classList.remove("is-egg-patrol-stop");
+        });
+        visitedCards.push(card);
+
+        card.classList.add("is-egg-patrol-stop");
+        if (isRaid) {
+          card.classList.add("is-egg-raid-target");
+          card.setAttribute("data-egg-task-badge", mission[0]);
+          card.setAttribute("data-egg-mission", mission[1]);
+          card.style.setProperty("--egg-scatter-x", x * (16 + direction * 7) * scatterScale + "px");
+          card.style.setProperty("--egg-scatter-y", y * (9 + row * 4) * scatterScale + "px");
+          card.style.setProperty("--egg-scatter-rot", x * (1.2 + row * 0.32) * scatterScale + "deg");
         }
+      }
 
-        card.setAttribute("data-egg-mission", assignedMissions[index % assignedMissions.length]);
-        card.style.setProperty("--egg-scatter-x", x * (18 + direction * 7) * scatterScale + "px");
-        card.style.setProperty("--egg-scatter-y", y * (10 + row * 4) * scatterScale + "px");
-        card.style.setProperty("--egg-scatter-rot", x * (1.4 + row * 0.35) * scatterScale + "deg");
-      });
+      function moveAvatarTo(card, index, isRaid) {
+        avatar.classList.toggle("is-raiding", !!isRaid);
+        animateAvatarTo(cardCenter(card), isRaid ? raidTravelDuration : patrolTravelDuration, !isRaid, function () {
+          markPatrolStop(card, index, isRaid);
+        });
+      }
 
-      window.setTimeout(function () {
-        var speech = document.createElement("div");
-        var bubbleWidth = Math.min(250, window.innerWidth - 24);
-        var speechX = landingX + 70;
-        var speechY = landingY - 72;
-        var lineIndex = 0;
-        var speechTimer = null;
+      avatar.className = "egg-pi-drop-avatar is-patrolling";
+      avatar.src = piImage ? piImage.src : "assets/people/zheng_pai.jpg";
+      avatar.alt = "";
+      body.appendChild(avatar);
 
-        if (runId !== piSummonRun) {
+      wave.className = "egg-pi-sound-wave";
+      wave.style.left = startPoint.x + "px";
+      wave.style.top = startPoint.y + "px";
+      body.appendChild(wave);
+      renderAvatarAt(currentDocPoint, true);
+      if (routeCards[0]) {
+        markPatrolStop(routeCards[0], 0, false);
+      }
+
+      animateAvatarTo(cardCenter(landingCard), 1, true);
+
+      routeCards.forEach(function (card, index) {
+        var earlierRaids = raidEvents.filter(function (event) {
+          return event.step < index;
+        }).length;
+        var timeCursor;
+        var patrolDelay;
+
+        if (index === 0) {
           return;
         }
 
-        if (speechX + bubbleWidth > window.innerWidth - 12) {
-          speechX = landingX - bubbleWidth - 70;
-        }
-        speechX = clamp(speechX, 12, Math.max(12, window.innerWidth - bubbleWidth - 12));
-        speechY = clamp(speechY, 12, Math.max(12, window.innerHeight - 96));
-
-        avatar.classList.add("is-speaking");
-        wave.classList.add("is-speaking");
-        speech.className = "egg-pi-speech";
-        speech.textContent = speechLines[lineIndex];
-        speech.style.left = speechX + "px";
-        speech.style.top = speechY + "px";
-        speech.style.maxWidth = bubbleWidth + "px";
-        body.appendChild(speech);
-
-        speechTimer = window.setInterval(function () {
-          lineIndex += 1;
-          if (lineIndex >= speechLines.length || runId !== piSummonRun) {
-            window.clearInterval(speechTimer);
-            speech.classList.add("is-leaving");
-            window.setTimeout(function () {
-              speech.remove();
-            }, 220);
-            return;
+        timeCursor = patrolStartDelay + patrolInterval * (index - 1) + earlierRaids * raidPause;
+        patrolDelay = timeCursor;
+        var timer = window.setTimeout(function () {
+          if (runId === piSummonRun) {
+            moveAvatarTo(card, index, false);
           }
-          speech.textContent = speechLines[lineIndex];
-        }, 1150);
-      }, reducedMotion.matches ? 180 : 1500);
-    }, reducedMotion.matches ? 60 : 520);
+        }, patrolDelay);
+        piPatrolTimers.push(timer);
+
+        raidEvents.filter(function (event) {
+          return event.step === index;
+        }).forEach(function (event) {
+          piPatrolTimers.push(window.setTimeout(function () {
+            if (runId === piSummonRun) {
+              var raidTarget = pickNearbyRaidTarget(card);
+              moveAvatarTo(raidTarget, Math.max(0, routeCards.indexOf(raidTarget)), true);
+            }
+          }, timeCursor + patrolTravelDuration + 120));
+        });
+      });
+    }, reducedMotion.matches ? 20 : 40);
 
     piSummonTimer = window.setTimeout(function () {
       if (runId !== piSummonRun) {
         return;
       }
 
-      body.classList.remove("egg-pi-summon");
-      document.querySelectorAll("[data-egg-mission]").forEach(function (card) {
+      body.classList.remove("egg-pi-summon", "egg-pi-meeting");
+      clearPiPatrolTimers();
+      document.querySelectorAll("[data-egg-mission], [data-egg-task-badge], [data-egg-work-status]").forEach(function (card) {
         card.removeAttribute("data-egg-mission");
+        card.removeAttribute("data-egg-task-badge");
+        card.removeAttribute("data-egg-work-status");
         card.style.removeProperty("--egg-scatter-x");
         card.style.removeProperty("--egg-scatter-y");
         card.style.removeProperty("--egg-scatter-rot");
       });
+      document.querySelectorAll(".is-egg-patrol-stop").forEach(function (card) {
+        card.classList.remove("is-egg-patrol-stop");
+      });
+      document.querySelectorAll(".is-egg-raid-target").forEach(function (card) {
+        card.classList.remove("is-egg-raid-target");
+      });
       document.querySelectorAll(".egg-pi-target").forEach(function (card) {
         card.classList.remove("egg-pi-target");
       });
+      document.querySelectorAll(".egg-pi-meeting-banner").forEach(function (banner) {
+        banner.remove();
+      });
       document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (avatar) {
+        avatar.classList.remove("is-patrolling", "is-raiding", "is-meeting");
         avatar.classList.add("is-leaving");
         window.setTimeout(function () {
           avatar.remove();
         }, 420);
       });
-      document.querySelectorAll(".egg-pi-speech, .egg-pi-sound-wave").forEach(function (effect) {
+      document.querySelectorAll(".egg-pi-sound-wave").forEach(function (effect) {
         effect.classList.add("is-leaving");
         window.setTimeout(function () {
           effect.remove();
         }, 260);
       });
-    }, 9800);
+      document.querySelectorAll(".egg-pi-megaphone").forEach(function (item) {
+        item.classList.remove("is-visible");
+        window.setTimeout(function () {
+          item.remove();
+        }, 220);
+      });
+      document.querySelectorAll(".egg-pi-meeting-speech").forEach(function (item) {
+        item.classList.remove("is-visible");
+        window.setTimeout(function () {
+          item.remove();
+        }, 220);
+      });
+    }, piSummonDuration);
   }
 
   function triggerDemoDebug() {
@@ -590,7 +1040,6 @@
     ];
 
     if (!cards.length) {
-      showToast("Debug console not connected. Try this on the Demos page.", 3200);
       return;
     }
 
@@ -603,7 +1052,6 @@
       title.textContent = phrases[index % phrases.length];
     });
 
-    showToast("Demo debug labels injected.", 2600);
     setTempClass("egg-demo-debug", 6500, function () {
       cards.forEach(function (card) {
         var title = card.querySelector("h3[data-egg-original]");
@@ -617,11 +1065,6 @@
 
   function triggerKonamiLab() {
     setTempTitle("RAIDS | Secret Lab", 12000);
-    showPanel(
-      "KONAMI lab protocol",
-      '<p class="egg-big-line">Secret Lab unlocked.</p><p>Robot tea break cancelled. Reviewer 2 temporarily contained. Coffee routed to GPU cluster.</p>',
-      10000
-    );
     setTempClass("egg-konami", 12000);
   }
 
@@ -650,14 +1093,21 @@
     }
 
     typedKeys = (typedKeys + event.key.toLowerCase()).slice(-32);
-    Object.keys(commands).some(function (command) {
+    if (Object.keys(commands).some(function (command) {
       if (typedKeys.endsWith(command)) {
         commands[command]();
         typedKeys = "";
         return true;
       }
       return false;
-    });
+    })) {
+      return;
+    }
+
+    if (typedKeys.endsWith("pai") && body.classList.contains("egg-pi-summon")) {
+      triggerPiMeetingShortcut();
+      typedKeys = "";
+    }
   }
 
   setupCobotLongPress();
@@ -669,9 +1119,6 @@
   }
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      hidePanel();
-    }
     handleKonami(event);
     handleTypedCommand(event);
   });

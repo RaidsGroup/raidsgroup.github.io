@@ -30,6 +30,7 @@
   --line: #e1e3e6;
   --accent: #9e2435;
   --accent-2: #7b1c2a;
+  --accent-soft: #f7e9ec;
   --max-width: 1120px;
   --radius: 14px;
   --shadow: 0 8px 22px rgba(20, 20, 20, 0.07);
@@ -232,7 +233,7 @@ a:focus-visible {
 
 .nav-submenu a.active {
   color: var(--accent);
-  background: rgba(158, 36, 53, 0.07);
+  background: var(--accent-soft);
   box-shadow: none;
 }
 
@@ -242,32 +243,27 @@ a:focus-visible {
     top: 100%;
     right: 0;
     z-index: 30;
-    padding-top: 0.55rem;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    filter: drop-shadow(0 10px 24px rgba(20, 20, 20, 0.1));
+    padding: 0.45rem 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
   }
 
   .nav-submenu a {
     background: var(--surface);
-    border-left: 1px solid var(--line);
-    border-right: 1px solid var(--line);
   }
 
   .nav-submenu a:first-child {
-    border-top: 1px solid var(--line);
-    border-radius: 10px 10px 0 0;
+    border-radius: 8px 8px 0 0;
   }
 
   .nav-submenu a:last-child {
-    border-bottom: 1px solid var(--line);
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 8px 8px;
   }
 
   .nav-submenu a:only-child {
-    border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 8px;
   }
 }
 
@@ -1447,137 +1443,6 @@ time {
   fill: currentColor;
 }
 
-.egg-toast {
-  position: fixed;
-  left: 50%;
-  bottom: max(1.2rem, env(safe-area-inset-bottom, 0px));
-  z-index: 126;
-  max-width: min(90vw, 28rem);
-  padding: 0.72rem 1rem;
-  border: 1px solid rgba(158, 36, 53, 0.22);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--accent-2);
-  box-shadow: 0 14px 34px rgba(20, 20, 20, 0.16);
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, 0.8rem);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.egg-toast.is-visible {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.egg-panel {
-  position: fixed;
-  right: max(1.1rem, env(safe-area-inset-right, 0px));
-  bottom: max(4.6rem, env(safe-area-inset-bottom, 0px));
-  z-index: 125;
-  width: min(92vw, 25rem);
-  padding: 1.05rem 1.1rem 1.15rem;
-  border: 1px solid rgba(158, 36, 53, 0.22);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 22px 48px rgba(20, 20, 20, 0.18);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(0.8rem) scale(0.98);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.egg-panel.is-visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0) scale(1);
-}
-
-.egg-panel-close {
-  position: absolute;
-  top: 0.65rem;
-  right: 0.75rem;
-  width: 1.8rem;
-  height: 1.8rem;
-  border: 0;
-  border-radius: 50%;
-  background: var(--surface-soft);
-  color: var(--muted);
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.egg-panel-close:hover,
-.egg-panel-close:focus-visible {
-  background: rgba(158, 36, 53, 0.09);
-  color: var(--accent);
-}
-
-.egg-panel-kicker {
-  margin: 0 2rem 0.35rem 0;
-  color: var(--accent);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.egg-panel h2 {
-  margin: 0 2rem 0.55rem 0;
-  font-size: 1.28rem;
-  line-height: 1.2;
-}
-
-.egg-panel-body {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.55;
-}
-
-.egg-panel-body p {
-  margin: 0.45rem 0 0;
-}
-
-.egg-big-line {
-  color: var(--text);
-  font-size: 1.08rem;
-  font-weight: 800;
-}
-
-.egg-sure-list {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.45rem;
-  margin: 0.8rem 0;
-}
-
-.egg-sure-list div {
-  padding: 0.62rem 0.55rem;
-  border: 1px solid rgba(158, 36, 53, 0.16);
-  border-radius: 12px;
-  background: rgba(158, 36, 53, 0.05);
-  text-align: center;
-}
-
-.egg-sure-list dt {
-  color: var(--accent);
-  font-size: 1.28rem;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.egg-sure-list dd {
-  margin: 0.25rem 0 0;
-  color: var(--text);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
 .egg-typewriter {
   border-right: 0.12em solid var(--accent);
   animation: egg-caret 0.75s steps(1) infinite;
@@ -1622,23 +1487,6 @@ body.egg-nightshift .cobotai-honor-detail,
 body.egg-nightshift .pub-meta,
 body.egg-nightshift .pub-authors {
   color: #a9bdd5;
-}
-
-body.egg-nightshift::after {
-  content: "PhD MODE // COFFEE: CRITICAL // GPU: BUSY";
-  position: fixed;
-  left: 1rem;
-  bottom: 1rem;
-  z-index: 118;
-  padding: 0.45rem 0.65rem;
-  border: 1px solid rgba(120, 186, 255, 0.32);
-  border-radius: 8px;
-  background: rgba(7, 16, 25, 0.82);
-  color: #78baff;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  pointer-events: none;
 }
 
 body.egg-cobot-nav .site-header {
@@ -1700,102 +1548,7 @@ body.egg-cobot-nav .nav-dropdown-toggle[data-egg-status]::after {
   transform: none;
 }
 
-.egg-cobot-hud {
-  position: fixed;
-  left: max(1.1rem, env(safe-area-inset-left, 0px));
-  top: max(5.8rem, env(safe-area-inset-top, 0px));
-  z-index: 125;
-  width: min(92vw, 25.5rem);
-  padding: 1.05rem 1.1rem 1.1rem 5.25rem;
-  border: 1px solid rgba(158, 36, 53, 0.24);
-  border-radius: 18px;
-  background:
-    linear-gradient(135deg, rgba(158, 36, 53, 0.08), transparent 45%),
-    rgba(255, 255, 255, 0.96);
-  box-shadow: 0 22px 48px rgba(20, 20, 20, 0.18);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(-0.85rem);
-  transition: opacity 0.22s ease, transform 0.22s ease;
-}
-
-.egg-cobot-hud.is-visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.egg-cobot-face {
-  position: absolute;
-  left: 1rem;
-  top: 1.15rem;
-  width: 3.35rem;
-  height: 3.35rem;
-  border: 2px solid rgba(158, 36, 53, 0.26);
-  border-radius: 14px;
-  color: var(--accent);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font: 900 0.62rem/1 "Courier New", monospace;
-  letter-spacing: 0.02em;
-  animation: egg-cobot-blink 1.15s steps(2) infinite;
-}
-
-.egg-cobot-hud h2 {
-  margin: 0 0 0.55rem;
-  color: var(--text);
-  font-size: 1.28rem;
-  line-height: 1.2;
-}
-
-.egg-cobot-log {
-  margin: 0.65rem 0 0;
-  padding: 0;
-  list-style: none;
-  color: var(--muted);
-  font-family: "Courier New", monospace;
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-
-.egg-cobot-log li + li {
-  margin-top: 0.28rem;
-}
-
-.egg-cobot-log span {
-  color: var(--accent);
-  font-weight: 900;
-}
-
-.egg-cobot-note {
-  margin: 0.75rem 0 0;
-  color: var(--text);
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
 @media (max-width: 740px) {
-  .egg-cobot-hud {
-    left: 50%;
-    right: auto;
-    top: auto;
-    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
-    width: min(100% - 1.5rem, 24rem);
-    padding: 0.95rem 1rem 1rem 4.8rem;
-    transform: translate(-50%, 0.8rem);
-  }
-
-  .egg-cobot-hud.is-visible {
-    transform: translate(-50%, 0);
-  }
-
-  .egg-cobot-face {
-    left: 0.9rem;
-    top: 1rem;
-    width: 3rem;
-    height: 3rem;
-  }
-
   body.egg-cobot-nav .top-nav a[data-egg-label]::before,
   body.egg-cobot-nav .nav-dropdown-toggle[data-egg-label]::before,
   body.egg-cobot-nav .top-nav a[data-egg-status]::after,
@@ -1810,22 +1563,6 @@ body.egg-citation-combo .pub-stat-value,
 body.egg-citation-combo .pub-title {
   color: var(--accent);
   text-shadow: 0 0 14px rgba(158, 36, 53, 0.22);
-}
-
-.egg-combo-badge {
-  position: fixed;
-  z-index: 124;
-  padding: 0.55rem 0.72rem;
-  border: 1px solid rgba(158, 36, 53, 0.22);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
-  color: var(--accent);
-  box-shadow: 0 14px 30px rgba(20, 20, 20, 0.14);
-  font-size: 0.82rem;
-  font-weight: 800;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  animation: egg-combo-pop 1.7s ease forwards;
 }
 
 body.egg-pi-summon .egg-pi-target {
@@ -1863,8 +1600,50 @@ body.egg-pi-summon .profile-card[data-egg-mission] {
   box-shadow: 0 12px 28px rgba(20, 20, 20, 0.12);
 }
 
+body.egg-pi-summon .profile-card[data-egg-work-status] {
+  position: relative;
+}
+
+body.egg-pi-summon .profile-card[data-egg-work-status]::before {
+  content: attr(data-egg-work-status);
+  position: absolute;
+  left: 0.62rem;
+  bottom: 0.62rem;
+  z-index: 4;
+  max-width: calc(100% - 1.24rem);
+  padding: 0.38rem 0.68rem;
+  border: 1px solid rgba(30, 126, 73, 0.36);
+  border-radius: 999px;
+  background: rgba(222, 249, 232, 0.98);
+  color: #0f6d3e;
+  box-shadow:
+    0 0 0 3px rgba(30, 126, 73, 0.08),
+    0 10px 20px rgba(20, 20, 20, 0.12);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  text-transform: uppercase;
+  animation: egg-work-status 1.45s ease-in-out infinite;
+}
+
+body.egg-pi-summon .profile-card.is-egg-patrol-stop {
+  z-index: 4;
+  border-color: rgba(158, 36, 53, 0.38);
+  animation: egg-patrol-bump 0.52s ease both;
+}
+
+body.egg-pi-summon .profile-card.is-egg-raid-target {
+  border-color: rgba(158, 36, 53, 0.58);
+  box-shadow:
+    0 0 0 5px rgba(158, 36, 53, 0.12),
+    0 18px 40px rgba(158, 36, 53, 0.2),
+    var(--shadow);
+  animation: egg-raid-flash 0.72s ease both;
+}
+
 body.egg-pi-summon .profile-card[data-egg-mission]::after {
-  content: attr(data-egg-mission);
+  content: attr(data-egg-task-badge) " / " attr(data-egg-mission);
   position: absolute;
   top: -0.55rem;
   right: 0.7rem;
@@ -1883,6 +1662,44 @@ body.egg-pi-summon .profile-card[data-egg-mission]::after {
   animation: egg-sticky-drop 0.36s ease both;
 }
 
+body.egg-pi-meeting {
+  background: #0b1018;
+}
+
+body.egg-pi-meeting::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 123;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.08), transparent 18rem),
+    linear-gradient(rgba(6, 10, 16, 0.36), rgba(6, 10, 16, 0.46));
+  backdrop-filter: saturate(0.72) brightness(0.9);
+}
+
+body.egg-pi-meeting .site-header,
+body.egg-pi-meeting main,
+body.egg-pi-meeting .site-footer {
+  filter: none;
+}
+
+body.egg-pi-meeting .profile-card,
+body.egg-pi-meeting .faculty-profile,
+body.egg-pi-meeting .people-block {
+  box-shadow: none;
+}
+
+body.egg-pi-meeting .profile-card {
+  position: relative;
+  z-index: 124;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+body.egg-pi-meeting .profile-image img {
+  filter: brightness(1.04) contrast(1.04);
+}
+
 .egg-pi-drop-avatar {
   position: fixed;
   z-index: 127;
@@ -1897,7 +1714,22 @@ body.egg-pi-summon .profile-card[data-egg-mission]::after {
     0 24px 48px rgba(20, 20, 20, 0.24);
   pointer-events: none;
   transform: translate(-50%, -50%);
+  transition: left 1.22s linear, top 1.22s linear;
   animation: egg-pi-airdrop 1.45s cubic-bezier(0.17, 0.84, 0.26, 1.05) forwards;
+}
+
+.egg-pi-drop-avatar.is-raiding {
+  transition: left 0.22s linear, top 0.22s linear;
+  box-shadow:
+    0 0 0 4px rgba(158, 36, 53, 0.26),
+    0 0 0 16px rgba(158, 36, 53, 0.08),
+    0 24px 48px rgba(20, 20, 20, 0.28);
+}
+
+.egg-pi-drop-avatar.is-patrolling,
+.egg-pi-drop-avatar.is-patrolling.is-raiding {
+  transition: none;
+  animation: none;
 }
 
 .egg-pi-drop-avatar.is-leaving {
@@ -1909,6 +1741,14 @@ body.egg-pi-summon .profile-card[data-egg-mission]::after {
     0 0 0 4px rgba(158, 36, 53, 0.18),
     0 0 0 12px rgba(158, 36, 53, 0.08),
     0 24px 48px rgba(20, 20, 20, 0.24);
+}
+
+.egg-pi-drop-avatar.is-meeting {
+  box-shadow:
+    0 0 0 5px rgba(158, 36, 53, 0.24),
+    0 0 0 18px rgba(158, 36, 53, 0.1),
+    0 0 34px rgba(158, 36, 53, 0.28),
+    0 24px 48px rgba(20, 20, 20, 0.26);
 }
 
 .egg-pi-sound-wave {
@@ -1932,38 +1772,115 @@ body.egg-pi-summon .profile-card[data-egg-mission]::after {
   opacity: 0;
 }
 
-.egg-pi-speech {
+.egg-pi-meeting-banner {
   position: fixed;
+  left: 50%;
+  top: max(5rem, env(safe-area-inset-top, 0px));
   z-index: 128;
-  padding: 0.58rem 0.72rem;
-  border: 1px solid rgba(158, 36, 53, 0.2);
-  border-radius: 14px 14px 14px 4px;
-  background: rgba(255, 255, 255, 0.96);
-  color: var(--text);
-  box-shadow: 0 14px 30px rgba(20, 20, 20, 0.15);
-  font-size: 0.88rem;
-  font-weight: 800;
-  line-height: 1.32;
+  padding: 0.52rem 0.82rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(8, 12, 18, 0.9);
+  color: #f1f5f9;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  opacity: 0;
   pointer-events: none;
-  transform: translateY(0.35rem) scale(0.96);
-  animation: egg-pi-speech-pop 0.22s ease forwards;
+  text-transform: uppercase;
+  transform: translate(-50%, -0.4rem);
+  transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
-.egg-pi-speech::before {
+.egg-pi-meeting-banner.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.egg-pi-megaphone {
+  position: fixed;
+  z-index: 129;
+  width: 4.6rem;
+  height: 2.8rem;
+  color: var(--accent);
+  font: 900 1rem/1 "Courier New", monospace;
+  letter-spacing: -0.08em;
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: 0 0 12px rgba(158, 36, 53, 0.3);
+  transform: translate(-12%, -50%) rotate(-8deg) scale(0.9);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.egg-pi-megaphone::before {
   content: "";
   position: absolute;
-  left: 0.8rem;
-  bottom: -0.42rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-right: 1px solid rgba(158, 36, 53, 0.2);
-  border-bottom: 1px solid rgba(158, 36, 53, 0.2);
-  background: rgba(255, 255, 255, 0.96);
-  transform: rotate(45deg);
+  left: 0.2rem;
+  top: 0.82rem;
+  width: 1.45rem;
+  height: 0.86rem;
+  border: 2px solid rgba(158, 36, 53, 0.72);
+  border-radius: 0.28rem;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(20, 20, 20, 0.14);
 }
 
-.egg-pi-speech.is-leaving {
-  animation: egg-pi-speech-out 0.22s ease forwards;
+.egg-pi-megaphone::after {
+  content: "";
+  position: absolute;
+  left: 1.18rem;
+  top: 0.46rem;
+  width: 2.4rem;
+  height: 1.58rem;
+  border: 2px solid rgba(158, 36, 53, 0.72);
+  border-radius: 0.22rem 0.8rem 0.8rem 0.22rem;
+  background: linear-gradient(90deg, #fff 0%, #fff3f5 38%, rgba(158, 36, 53, 0.95) 100%);
+  clip-path: polygon(0 28%, 100% 0, 100% 100%, 0 72%);
+  box-shadow: 0 10px 22px rgba(20, 20, 20, 0.16);
+}
+
+.egg-pi-megaphone.is-visible {
+  opacity: 1;
+  animation: egg-megaphone-bark 0.9s ease-in-out infinite;
+  transform: translate(-12%, -50%) rotate(-8deg) scale(1);
+}
+
+.egg-pi-meeting-speech {
+  position: fixed;
+  z-index: 129;
+  max-width: min(18rem, calc(100vw - 2rem));
+  padding: 0.62rem 0.78rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px 14px 14px 4px;
+  background: rgba(12, 18, 28, 0.96);
+  color: #f8fafc;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0, -50%) scale(0.94);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.egg-pi-meeting-speech::before {
+  content: "";
+  position: absolute;
+  left: -0.36rem;
+  top: 50%;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(12, 18, 28, 0.96);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.egg-pi-meeting-speech.is-visible {
+  opacity: 1;
+  transform: translate(0, -50%) scale(1);
 }
 
 body.egg-demo-debug .demo-card {
@@ -2016,31 +1933,9 @@ body.egg-konami .home-hero-logo {
   }
 }
 
-@keyframes egg-cobot-blink {
-  50% {
-    box-shadow: inset 0 -0.35rem 0 rgba(158, 36, 53, 0.12);
-  }
-}
-
 @keyframes egg-caret {
   50% {
     border-color: transparent;
-  }
-}
-
-@keyframes egg-combo-pop {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -20%) scale(0.9);
-  }
-
-  20% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -120%) scale(1.04);
   }
 }
 
@@ -2108,17 +2003,67 @@ body.egg-konami .home-hero-logo {
   }
 }
 
-@keyframes egg-pi-speech-pop {
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+@keyframes egg-megaphone-bark {
+  0%,
+  100% {
+    color: rgba(158, 36, 53, 0.7);
+    transform: translate(-12%, -50%) rotate(-8deg) scale(1);
+  }
+
+  45% {
+    color: rgba(158, 36, 53, 1);
+    transform: translate(-8%, -50%) rotate(-5deg) scale(1.08);
   }
 }
 
-@keyframes egg-pi-speech-out {
-  to {
-    opacity: 0;
-    transform: translateY(-0.25rem) scale(0.96);
+@keyframes egg-patrol-bump {
+  0%,
+  100% {
+    transform:
+      translate(var(--egg-scatter-x, 0px), var(--egg-scatter-y, 0px))
+      rotate(var(--egg-scatter-rot, 0deg))
+      scale(1);
+  }
+
+  45% {
+    transform:
+      translate(var(--egg-scatter-x, 0px), calc(var(--egg-scatter-y, 0px) - 0.22rem))
+      rotate(0deg)
+      scale(1.014);
+  }
+}
+
+@keyframes egg-raid-flash {
+  0% {
+    transform:
+      translate(var(--egg-scatter-x, 0px), var(--egg-scatter-y, 0px))
+      rotate(var(--egg-scatter-rot, 0deg))
+      scale(1);
+  }
+
+  35% {
+    transform:
+      translate(var(--egg-scatter-x, 0px), calc(var(--egg-scatter-y, 0px) - 0.34rem))
+      rotate(var(--egg-scatter-rot, 0deg))
+      scale(1.028);
+  }
+
+  100% {
+    transform:
+      translate(var(--egg-scatter-x, 0px), var(--egg-scatter-y, 0px))
+      rotate(var(--egg-scatter-rot, 0deg))
+      scale(1);
+  }
+}
+
+@keyframes egg-work-status {
+  0%,
+  100% {
+    opacity: 0.84;
+  }
+
+  50% {
+    opacity: 1;
   }
 }
 
@@ -2165,36 +2110,26 @@ body.egg-konami .home-hero-logo {
     transform: none;
   }
 
-  .egg-toast,
-  .egg-panel,
-  .egg-cobot-hud {
-    transition: opacity 0.01ms;
-  }
-
-  .egg-toast {
-    transform: translate(-50%, 0);
-  }
-
   body.egg-pi-summon .egg-pi-target,
+  body.egg-pi-summon .profile-card.is-egg-patrol-stop,
+  body.egg-pi-summon .profile-card.is-egg-raid-target,
+  body.egg-pi-summon .profile-card[data-egg-work-status]::before,
   .egg-pi-drop-avatar,
   .egg-pi-sound-wave,
-  .egg-pi-speech,
+  .egg-pi-megaphone,
   body.egg-pi-summon .profile-card[data-egg-mission]::after,
   body.egg-cobot-nav .top-nav::before,
-  .egg-cobot-face,
   body.egg-konami::before,
   body.egg-konami .brand-logo,
   body.egg-konami .home-hero-logo,
-  .egg-typewriter,
-  .egg-combo-badge {
+  .egg-typewriter {
     animation: none;
   }
 
-  .egg-panel,
-  .egg-cobot-hud,
   .egg-pi-drop-avatar,
   .egg-pi-sound-wave,
-  .egg-pi-speech {
+  .egg-pi-megaphone,
+  .egg-pi-meeting-speech {
     transform: none;
   }
 }
@@ -3431,11 +3366,11 @@ body.egg-konami .home-hero-logo {
   .nav-submenu a {
     border: 0;
     border-radius: 8px;
-    background: transparent;
+    background: var(--surface);
   }
 
   .nav-submenu a.active {
-    background: rgba(158, 36, 53, 0.07);
+    background: var(--accent-soft);
   }
 
   .nav-dropdown:hover .nav-submenu,
