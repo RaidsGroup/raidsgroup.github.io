@@ -90,10 +90,6 @@
   var publicationComboPulseTimer = null;
   var publicationComboToastTimer = null;
   var publicationComboTargetTimer = null;
-  var cobotHideTimer = null;
-  var cobotHideCountdownTimer = null;
-  var cobotHideCleanup = null;
-  var cobotHideFound = false;
   var piSummonTimer = null;
   var piMeetingTimer = null;
   var piMeetingSpeechTimer = null;
@@ -118,7 +114,6 @@
 
   var commands = {
     sure: triggerSureDecoder,
-    cobot: triggerCobotHideAndSeek,
     debug: triggerDemoDebug
   };
   var hiddenCommands = [
@@ -188,11 +183,28 @@
       window.clearTimeout(timer);
     });
     konamiLabTimers = [];
-    body.classList.remove("egg-konami");
+    body.classList.remove(
+      "egg-konami",
+      "egg-konami-global",
+      "egg-konami-home",
+      "egg-konami-people",
+      "egg-konami-publications",
+      "egg-konami-prototypes",
+      "egg-konami-honors"
+    );
     nav.querySelectorAll("[data-konami-label]").forEach(function (item) {
       item.removeAttribute("data-konami-label");
     });
-    document.querySelectorAll(".egg-konami-panel, .egg-konami-bit, .egg-konami-beacon").forEach(function (item) {
+    document.querySelectorAll("[data-egg-lab-label], [data-egg-lab-id], [data-egg-clearance]").forEach(function (item) {
+      item.removeAttribute("data-egg-lab-label");
+      item.removeAttribute("data-egg-lab-id");
+      item.removeAttribute("data-egg-clearance");
+      item.style.removeProperty("--egg-lab-index");
+      item.style.removeProperty("--egg-lab-delay");
+      item.style.removeProperty("--egg-lab-tilt");
+      item.classList.remove("is-egg-lab-target", "is-egg-lab-personnel", "is-egg-prime-prototype");
+    });
+    document.querySelectorAll(".egg-konami-panel, .egg-konami-bit, .egg-konami-beacon, .egg-konami-stage").forEach(function (item) {
       item.remove();
     });
   }
@@ -211,355 +223,6 @@
         }, 5200);
       });
     }
-  }
-
-  function getVisibleItems(selector) {
-    return Array.prototype.filter.call(document.querySelectorAll(selector), function (item) {
-      var rect = item.getBoundingClientRect();
-      return rect.width > 8 && rect.height > 8;
-    });
-  }
-
-  function pickRandom(items) {
-    return items[Math.floor(Math.random() * items.length)];
-  }
-
-  function getCobotIcon(name) {
-    var icons = {
-      bot: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="7" width="14" height="10" rx="3"></rect><path d="M12 7V4"></path><path d="M8 11h.01"></path><path d="M16 11h.01"></path><path d="M9 15h6"></path><path d="M5 12H3"></path><path d="M21 12h-2"></path></svg>',
-      eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>',
-      screw: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>',
-      hand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V8a2 2 0 0 0-4 0v2"></path><path d="M14 10V6a2 2 0 0 0-4 0v8"></path><path d="M10 13.5 8.7 12a2 2 0 0 0-3 2.6l4.1 5A5.5 5.5 0 0 0 14 22h1a5 5 0 0 0 5-5v-5a2 2 0 0 0-4 0"></path></svg>',
-      shadow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18"></path><path d="M7 8h10"></path><path d="M9 16h6"></path><circle cx="12" cy="12" r="2"></circle></svg>',
-      battery: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path><path d="M6 11h6"></path></svg>'
-    };
-
-    return icons[name] || icons.bot;
-  }
-
-  function showCobotBrief(titleText, bodyText, countText, state) {
-    var brief = document.querySelector(".egg-cobot-brief");
-    var title = null;
-    var copy = null;
-    var count = null;
-
-    if (!brief) {
-      brief = document.createElement("div");
-      brief.className = "egg-cobot-brief";
-      brief.setAttribute("role", "status");
-      brief.setAttribute("aria-live", "polite");
-      brief.innerHTML = [
-        '<span class="egg-cobot-face" aria-hidden="true">' + getCobotIcon("bot") + '</span>',
-        '<span class="egg-cobot-brief-copy">',
-        '<strong></strong>',
-        '<span></span>',
-        '</span>',
-        '<b class="egg-cobot-count"></b>'
-      ].join("");
-      body.appendChild(brief);
-    }
-
-    brief.classList.toggle("is-success", state === "success");
-    brief.classList.toggle("is-missed", state === "missed");
-    title = brief.querySelector("strong");
-    copy = brief.querySelector(".egg-cobot-brief-copy span");
-    count = brief.querySelector(".egg-cobot-count");
-    title.textContent = titleText;
-    copy.textContent = bodyText;
-    count.textContent = countText;
-  }
-
-  function clearCobotHideAndSeek() {
-    window.clearTimeout(cobotHideTimer);
-    window.clearInterval(cobotHideCountdownTimer);
-    cobotHideTimer = null;
-    cobotHideCountdownTimer = null;
-    cobotHideFound = false;
-
-    if (cobotHideCleanup) {
-      cobotHideCleanup();
-      cobotHideCleanup = null;
-    }
-
-    body.classList.remove("egg-cobot-hide");
-    document.querySelectorAll(".egg-cobot-brief, .egg-cobot-target, .egg-cobot-decoy, .egg-cobot-progress-host").forEach(function (item) {
-      item.remove();
-    });
-    document.querySelectorAll(".is-egg-cobot-host, .is-egg-cobot-decoy-host").forEach(function (item) {
-      item.classList.remove("is-egg-cobot-host", "is-egg-cobot-decoy-host");
-    });
-  }
-
-  function makeCobotTarget(kind, line, disguise, action, iconName) {
-    var target = document.createElement("span");
-
-    target.className = "egg-cobot-target egg-cobot-" + kind;
-    target.setAttribute("role", "button");
-    target.setAttribute("tabindex", "0");
-    target.setAttribute("aria-label", "Find the hidden cobot");
-    target.setAttribute("data-egg-line", line);
-    target.setAttribute("data-egg-disguise", disguise);
-    target.setAttribute("data-egg-action", action);
-    target.innerHTML = getCobotIcon(iconName || kind);
-    return target;
-  }
-
-  function attachCobotTarget(host, target) {
-    host.classList.add("is-egg-cobot-host");
-    host.appendChild(target);
-    return target;
-  }
-
-  function addCobotDecoy(realHost) {
-    var candidates = getVisibleItems(".btn, .nav-dropdown-toggle, .card, .demo-card, .people-card, .brand");
-    var decoy = null;
-    var host = null;
-
-    candidates = candidates.filter(function (item) {
-      return item !== realHost && !item.contains(realHost);
-    });
-
-    if (!candidates.length) {
-      return;
-    }
-
-    host = pickRandom(candidates);
-    decoy = document.createElement("span");
-    decoy.className = "egg-cobot-decoy";
-    decoy.textContent = Math.random() > 0.5 ? "I am definitely not this button." : "Do not hover me. I am ticklish.";
-    host.classList.add("is-egg-cobot-decoy-host");
-    host.appendChild(decoy);
-  }
-
-  function armCobotTarget(target, action, onFound) {
-    var startX = 0;
-    var startY = 0;
-    var dragging = false;
-
-    function stopEvent(event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    function found(event) {
-      stopEvent(event);
-      onFound();
-    }
-
-    if (action === "hover") {
-      target.addEventListener("pointerenter", found);
-      target.addEventListener("focus", onFound);
-    }
-
-    if (action === "click") {
-      target.addEventListener("click", found);
-    }
-
-    if (action === "drag") {
-      target.addEventListener("pointerdown", function (event) {
-        stopEvent(event);
-        dragging = true;
-        startX = event.clientX;
-        startY = event.clientY;
-        if (target.setPointerCapture) {
-          target.setPointerCapture(event.pointerId);
-        }
-      });
-      target.addEventListener("pointermove", function (event) {
-        if (!dragging) {
-          return;
-        }
-        if (Math.abs(event.clientX - startX) + Math.abs(event.clientY - startY) > 12) {
-          found(event);
-        }
-      });
-      target.addEventListener("pointerup", function () {
-        dragging = false;
-      });
-      target.addEventListener("pointercancel", function () {
-        dragging = false;
-      });
-    }
-
-    target.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" || event.key === " ") {
-        found(event);
-      }
-    });
-  }
-
-  function createCobotSpot() {
-    var spots = [
-      function () {
-        var host = pickRandom(getVisibleItems(".btn, .nav-toggle, .nav-dropdown-toggle, .demo-card a, .link-arrow"));
-        if (!host) {
-          return null;
-        }
-        return {
-          host: host,
-          target: attachCobotTarget(host, makeCobotTarget("eye", "I am definitely not this button.", "a tiny eye inside a button", "click", "eye")),
-          action: "click",
-          disguise: "a tiny eye inside a button"
-        };
-      },
-      function () {
-        var host = pickRandom(getVisibleItems(".brand, .home-hero-brand"));
-        if (!host) {
-          return null;
-        }
-        return {
-          host: host,
-          target: attachCobotTarget(host, makeCobotTarget("screw", "Do not hover me. I am ticklish.", "a tiny screw on the logo", "hover", "screw")),
-          action: "hover",
-          disguise: "a tiny screw on the logo"
-        };
-      },
-      function () {
-        var host = pickRandom(getVisibleItems(".scope-figure, .profile-image, .award-media, .home-hero-brand"));
-        if (!host) {
-          return null;
-        }
-        return {
-          host: host,
-          target: attachCobotTarget(host, makeCobotTarget("hand", "You cannot move me unless you actually drag.", "a little hand in an image corner", "drag", "hand")),
-          action: "drag",
-          disguise: "a little hand in an image corner"
-        };
-      },
-      function () {
-        var card = pickRandom(getVisibleItems(".hero-panel, .card, .demo-card, .people-card, .award-card, .research-card"));
-        var rail = null;
-        var target = null;
-        if (!card) {
-          return null;
-        }
-        rail = document.createElement("span");
-        rail.className = "egg-cobot-progress-host is-egg-cobot-host";
-        target = makeCobotTarget("shadow", "Progress: 99%. Cobot: 1%.", "a moving shadow in a progress bar", "hover", "shadow");
-        rail.appendChild(target);
-        card.appendChild(rail);
-        return {
-          host: rail,
-          target: target,
-          action: "hover",
-          disguise: "a moving shadow in a progress bar"
-        };
-      },
-      function () {
-        var target = makeCobotTarget("battery", "Low battery. Excellent acting.", "a tiny battery beside the cursor", "click", "battery");
-        var placeBattery = function (event) {
-          target.style.setProperty("--egg-cobot-x", event.clientX + 18 + "px");
-          target.style.setProperty("--egg-cobot-y", event.clientY + 18 + "px");
-          target.classList.add("is-placed");
-        };
-
-        target.style.setProperty("--egg-cobot-x", Math.round(window.innerWidth * 0.62) + "px");
-        target.style.setProperty("--egg-cobot-y", Math.round(window.innerHeight * 0.48) + "px");
-        body.appendChild(target);
-        document.addEventListener("pointermove", placeBattery, { once: true });
-        cobotHideCleanup = function () {
-          document.removeEventListener("pointermove", placeBattery);
-        };
-
-        return {
-          host: body,
-          target: target,
-          action: "click",
-          disguise: "a tiny battery beside the cursor"
-        };
-      }
-    ];
-    var start = Math.floor(Math.random() * spots.length);
-    var index = 0;
-    var spot = null;
-
-    for (index = 0; index < spots.length; index += 1) {
-      spot = spots[(start + index) % spots.length]();
-      if (spot) {
-        return spot;
-      }
-    }
-
-    return null;
-  }
-
-  function triggerCobotHideAndSeek() {
-    var secondsLeft = 10;
-    var spot = null;
-
-    clearCobotHideAndSeek();
-    body.classList.add("egg-cobot-hide");
-    showCobotBrief("Cobot Hide-and-Seek", "I am hidden. Find me in 10 seconds.", secondsLeft, "");
-
-    spot = createCobotSpot();
-    if (!spot) {
-      showCobotBrief("Cobot went offline", "It could not find a UI element to hide in.", "!", "missed");
-      cobotHideTimer = window.setTimeout(clearCobotHideAndSeek, 2400);
-      return;
-    }
-
-    addCobotDecoy(spot.host);
-    armCobotTarget(spot.target, spot.action, function () {
-      if (cobotHideFound) {
-        return;
-      }
-      cobotHideFound = true;
-      window.clearTimeout(cobotHideTimer);
-      window.clearInterval(cobotHideCountdownTimer);
-      spot.target.classList.add("is-found");
-      showCobotBrief("Found it!", "It was disguised as " + spot.disguise + ".", "OK", "success");
-      cobotHideTimer = window.setTimeout(clearCobotHideAndSeek, 2600);
-    });
-
-    cobotHideCountdownTimer = window.setInterval(function () {
-      secondsLeft -= 1;
-      showCobotBrief("Cobot Hide-and-Seek", "It is pretending to be UI. Try hover, click, or drag.", Math.max(secondsLeft, 0), "");
-    }, 1000);
-
-    cobotHideTimer = window.setTimeout(function () {
-      if (cobotHideFound) {
-        return;
-      }
-      window.clearInterval(cobotHideCountdownTimer);
-      spot.target.classList.add("is-escaped");
-      showCobotBrief("It escaped", "It says: observe the page more carefully next time.", "0", "missed");
-      cobotHideTimer = window.setTimeout(clearCobotHideAndSeek, 2600);
-    }, 10000);
-  }
-
-  function setupCobotLongPress() {
-    var pressTimer = null;
-    var triggered = false;
-    var peopleToggle = Array.prototype.find.call(nav.querySelectorAll(".nav-dropdown-toggle"), function (button) {
-      return button.textContent.trim() === "People";
-    });
-
-    if (!peopleToggle) {
-      return;
-    }
-
-    function clearPressTimer() {
-      window.clearTimeout(pressTimer);
-    }
-
-    peopleToggle.addEventListener("pointerdown", function () {
-      triggered = false;
-      clearPressTimer();
-      pressTimer = window.setTimeout(function () {
-        triggered = true;
-        triggerCobotHideAndSeek();
-      }, 700);
-    });
-
-    ["pointerup", "pointerleave", "pointercancel"].forEach(function (eventName) {
-      peopleToggle.addEventListener(eventName, clearPressTimer);
-    });
-
-    peopleToggle.addEventListener("click", function (event) {
-      if (triggered) {
-        event.preventDefault();
-      }
-    });
   }
 
   function showPublicationComboToast(message, event) {
@@ -1481,27 +1144,117 @@
     });
   }
 
+  function markKonamiTargets(targets, labels, idPrefix, maxItems) {
+    Array.prototype.forEach.call(targets, function (target, index) {
+      if (maxItems && index >= maxItems) {
+        return;
+      }
+      target.classList.add("is-egg-lab-target");
+      target.setAttribute("data-egg-lab-label", labels[index % labels.length]);
+      target.setAttribute("data-egg-lab-id", idPrefix + "-" + String(index + 1).padStart(2, "0"));
+      target.style.setProperty("--egg-lab-index", index);
+      target.style.setProperty("--egg-lab-delay", (index % 12) * 0.035 + "s");
+      target.style.setProperty("--egg-lab-tilt", ((index % 3) - 1) * 0.45 + "deg");
+    });
+  }
+
+  function markKonamiPageTargets() {
+    var main = document.querySelector("main") || body;
+    var globalLabels = [
+      "classified bay",
+      "prototype cell",
+      "lab clearance",
+      "armory note",
+      "reactor feed",
+      "sealed file",
+      "weapon r&d",
+      "dark lab"
+    ];
+    var peopleLabels = [
+      "CLEARANCE L4",
+      "PROTOTYPE UNIT",
+      "ARMORY CREW",
+      "WEAPON R&D",
+      "FIELD TESTER",
+      "REACTOR TEAM",
+      "ROBOT HANDLER",
+      "CLASSIFIED"
+    ];
+    var peopleRoot = document.querySelector("main.people-page") || (body.classList.contains("people-page") ? main : null);
+    var globalTargets = main.querySelectorAll([
+      ".home-highlights",
+      ".home-pillar",
+      ".home-explore-card",
+      ".home-updates li",
+      ".research-theme",
+      ".research-card",
+      ".projects-stat",
+      ".project-item",
+      ".demo-card",
+      ".pub-stat",
+      ".pub-years-nav a",
+      ".pub-list li",
+      ".award-card",
+      ".honors-stat",
+      ".honors-timeline li",
+      ".cobotai-about",
+      ".cobotai-staff-group"
+    ].join(", "));
+
+    body.classList.add("egg-konami-global");
+    markKonamiTargets(globalTargets, globalLabels, "LAB", 24);
+
+    if (body.classList.contains("home-page")) {
+      body.classList.add("egg-konami-home");
+    }
+    if (peopleRoot) {
+      body.classList.add("egg-konami-people");
+      markKonamiTargets(peopleRoot.querySelectorAll(".profile-card, .faculty-profile"), peopleLabels, "RND");
+      peopleRoot.querySelectorAll(".profile-card, .faculty-profile").forEach(function (card, index) {
+        card.classList.add("is-egg-lab-personnel");
+        card.setAttribute("data-egg-clearance", peopleLabels[index % peopleLabels.length]);
+        if (index % 11 === 0) {
+          card.classList.add("is-egg-prime-prototype");
+        }
+      });
+      markKonamiTargets(peopleRoot.querySelectorAll(".people-block"), [
+        "personnel archive",
+        "prototype roster",
+        "restricted division",
+        "night shift cell"
+      ], "CELL");
+    }
+    if (body.classList.contains("publication-page") || main.querySelector(".pub-list")) {
+      body.classList.add("egg-konami-publications");
+    }
+    if (body.classList.contains("demos-page") || main.querySelector(".research-card, .project-item, .demo-card")) {
+      body.classList.add("egg-konami-prototypes");
+    }
+    if (body.classList.contains("honors-page") || main.querySelector(".award-card, .honors-timeline")) {
+      body.classList.add("egg-konami-honors");
+    }
+  }
+
   function triggerKonamiLab() {
     var duration = reducedMotion.matches ? 8500 : 12500;
     var aliases = [
-      "warp gate",
+      "prototype bay",
       "paper cannon",
-      "robot runway",
+      "robot armory",
       "grant vault",
       "citation radar",
-      "human API",
+      "human lab",
       "demo reactor",
-      "badge magnet",
-      "coffee port"
+      "badge vault",
+      "coffee core"
     ];
     var lines = [
       "↑ ↑ ↓ ↓ ← → ← → B A accepted",
-      "calibrating robot swarm...",
-      "unlocking secret RAIDS tunnel...",
-      "rerouting nav through the fun path",
-      "lab mode online"
+      "secret lab skin applied",
+      "prototype cards armed",
+      "CLASSIFIED UI ONLINE"
     ];
-    var glyphs = ["↑", "↓", "←", "→", "B", "A", "π", "RAIDS", "404", "OK"];
+    var glyphs = ["↑", "↓", "←", "→", "B", "A", "LAB", "R&D"];
     var panel = document.createElement("div");
     var status = document.createElement("div");
     var eyebrow = document.createElement("p");
@@ -1510,11 +1263,12 @@
     var meter = document.createElement("div");
     var fragment = document.createDocumentFragment();
     var navItems = nav.querySelectorAll("a, .nav-dropdown-toggle");
-    var bitCount = reducedMotion.matches ? 6 : 18;
+    var bitCount = reducedMotion.matches ? 4 : 8;
 
     clearKonamiLab();
     setTempTitle("RAIDS | Secret Lab", duration);
     body.classList.add("egg-konami");
+    markKonamiPageTargets();
 
     navItems.forEach(function (item, index) {
       item.setAttribute("data-konami-label", aliases[index % aliases.length]);
@@ -1527,7 +1281,7 @@
     status.className = "egg-konami-status";
     eyebrow.className = "egg-konami-eyebrow";
     eyebrow.textContent = "Konami protocol accepted";
-    title.textContent = "Secret Lab is online";
+    title.textContent = "Secret Lab Skin";
 
     lines.forEach(function (line, index) {
       var item = document.createElement("li");
@@ -1555,17 +1309,11 @@
       fragment.appendChild(bit);
     }
 
-    ["top-left", "top-right", "bottom-left", "bottom-right"].forEach(function (position) {
-      var beacon = document.createElement("span");
-      beacon.className = "egg-konami-beacon is-" + position;
-      fragment.appendChild(beacon);
-    });
-
     body.appendChild(fragment);
 
     konamiLabTimer = window.setTimeout(function () {
       panel.classList.add("is-leaving");
-      document.querySelectorAll(".egg-konami-bit, .egg-konami-beacon").forEach(function (item) {
+      document.querySelectorAll(".egg-konami-bit").forEach(function (item) {
         item.classList.add("is-leaving");
       });
       konamiLabTimers.push(window.setTimeout(clearKonamiLab, reducedMotion.matches ? 120 : 420));
@@ -1624,8 +1372,6 @@
       typedKeys = "";
     }
   }
-
-  setupCobotLongPress();
 
   if (body.classList.contains("publication-page")) {
     document.querySelectorAll(".pub-list li, .pub-years-nav a").forEach(function (item) {
