@@ -69,6 +69,7 @@
 
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
+      dismissKonamiLab();
       setOpen(false);
       closeDropdowns();
     }
@@ -120,6 +121,27 @@
     { length: 6, hash: "fcc15595", action: triggerPiSummon }
   ];
   var hiddenPiShortcut = { length: 3, hash: "4e55ed59", action: triggerPiMeetingShortcut };
+  var konamiLabStorageKey = "raids-secret-lab-active";
+
+  function setKonamiLabPersisted(active) {
+    try {
+      if (active) {
+        window.sessionStorage.setItem(konamiLabStorageKey, "1");
+      } else {
+        window.sessionStorage.removeItem(konamiLabStorageKey);
+      }
+    } catch (error) {
+      // Storage may be unavailable in strict privacy contexts.
+    }
+  }
+
+  function isKonamiLabPersisted() {
+    try {
+      return window.sessionStorage.getItem(konamiLabStorageKey) === "1";
+    } catch (error) {
+      return false;
+    }
+  }
 
   function hashTypedCommand(value) {
     var hash = 2166136261;
@@ -179,10 +201,15 @@
 
   function clearKonamiLab() {
     window.clearTimeout(konamiLabTimer);
+    konamiLabTimer = null;
     konamiLabTimers.forEach(function (timer) {
       window.clearTimeout(timer);
     });
     konamiLabTimers = [];
+    window.clearTimeout(titleTimer);
+    titleTimer = null;
+    document.title = originalTitle;
+    setKonamiLabPersisted(false);
     body.classList.remove(
       "egg-konami",
       "egg-konami-global",
@@ -207,6 +234,21 @@
     document.querySelectorAll(".egg-konami-panel, .egg-konami-bit, .egg-konami-beacon, .egg-konami-stage").forEach(function (item) {
       item.remove();
     });
+  }
+
+  function dismissKonamiLab() {
+    var exitDelay = reducedMotion.matches ? 120 : 420;
+
+    if (!body.classList.contains("egg-konami")) {
+      return;
+    }
+
+    setKonamiLabPersisted(false);
+    window.clearTimeout(konamiLabTimer);
+    document.querySelectorAll(".egg-konami-panel, .egg-konami-bit").forEach(function (item) {
+      item.classList.add("is-leaving");
+    });
+    konamiLabTimer = window.setTimeout(clearKonamiLab, exitDelay);
   }
 
   function triggerSureDecoder() {
@@ -1236,7 +1278,6 @@
   }
 
   function triggerKonamiLab() {
-    var duration = reducedMotion.matches ? 8500 : 12500;
     var aliases = [
       "prototype bay",
       "paper cannon",
@@ -1249,10 +1290,9 @@
       "coffee core"
     ];
     var lines = [
-      "↑ ↑ ↓ ↓ ← → ← → B A accepted",
-      "secret lab skin applied",
-      "prototype cards armed",
-      "CLASSIFIED UI ONLINE"
+      "↑ ↑ ↓ ↓ ← → ← → B A opens the Secret Lab",
+      "Press Esc to return to the surface",
+      "Inside: ultra-smart robots, next-gen Skynet prototypes, and suspiciously friendly robot collaborators"
     ];
     var glyphs = ["↑", "↓", "←", "→", "B", "A", "LAB", "R&D"];
     var panel = document.createElement("div");
@@ -1266,7 +1306,10 @@
     var bitCount = reducedMotion.matches ? 4 : 8;
 
     clearKonamiLab();
-    setTempTitle("RAIDS | Secret Lab", duration);
+    setKonamiLabPersisted(true);
+    window.clearTimeout(titleTimer);
+    titleTimer = null;
+    document.title = "RAIDS | Secret Lab";
     body.classList.add("egg-konami");
     markKonamiPageTargets();
 
@@ -1281,7 +1324,7 @@
     status.className = "egg-konami-status";
     eyebrow.className = "egg-konami-eyebrow";
     eyebrow.textContent = "Konami protocol accepted";
-    title.textContent = "Secret Lab Skin";
+    title.textContent = "Secret Lab";
 
     lines.forEach(function (line, index) {
       var item = document.createElement("li");
@@ -1310,14 +1353,6 @@
     }
 
     body.appendChild(fragment);
-
-    konamiLabTimer = window.setTimeout(function () {
-      panel.classList.add("is-leaving");
-      document.querySelectorAll(".egg-konami-bit").forEach(function (item) {
-        item.classList.add("is-leaving");
-      });
-      konamiLabTimers.push(window.setTimeout(clearKonamiLab, reducedMotion.matches ? 120 : 420));
-    }, duration);
   }
 
   function handleKonami(event) {
@@ -1377,6 +1412,10 @@
     document.querySelectorAll(".pub-list li, .pub-years-nav a").forEach(function (item) {
       item.addEventListener("click", triggerPublicationCombo);
     });
+  }
+
+  if (isKonamiLabPersisted()) {
+    triggerKonamiLab();
   }
 
   document.addEventListener("keydown", function (event) {

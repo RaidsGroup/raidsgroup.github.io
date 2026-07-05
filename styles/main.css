@@ -1968,17 +1968,21 @@ body.egg-demo-debug .demo-video-wrap::after {
 
 body.egg-konami {
   --egg-lab-bg-image: none;
-  --egg-lab-dark: #06101d;
-  --egg-lab-ink: #151022;
-  --egg-lab-red: #d94b67;
-  --egg-lab-green: #8cffb2;
-  --egg-lab-yellow: #ffd56a;
-  --egg-lab-panel: #121c31;
-  --egg-lab-panel-2: #202942;
+  --egg-lab-dark: #12325d;
+  --egg-lab-ink: #281f5e;
+  --egg-lab-red: #ff5d73;
+  --egg-lab-green: #65f2a4;
+  --egg-lab-yellow: #ffd34d;
+  --egg-lab-blue: #45c5ff;
+  --egg-lab-purple: #7d65ff;
+  --egg-lab-panel: #244b87;
+  --egg-lab-panel-2: #3f79bd;
+  --egg-lab-outline: #201640;
   background:
-    radial-gradient(circle at 12% 16%, rgba(217, 75, 103, 0.2), transparent 18rem),
-    radial-gradient(circle at 86% 20%, rgba(140, 255, 178, 0.14), transparent 16rem),
-    linear-gradient(180deg, #08111f 0%, #151022 100%);
+    radial-gradient(circle at 12% 16%, rgba(255, 93, 115, 0.42), transparent 20rem),
+    radial-gradient(circle at 86% 20%, rgba(101, 242, 164, 0.32), transparent 18rem),
+    radial-gradient(circle at 50% 88%, rgba(255, 211, 77, 0.2), transparent 22rem),
+    linear-gradient(180deg, #214f88 0%, #342a78 58%, #1b2f6e 100%);
   color: #f8fafc;
 }
 
@@ -1990,11 +1994,11 @@ body.egg-konami::before {
   pointer-events: none;
   background:
     var(--egg-lab-bg-image),
-    linear-gradient(rgba(140, 255, 178, 0.055) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(217, 75, 103, 0.06) 2px, transparent 2px),
-    radial-gradient(circle at 50% 18%, rgba(217, 75, 103, 0.12), transparent 22rem);
+    linear-gradient(rgba(101, 242, 164, 0.12) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 211, 77, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 50% 18%, rgba(255, 93, 115, 0.2), transparent 22rem);
   background-size: cover, 46px 46px, 46px 46px, auto;
-  opacity: 0.62;
+  opacity: 0.42;
   animation: egg-secret-grid 12s linear infinite;
 }
 
@@ -2005,26 +2009,102 @@ body.egg-konami::after {
   z-index: 118;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 50% 100%, rgba(6, 16, 29, 0.02) 0 18%, rgba(6, 16, 29, 0.32) 72%, rgba(6, 16, 29, 0.5) 100%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 8px);
-  mix-blend-mode: soft-light;
+    radial-gradient(ellipse at 50% 100%, rgba(255, 211, 77, 0.08) 0 18%, rgba(27, 47, 110, 0.16) 72%, rgba(27, 47, 110, 0.28) 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 8px);
+  mix-blend-mode: overlay;
 }
 
 body.egg-konami .site-header {
-  background: linear-gradient(180deg, rgba(20, 29, 48, 0.98), rgba(7, 16, 31, 0.98));
-  border-bottom: 3px solid rgba(255, 213, 106, 0.32);
-  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.14), 0 18px 38px rgba(0, 0, 0, 0.24);
+  background: linear-gradient(180deg, rgba(70, 126, 198, 0.98), rgba(36, 75, 135, 0.98));
+  border-bottom: 4px solid var(--egg-lab-outline);
+  box-shadow: 0 8px 0 rgba(32, 22, 64, 0.5), 0 18px 30px rgba(26, 29, 72, 0.22);
 }
 
 body.egg-konami .brand,
 body.egg-konami .top-nav a,
 body.egg-konami .nav-dropdown-toggle {
   color: #f8fafc;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-weight: 800;
+}
+
+body.egg-konami .top-nav a,
+body.egg-konami .nav-dropdown-toggle {
+  margin-inline: 0.08rem;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.48);
+}
+
+body.egg-konami .top-nav a:hover,
+body.egg-konami .top-nav a:focus-visible,
+body.egg-konami .top-nav a.active,
+body.egg-konami .nav-dropdown:hover .nav-dropdown-toggle,
+body.egg-konami .nav-dropdown.is-open .nav-dropdown-toggle,
+body.egg-konami .nav-dropdown.is-active-group .nav-dropdown-toggle,
+body.egg-konami .nav-dropdown:focus-within .nav-dropdown-toggle {
+  border-color: var(--egg-lab-outline);
+  color: #201640;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.42), inset 0 2px 0 rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  text-shadow: none;
+}
+
+body.egg-konami .nav-dropdown-toggle::after {
+  border-right-width: 3px;
+  border-bottom-width: 3px;
+  opacity: 0.95;
+  filter: drop-shadow(0 1px 0 rgba(32, 22, 64, 0.38));
+}
+
+body.egg-konami .nav-submenu {
+  gap: 0.34rem;
+  min-width: 10.5rem;
+  padding: 0.55rem;
+  border: 4px solid var(--egg-lab-outline);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(101, 242, 164, 0.24), transparent 4.4rem),
+    linear-gradient(180deg, #477ece, #28579f);
+  box-shadow:
+    inset 0 -6px 0 rgba(32, 22, 64, 0.26),
+    inset 0 2px 0 rgba(255, 255, 255, 0.18),
+    0 8px 0 rgba(32, 22, 64, 0.46),
+    0 16px 28px rgba(26, 29, 72, 0.24);
+}
+
+body.egg-konami .nav-submenu a {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  color: #fff7d8;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-weight: 900;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.5);
+}
+
+body.egg-konami .nav-submenu a:hover,
+body.egg-konami .nav-submenu a:focus-visible,
+body.egg-konami .nav-submenu a.active {
+  border-color: var(--egg-lab-outline);
+  color: #201640;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.38), inset 0 2px 0 rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  text-shadow: none;
+}
+
+@media (min-width: 741px) {
+  body.egg-konami .nav-submenu {
+    top: calc(100% + 0.52rem);
+    right: 0.08rem;
+  }
 }
 
 body.egg-konami .brand-mark {
   color: var(--egg-lab-yellow);
-  text-shadow: 0 0 18px rgba(217, 75, 103, 0.72), 0 2px 0 rgba(0, 0, 0, 0.42);
+  text-shadow: 0 3px 0 var(--egg-lab-outline), 0 0 18px rgba(255, 93, 115, 0.58);
 }
 
 body.egg-konami .brand-logo,
@@ -2037,6 +2117,67 @@ body.egg-konami main,
 body.egg-konami .people-page,
 body.egg-konami .honors-page {
   background: transparent;
+}
+
+body.egg-konami .site-footer {
+  position: relative;
+  overflow: hidden;
+  border-top: 4px solid var(--egg-lab-outline);
+  color: rgba(255, 250, 224, 0.82);
+  background:
+    radial-gradient(circle at 12% 0, rgba(255, 93, 115, 0.26), transparent 12rem),
+    radial-gradient(circle at 88% 12%, rgba(101, 242, 164, 0.22), transparent 12rem),
+    linear-gradient(180deg, #28579f, #1d3f82);
+  box-shadow: inset 0 8px 0 rgba(255, 255, 255, 0.08), 0 -8px 0 rgba(32, 22, 64, 0.35);
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+}
+
+body.egg-konami .site-footer::before {
+  content: "SECRET LAB LOG";
+  position: absolute;
+  right: clamp(1rem, 4vw, 3rem);
+  top: 0.7rem;
+  padding: 0.18rem 0.58rem;
+  border: 3px solid var(--egg-lab-outline);
+  border-radius: 999px;
+  color: #201640;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.38);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+body.egg-konami .footer-brand,
+body.egg-konami .footer-copy {
+  color: rgba(255, 250, 224, 0.78);
+}
+
+body.egg-konami .footer-brand strong,
+body.egg-konami .footer-label {
+  color: #fff7d8;
+  text-shadow: 0 2px 0 var(--egg-lab-outline);
+}
+
+body.egg-konami .footer-annals a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.12rem 0.48rem;
+  border: 2px solid var(--egg-lab-outline);
+  border-radius: 999px;
+  color: #201640;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+  box-shadow: 0 3px 0 rgba(32, 22, 64, 0.36);
+  font-weight: 900;
+}
+
+body.egg-konami .footer-annals a:hover,
+body.egg-konami .footer-annals a:focus-visible {
+  color: #201640;
+  text-decoration: none;
+  transform: translateY(-1px);
 }
 
 body.egg-konami .page-hero,
@@ -2056,8 +2197,11 @@ body.egg-konami .research-section-title,
 body.egg-konami .people-block h2,
 body.egg-konami .honors-block h2,
 body.egg-konami .projects-block h2 {
-  color: #f8fafc;
-  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.45), 0 0 18px rgba(217, 75, 103, 0.42);
+  color: #fff9d8;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-shadow: 0 4px 0 var(--egg-lab-outline), 0 0 18px rgba(255, 211, 77, 0.34);
 }
 
 body.egg-konami .section-lead,
@@ -2065,7 +2209,7 @@ body.egg-konami .home-section-lead,
 body.egg-konami .research-section-lead,
 body.egg-konami .projects-block-lead,
 body.egg-konami .honors-block-lead {
-  color: rgba(248, 250, 252, 0.76);
+  color: rgba(255, 250, 224, 0.86);
 }
 
 body.egg-konami .home-highlights,
@@ -2088,19 +2232,27 @@ body.egg-konami .cobotai-about,
 body.egg-konami .cobotai-staff-group,
 body.egg-konami .scope-figure {
   position: relative;
-  overflow: hidden;
-  border: 3px solid rgba(255, 213, 106, 0.34);
-  border-radius: 18px;
+  overflow: visible;
+  border: 4px solid var(--egg-lab-outline);
+  border-radius: 24px;
   color: rgba(248, 250, 252, 0.9);
   background:
-    radial-gradient(circle at 92% 12%, rgba(140, 255, 178, 0.16), transparent 5.5rem),
-    linear-gradient(135deg, rgba(217, 75, 103, 0.14), transparent 36%),
+    radial-gradient(circle at 92% 12%, rgba(101, 242, 164, 0.28), transparent 5.5rem),
+    linear-gradient(135deg, rgba(255, 93, 115, 0.26), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 26%),
     linear-gradient(180deg, var(--egg-lab-panel-2), var(--egg-lab-panel));
   box-shadow:
-    inset 0 -7px 0 rgba(0, 0, 0, 0.22),
-    inset 0 2px 0 rgba(255, 255, 255, 0.08),
-    0 12px 0 rgba(0, 0, 0, 0.12),
-    0 20px 38px rgba(0, 0, 0, 0.22);
+    inset 0 -8px 0 rgba(32, 22, 64, 0.28),
+    inset 0 3px 0 rgba(255, 255, 255, 0.18),
+    0 9px 0 rgba(32, 22, 64, 0.46),
+    0 18px 28px rgba(26, 29, 72, 0.22);
+}
+
+body.egg-konami .demo-card,
+body.egg-konami .profile-card,
+body.egg-konami .faculty-summary,
+body.egg-konami .scope-figure {
+  overflow: hidden;
 }
 
 body.egg-konami .home-highlights h2,
@@ -2113,6 +2265,9 @@ body.egg-konami .award-title,
 body.egg-konami .profile-name,
 body.egg-konami .pub-title {
   color: #fff7d8;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-weight: 900;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.5);
 }
 
 body.egg-konami .home-highlight-label,
@@ -2127,68 +2282,87 @@ body.egg-konami .award-org,
 body.egg-konami .profile-role,
 body.egg-konami .profile-meta,
 body.egg-konami .honors-timeline-detail {
-  color: rgba(248, 250, 252, 0.72);
+  color: rgba(255, 250, 224, 0.78);
 }
 
-body.egg-konami .top-nav a,
-body.egg-konami .nav-dropdown-toggle {
-  position: relative;
+body.egg-konami p,
+body.egg-konami li,
+body.egg-konami .profile-role,
+body.egg-konami .profile-meta,
+body.egg-konami .pub-authors,
+body.egg-konami .pub-meta,
+body.egg-konami .project-detail,
+body.egg-konami .project-note,
+body.egg-konami .demo-card-desc,
+body.egg-konami .honors-timeline-detail,
+body.egg-konami .cobotai-about-text,
+body.egg-konami .cobotai-section-lead,
+body.egg-konami .cobotai-ecosystem-card p,
+body.egg-konami .cobotai-ecosystem-list,
+body.egg-konami .cobotai-dept-tags li {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.egg-konami .cobotai-about,
+body.egg-konami .faculty-detail {
+  overflow: visible;
+  padding: 1.45rem 1.55rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 20%),
+    linear-gradient(180deg, #477ece, #28579f);
+}
+
+body.egg-konami .cobotai-about::before,
+body.egg-konami .cobotai-about::after,
+body.egg-konami .faculty-detail::before,
+body.egg-konami .faculty-detail::after {
+  content: none;
+  display: none;
+}
+
+body.egg-konami .cobotai-about-kicker,
+body.egg-konami .cobotai-ecosystem-card h3,
+body.egg-konami .cobotai-ecosystem-list strong {
+  color: #fff7d8;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.5);
 }
 
 body.egg-konami .top-nav a::after,
 body.egg-konami .nav-dropdown-toggle::before {
-  content: attr(data-konami-label);
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 0.18rem);
-  z-index: 121;
-  max-width: 9rem;
-  padding: 0.18rem 0.46rem;
-  border: 2px solid rgba(255, 213, 106, 0.58);
-  border-radius: 10px;
-  color: var(--egg-lab-yellow);
-  background: linear-gradient(180deg, rgba(24, 20, 36, 0.98), rgba(8, 17, 31, 0.96));
-  box-shadow: 0 7px 0 rgba(0, 0, 0, 0.18), 0 12px 20px rgba(0, 0, 0, 0.22), inset 0 -3px 0 rgba(0, 0, 0, 0.28);
-  font-family: "Courier New", monospace;
-  font-size: 0.58rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  line-height: 1.2;
-  opacity: 0;
-  pointer-events: none;
-  text-transform: uppercase;
-  transform: translate(-50%, -0.25rem) scale(0.92);
-  animation: egg-konami-tag 0.5s ease forwards;
+  content: none;
+  display: none;
 }
 
 body.egg-konami .is-egg-lab-target {
   position: relative;
   overflow: hidden;
-  border-color: rgba(255, 213, 106, 0.46);
+  border-color: var(--egg-lab-outline);
   box-shadow:
-    inset 0 -7px 0 rgba(0, 0, 0, 0.22),
-    0 12px 0 rgba(0, 0, 0, 0.12),
-    0 20px 38px rgba(0, 0, 0, 0.22);
+    inset 0 -8px 0 rgba(32, 22, 64, 0.28),
+    inset 0 3px 0 rgba(255, 255, 255, 0.16),
+    0 9px 0 rgba(32, 22, 64, 0.46),
+    0 18px 28px rgba(26, 29, 72, 0.22);
   animation: egg-lab-card-pop 0.52s ease both;
   animation-delay: var(--egg-lab-delay, 0s);
 }
 
 body.egg-konami .is-egg-lab-target::before {
-  content: attr(data-egg-lab-label);
+  content: none;
+  display: none;
   position: absolute;
   left: 0.7rem;
   top: 0.7rem;
   z-index: 4;
   max-width: calc(100% - 1rem);
-  padding: 0.18rem 0.5rem;
-  border: 2px solid rgba(6, 16, 29, 0.5);
-  border-radius: 9px;
-  color: #06101d;
-  background: linear-gradient(180deg, #ffd56a, #e7a33a);
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.22);
-  font-family: "Courier New", monospace;
-  font-size: 0.58rem;
-  font-weight: 800;
+  padding: 0.22rem 0.56rem;
+  border: 3px solid var(--egg-lab-outline);
+  border-radius: 12px;
+  color: #201640;
+  background: linear-gradient(180deg, #fff1a8, var(--egg-lab-yellow));
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.42);
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 900;
   letter-spacing: 0.08em;
   line-height: 1.1;
   pointer-events: none;
@@ -2196,30 +2370,33 @@ body.egg-konami .is-egg-lab-target::before {
 }
 
 body.egg-konami .is-egg-lab-target::after {
-  content: "";
+  content: none;
+  display: none;
   position: absolute;
   right: 0.72rem;
   top: 0.72rem;
   z-index: 4;
-  width: 1.35rem;
-  height: 1.35rem;
-  border: 2px solid rgba(6, 16, 29, 0.4);
+  width: 1.55rem;
+  height: 1.55rem;
+  border: 3px solid var(--egg-lab-outline);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, #8cffb2 0 0.26rem, transparent 0.29rem),
-    conic-gradient(from 0deg, #d94b67, #ffd56a, #8cffb2, #d94b67);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+    radial-gradient(circle at 50% 50%, #fff 0 0.18rem, transparent 0.2rem),
+    radial-gradient(circle at 50% 50%, var(--egg-lab-green) 0 0.42rem, transparent 0.45rem),
+    conic-gradient(from 0deg, var(--egg-lab-red), var(--egg-lab-yellow), var(--egg-lab-blue), var(--egg-lab-green), var(--egg-lab-red));
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.38), 0 0 14px rgba(101, 242, 164, 0.34);
   pointer-events: none;
 }
 
 body.egg-konami-people .is-egg-lab-personnel {
   background:
-    radial-gradient(circle at 88% 14%, rgba(140, 255, 178, 0.2), transparent 4.6rem),
-    linear-gradient(135deg, rgba(217, 75, 103, 0.14), transparent 36%),
-    linear-gradient(180deg, #26314f, #131d31);
+    radial-gradient(circle at 88% 14%, rgba(101, 242, 164, 0.34), transparent 4.6rem),
+    radial-gradient(circle at 16% 92%, rgba(255, 211, 77, 0.2), transparent 5rem),
+    linear-gradient(135deg, rgba(255, 93, 115, 0.2), transparent 36%),
+    linear-gradient(180deg, #477ece, #28579f);
   color: #f8fafc;
-  border: 3px solid rgba(255, 213, 106, 0.42);
-  border-radius: 18px;
+  border: 4px solid var(--egg-lab-outline);
+  border-radius: 24px;
   transform: translateY(-2px) rotate(var(--egg-lab-tilt, 0deg));
 }
 
@@ -2231,31 +2408,49 @@ body.egg-konami-people .is-egg-lab-personnel .profile-meta {
 
 body.egg-konami-people .is-egg-lab-personnel::before {
   content: attr(data-egg-clearance);
-  color: #06101d;
-  background: linear-gradient(180deg, var(--egg-lab-yellow), #e79d38);
-  border-color: rgba(0, 0, 0, 0.25);
+  position: absolute;
+  left: 0.7rem;
+  top: 0.7rem;
+  z-index: 4;
+  max-width: calc(100% - 1rem);
+  padding: 0.22rem 0.56rem;
+  border: 3px solid var(--egg-lab-outline);
+  border-radius: 12px;
+  color: #201640;
+  background: linear-gradient(180deg, #fff1a8, var(--egg-lab-yellow));
+  border-color: var(--egg-lab-outline);
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.42);
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  pointer-events: none;
+  text-transform: uppercase;
 }
 
 body.egg-konami-people .is-egg-prime-prototype {
   box-shadow:
-    inset 0 -7px 0 rgba(0, 0, 0, 0.22),
-    0 12px 0 rgba(0, 0, 0, 0.14),
-    0 0 0 3px rgba(140, 255, 178, 0.32),
-    0 24px 42px rgba(0, 0, 0, 0.28);
+    inset 0 -8px 0 rgba(32, 22, 64, 0.28),
+    0 9px 0 rgba(32, 22, 64, 0.46),
+    0 0 0 4px rgba(101, 242, 164, 0.42),
+    0 24px 34px rgba(26, 29, 72, 0.24);
 }
 
 body.egg-konami-people .is-egg-lab-personnel .profile-image {
   position: relative;
+  aspect-ratio: 1 / 1;
   margin: 0.45rem 0.45rem 0;
   overflow: hidden;
-  border: 3px solid rgba(6, 16, 29, 0.5);
-  border-radius: 14px;
-  background: #07101f;
-  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.2);
+  border: 4px solid var(--egg-lab-outline);
+  border-radius: 18px;
+  background: #8bdcff;
+  box-shadow: inset 0 -6px 0 rgba(32, 22, 64, 0.25), 0 5px 0 rgba(32, 22, 64, 0.36);
 }
 
 body.egg-konami-people .is-egg-lab-personnel .profile-image img {
-  filter: saturate(0.8) contrast(1.12) brightness(0.82);
+  object-position: center 22%;
+  filter: saturate(1.08) contrast(1.04) brightness(0.96);
 }
 
 body.egg-konami-people .is-egg-lab-personnel .profile-image::before {
@@ -2263,9 +2458,9 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::before {
   position: absolute;
   inset: 0.42rem;
   z-index: 2;
-  border: 3px solid rgba(140, 255, 178, 0.48);
-  border-radius: 10px;
-  box-shadow: inset 0 0 18px rgba(140, 255, 178, 0.16);
+  border: 4px solid rgba(101, 242, 164, 0.56);
+  border-radius: 12px;
+  box-shadow: inset 0 0 18px rgba(101, 242, 164, 0.18);
   pointer-events: none;
 }
 
@@ -2489,13 +2684,14 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
   position: relative;
   overflow: hidden;
   padding: 0.78rem 0.9rem 0.72rem;
-  border: 3px solid rgba(255, 213, 106, 0.42);
-  border-radius: 16px;
-  color: #f8fafc;
+  border: 4px solid var(--egg-lab-outline);
+  border-radius: 20px;
+  color: #fff9d8;
   background:
-    linear-gradient(135deg, rgba(217, 75, 103, 0.24), transparent 44%),
-    linear-gradient(180deg, rgba(26, 31, 48, 0.98), rgba(6, 16, 29, 0.98));
-  box-shadow: 0 7px 0 rgba(0, 0, 0, 0.2), 0 14px 24px rgba(0, 0, 0, 0.28), inset 0 -5px 0 rgba(0, 0, 0, 0.22);
+    radial-gradient(circle at 92% 12%, rgba(101, 242, 164, 0.28), transparent 4.8rem),
+    linear-gradient(135deg, rgba(255, 93, 115, 0.28), transparent 44%),
+    linear-gradient(180deg, #477ece, #244b87);
+  box-shadow: 0 7px 0 rgba(32, 22, 64, 0.46), 0 14px 24px rgba(26, 29, 72, 0.24), inset 0 -6px 0 rgba(32, 22, 64, 0.28), inset 0 2px 0 rgba(255, 255, 255, 0.18);
 }
 
 .egg-konami-status::before {
@@ -2503,7 +2699,7 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
   position: absolute;
   inset: -35% auto -35% -26%;
   width: 42%;
-  background: linear-gradient(90deg, transparent, rgba(140, 255, 178, 0.22), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.36), transparent);
   transform: rotate(18deg);
   animation: egg-konami-shine 2.4s ease-in-out infinite;
 }
@@ -2511,11 +2707,18 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
 .egg-konami-eyebrow {
   position: relative;
   margin: 0 0 0.22rem;
-  color: var(--egg-lab-green);
-  font-family: "Courier New", monospace;
-  font-size: 0.58rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.16rem 0.44rem;
+  border: 2px solid var(--egg-lab-yellow);
+  border-radius: 999px;
+  color: #fff7d8;
+  background: linear-gradient(180deg, #4c347d, var(--egg-lab-outline));
+  box-shadow: 0 3px 0 rgba(32, 22, 64, 0.35);
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   line-height: 1.2;
   text-transform: uppercase;
 }
@@ -2524,6 +2727,8 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
   position: relative;
   margin: 0 0 0.42rem;
   color: #fff;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
+  font-weight: 900;
   font-size: clamp(1rem, 4vw, 1.25rem);
   line-height: 1.05;
   text-shadow: 0 3px 0 rgba(0, 0, 0, 0.3), 0 0 16px rgba(217, 75, 103, 0.42);
@@ -2536,8 +2741,9 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
   margin: 0;
   padding: 0;
   color: rgba(248, 250, 252, 0.88);
-  font-family: "Courier New", monospace;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
   font-size: 0.66rem;
+  font-weight: 800;
   line-height: 1.35;
   list-style: none;
 }
@@ -2589,12 +2795,12 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
   height: 1.55rem;
   place-items: center;
   padding: 0 0.32rem;
-  border: 2px solid rgba(255, 213, 106, 0.45);
+  border: 3px solid var(--egg-lab-outline);
   border-radius: 999px;
-  color: var(--egg-lab-yellow);
-  background: linear-gradient(180deg, rgba(26, 31, 48, 0.96), rgba(6, 16, 29, 0.96));
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.32), inset 0 -3px 0 rgba(0, 0, 0, 0.26);
-  font-family: "Courier New", monospace;
+  color: #201640;
+  background: linear-gradient(180deg, #fff1a8, var(--egg-lab-yellow));
+  box-shadow: 0 5px 0 rgba(32, 22, 64, 0.38), 0 10px 18px rgba(26, 29, 72, 0.22), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", var(--font-body);
   font-size: 0.56rem;
   font-weight: 900;
   line-height: 1;
@@ -4391,6 +4597,45 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
     display: flex;
   }
 
+  body.egg-konami .site-header.is-nav-open .top-nav {
+    border-top-color: rgba(255, 211, 77, 0.38);
+  }
+
+  body.egg-konami .top-nav a,
+  body.egg-konami .nav-dropdown-toggle {
+    border-radius: 16px;
+  }
+
+  body.egg-konami .nav-submenu {
+    margin: 0.3rem 0 0.55rem;
+    padding: 0.5rem;
+    border: 4px solid var(--egg-lab-outline);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 92% 12%, rgba(101, 242, 164, 0.24), transparent 4.4rem),
+      linear-gradient(180deg, #477ece, #28579f);
+    box-shadow:
+      inset 0 -6px 0 rgba(32, 22, 64, 0.26),
+      inset 0 2px 0 rgba(255, 255, 255, 0.18),
+      0 6px 0 rgba(32, 22, 64, 0.38);
+    gap: 0.34rem;
+  }
+
+  body.egg-konami .nav-submenu a {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    color: #fff7d8;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  body.egg-konami .nav-submenu a:hover,
+  body.egg-konami .nav-submenu a:focus-visible,
+  body.egg-konami .nav-submenu a.active {
+    border-color: var(--egg-lab-outline);
+    color: #201640;
+    background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+  }
+
   .faculty-profile {
     padding-bottom: 2rem;
   }
@@ -4630,4 +4875,265 @@ body.egg-konami-people .is-egg-lab-personnel .profile-image::after {
   .cobotai-honors-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Final Secret Lab readability pass. Keep this after page-specific rules. */
+body.egg-konami .home-highlight-value,
+body.egg-konami .projects-stat-value,
+body.egg-konami .pub-stat-value,
+body.egg-konami .honors-stat-value,
+body.egg-konami .research-theme-num,
+body.egg-konami .research-card-num,
+body.egg-konami .project-role,
+body.egg-konami .project-amount,
+body.egg-konami .pub-count,
+body.egg-konami .award-year,
+body.egg-konami .honors-timeline-body time,
+body.egg-konami .research-badge,
+body.egg-konami .eyebrow,
+body.egg-konami .people-subtitle,
+body.egg-konami .cobotai-about-kicker,
+body.egg-konami .cobotai-ecosystem-card h3,
+body.egg-konami .cobotai-honor-title {
+  color: #fff7d8;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.58);
+}
+
+body.egg-konami .section-lead,
+body.egg-konami .home-section-lead,
+body.egg-konami .research-section-lead,
+body.egg-konami .projects-block-lead,
+body.egg-konami .honors-block-lead,
+body.egg-konami .pub-legend,
+body.egg-konami .pub-note,
+body.egg-konami .pub-citation,
+body.egg-konami .pub-authors,
+body.egg-konami .pub-meta,
+body.egg-konami .project-detail,
+body.egg-konami .project-note,
+body.egg-konami .demo-card-desc,
+body.egg-konami .demo-features,
+body.egg-konami .demo-features li,
+body.egg-konami .profile-role,
+body.egg-konami .profile-meta,
+body.egg-konami .faculty-bio,
+body.egg-konami .faculty-bio p,
+body.egg-konami .faculty-bio strong,
+body.egg-konami .faculty-bio em,
+body.egg-konami .faculty-bio-accent,
+body.egg-konami .alumni-role,
+body.egg-konami .honors-stat-label,
+body.egg-konami .honors-timeline-detail,
+body.egg-konami .cobotai-about-text,
+body.egg-konami .cobotai-section-lead,
+body.egg-konami .cobotai-dept-tags li,
+body.egg-konami .cobotai-ecosystem-card p,
+body.egg-konami .cobotai-ecosystem-list,
+body.egg-konami .cobotai-ecosystem-list li,
+body.egg-konami .cobotai-ecosystem-list strong,
+body.egg-konami .cobotai-honor-detail,
+body.egg-konami .footer-copy,
+body.egg-konami .footer-brand {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+body.egg-konami .home-pillar,
+body.egg-konami .home-highlights,
+body.egg-konami .home-explore-card,
+body.egg-konami .research-theme,
+body.egg-konami .research-card,
+body.egg-konami .projects-stat,
+body.egg-konami .project-item,
+body.egg-konami .pub-stat,
+body.egg-konami .pub-list li,
+body.egg-konami .award-card,
+body.egg-konami .honors-stat,
+body.egg-konami .honors-timeline-body,
+body.egg-konami .cobotai-about,
+body.egg-konami .cobotai-staff-group,
+body.egg-konami .cobotai-ecosystem-card,
+body.egg-konami .cobotai-honor-card {
+  padding: 1.25rem 1.35rem 1.45rem;
+}
+
+body.egg-konami .pub-list li {
+  padding-left: 3rem;
+}
+
+body.egg-konami .publication-page .pub-list li::before {
+  left: 0.85rem;
+  color: rgba(255, 247, 216, 0.86);
+}
+
+body.egg-konami .cobotai-about {
+  padding: 1.55rem 1.7rem 1.7rem;
+}
+
+body.egg-konami .cobotai-dept-tags li,
+body.egg-konami .pub-years-nav a {
+  border: 2px solid var(--egg-lab-outline);
+  color: #201640;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+  box-shadow: 0 3px 0 rgba(32, 22, 64, 0.34);
+  font-weight: 900;
+}
+
+body.egg-konami .profile-email,
+body.egg-konami .people-page .profile-content a.profile-email,
+body.egg-konami .people-page .profile-content a[href^="mailto:"],
+body.egg-konami .people-page .alumni-item .profile-email {
+  color: #201640;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+}
+
+body.egg-konami .research-tags li,
+body.egg-konami .demo-features li,
+body.egg-konami .project-role,
+body.egg-konami .project-item-head time,
+body.egg-konami .award-year,
+body.egg-konami .pub-count,
+body.egg-konami .research-badge {
+  border: 3px solid var(--egg-lab-outline);
+  color: #201640;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow));
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.36), inset 0 2px 0 rgba(255, 255, 255, 0.45);
+  font-weight: 900;
+  text-shadow: none;
+}
+
+body.egg-konami .projects-stat-label,
+body.egg-konami .home-highlight-label,
+body.egg-konami .pub-stat-label,
+body.egg-konami .honors-stat-label {
+  color: rgba(255, 255, 255, 0.96);
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(32, 22, 64, 0.45);
+}
+
+body.egg-konami .alumni-item,
+body.egg-konami .cobotai-ecosystem-card,
+body.egg-konami .cobotai-honor-card {
+  border: 4px solid var(--egg-lab-outline);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(101, 242, 164, 0.24), transparent 5rem),
+    linear-gradient(180deg, #477ece, #28579f);
+  box-shadow:
+    inset 0 -8px 0 rgba(32, 22, 64, 0.28),
+    inset 0 3px 0 rgba(255, 255, 255, 0.16),
+    0 9px 0 rgba(32, 22, 64, 0.42),
+    0 18px 28px rgba(26, 29, 72, 0.2);
+}
+
+body.egg-konami .alumni-item,
+body.egg-konami .cobotai-honor-body {
+  padding: 1.2rem 1.3rem 1.35rem;
+}
+
+body.egg-konami .alumni-name,
+body.egg-konami .alumni-role,
+body.egg-konami .cobotai-honor-title,
+body.egg-konami .cobotai-honor-detail {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+body.egg-konami .alumni-name,
+body.egg-konami .cobotai-honor-title {
+  color: #fff7d8;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.58);
+}
+
+body.egg-konami .cobotai-honor-media {
+  border-bottom: 4px solid var(--egg-lab-outline);
+  background: linear-gradient(180deg, #8bdcff, #477ece);
+}
+
+body.egg-konami .pub-legend {
+  border: 4px solid var(--egg-lab-outline);
+  border-left-width: 4px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 92% 20%, rgba(101, 242, 164, 0.22), transparent 5rem),
+    linear-gradient(180deg, #477ece, #28579f);
+  box-shadow: 0 7px 0 rgba(32, 22, 64, 0.38), inset 0 2px 0 rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+body.egg-konami .cobotai-ecosystem-card {
+  padding: 1.45rem 1.5rem 1.55rem;
+}
+
+body.egg-konami .cobotai-ecosystem-card p,
+body.egg-konami .cobotai-ecosystem-list {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+body.egg-konami .cobotai-ecosystem-list {
+  padding-left: 1.35rem;
+}
+
+/* Targeted contrast fixes for Secret Lab page-specific components. */
+body.egg-konami .research-tags {
+  gap: 0.55rem;
+  margin-top: 0.2rem;
+}
+
+body.egg-konami .research-tags li,
+body.egg-konami .demo-features li,
+body.egg-konami .project-role,
+body.egg-konami .project-item-head time,
+body.egg-konami .research-badge {
+  border: 3px solid var(--egg-lab-outline) !important;
+  color: #201640 !important;
+  background: linear-gradient(180deg, #fff2a3, var(--egg-lab-yellow)) !important;
+  box-shadow: 0 4px 0 rgba(32, 22, 64, 0.38), inset 0 2px 0 rgba(255, 255, 255, 0.48) !important;
+  font-weight: 900;
+  text-shadow: none !important;
+}
+
+body.egg-konami .projects-stat-label {
+  display: block;
+  margin-top: 0.45rem;
+  color: #ffffff !important;
+  font-weight: 900;
+  line-height: 1.45;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.52);
+}
+
+body.egg-konami .project-item-head {
+  margin-bottom: 0.8rem;
+}
+
+body.egg-konami .demo-features {
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+body.egg-konami .alumni-role,
+body.egg-konami .cobotai-ecosystem-card p,
+body.egg-konami .cobotai-ecosystem-list,
+body.egg-konami .cobotai-ecosystem-list li,
+body.egg-konami .cobotai-honor-detail {
+  color: #ffffff !important;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(32, 22, 64, 0.42);
+}
+
+body.egg-konami .cobotai-ecosystem-card h3,
+body.egg-konami .cobotai-ecosystem-list strong,
+body.egg-konami .cobotai-honor-title {
+  color: #fff7d8 !important;
+  text-shadow: 0 2px 0 rgba(32, 22, 64, 0.58);
+}
+
+body.egg-konami .pub-legend {
+  padding: 0.95rem 1.15rem;
+  color: #ffffff !important;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+body.egg-konami .cobotai-honor-body {
+  background: transparent;
+  padding: 1.25rem 1.35rem 1.45rem;
 }
