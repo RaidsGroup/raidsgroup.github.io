@@ -1,0 +1,207 @@
+/* Extracted from styles/main.css. */
+/* CobotAI page */
+.cobotai-page .cobotai-about-kicker {
+  margin: 0.15rem 0 0.85rem;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cobotai-page .cobotai-about-text {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--text);
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+.cobotai-staff-groups {
+  display: grid;
+  gap: 2rem;
+}
+
+.cobotai-staff-group {
+  padding: 1.35rem 1.25rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.cobotai-staff-group--leadership {
+  border-color: rgba(158, 36, 53, 0.22);
+  background: linear-gradient(180deg, rgba(158, 36, 53, 0.04) 0%, var(--surface) 100%);
+}
+
+.cobotai-staff-group .people-subtitle {
+  margin-top: 0;
+}
+
+.cobotai-dept-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.cobotai-dept-tags li {
+  padding: 0.28rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cobotai-page .profile-card--leadership {
+  border-color: rgba(158, 36, 53, 0.15);
+}
+
+.cobotai-section-lead {
+  margin: -0.35rem 0 1.35rem;
+  max-width: 68ch;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.cobotai-ecosystem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.cobotai-ecosystem-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 1.2rem 1.15rem 1.1rem;
+  box-shadow: var(--shadow);
+}
+
+.cobotai-ecosystem-card h3 {
+  margin: 0 0 0.75rem;
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.cobotai-ecosystem-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.62;
+}
+
+.cobotai-ecosystem-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.cobotai-ecosystem-list li + li {
+  margin-top: 0.45rem;
+}
+
+.cobotai-ecosystem-list strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 960px) {
+  .cobotai-ecosystem-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CobotAI honors gallery */
+.cobotai-honors-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cobotai-honors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cobotai-honor-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cobotai-honor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(20, 20, 20, 0.1);
+  border-color: rgba(158, 36, 53, 0.22);
+}
+
+.cobotai-honor-media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: #f5f6f8;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.cobotai-honor-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.cobotai-honor-card:hover .cobotai-honor-media img {
+  transform: scale(1.02);
+}
+
+.cobotai-honor-body {
+  padding: 0.95rem 1rem 1rem;
+}
+
+.cobotai-honor-title {
+  margin: 0 0 0.35rem;
+  color: var(--text);
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.cobotai-honor-detail {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 960px) {
+  .cobotai-honors-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .cobotai-honors-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .cobotai-honors-grid {
+    grid-template-columns: 1fr;
+  }
+}

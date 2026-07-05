@@ -1,0 +1,217 @@
+/* Extracted from styles/main.css. */
+.research-page {
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 300px, #f3f4f6 100%);
+}
+
+.research-page .page-hero {
+  padding-bottom: 1.35rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.research-page .section-lead {
+  max-width: 62ch;
+}
+
+.research-section-title {
+  margin: 0 0 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.62rem);
+  font-weight: 700;
+  letter-spacing: 0.015em;
+}
+
+.research-section-title::before {
+  content: "";
+  width: 4px;
+  height: 1.25em;
+  border-radius: 2px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.research-section-lead {
+  margin: 0 0 1.4rem;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 0.96rem;
+}
+
+.research-themes-section {
+  padding-top: 2rem;
+  padding-bottom: 2.4rem;
+}
+
+.research-themes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.research-theme {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 1.15rem 1.15rem 1.05rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.research-theme::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--accent);
+}
+
+.research-theme:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(20, 20, 20, 0.1);
+  border-color: rgba(158, 36, 53, 0.22);
+}
+
+.research-theme-num {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: rgba(158, 36, 53, 0.35);
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.research-theme h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.research-theme p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.58;
+}
+
+.research-programs-section {
+  padding-top: 2.4rem;
+  padding-bottom: 3rem;
+}
+
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.research-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 1.2rem 1.25rem 1.15rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.research-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(20, 20, 20, 0.1);
+  border-color: rgba(158, 36, 53, 0.22);
+}
+
+.research-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.55rem 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.research-card-num {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.research-card-head h3 {
+  margin: 0;
+  flex: 1 1 auto;
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.research-badge {
+  margin-left: auto;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(158, 36, 53, 0.25);
+  background: rgba(158, 36, 53, 0.07);
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.research-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 0.85rem;
+  padding: 0;
+  list-style: none;
+}
+
+.research-tags li {
+  padding: 0.28rem 0.58rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.research-card-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.62;
+}
+
+.research-card--pending {
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+  border-style: dashed;
+  border-color: #d0d4da;
+}
+
+.research-card--pending:hover {
+  transform: none;
+  box-shadow: var(--shadow);
+  border-color: #c4c9d0;
+}
+
+.research-card--pending .research-card-head {
+  border-bottom-color: #e8eaed;
+}
+
+.research-card--pending .research-card-desc {
+  font-style: italic;
+}

@@ -1,0 +1,238 @@
+/* Extracted from styles/main.css. */
+.publication-page {
+  --pub-black: rgb(46, 45, 41);
+  --pub-gray: rgb(90, 90, 90);
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 280px, #f5f6f7 100%);
+}
+
+.publication-page .pub-year-section h2 {
+  color: var(--pub-black);
+}
+
+.publication-page .page-hero {
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.publication-page .page-hero + .section {
+  padding-top: 1.5rem;
+}
+
+.publication-page .section-lead {
+  color: var(--pub-gray);
+  max-width: 62ch;
+}
+
+.pub-overview-section {
+  padding-bottom: 0.5rem;
+}
+
+.pub-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pub-stat {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.05rem;
+  text-align: center;
+}
+
+.pub-stat-value {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--accent);
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+.pub-stat-label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.pub-legend {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.95rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.86rem;
+  letter-spacing: 0.01em;
+}
+
+.pub-years-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.25rem;
+}
+
+.pub-years-nav a {
+  display: inline-block;
+  padding: 0.28rem 0.72rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.pub-years-nav a:hover,
+.pub-years-nav a:focus-visible {
+  border-color: rgba(158, 36, 53, 0.35);
+  background: rgba(158, 36, 53, 0.06);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.publication-page .pub-year-section,
+.publication-page .section:not(.pub-overview-section) {
+  padding-top: 2rem;
+  padding-bottom: 2.2rem;
+}
+
+.publication-page .pub-year-section h2,
+.publication-page .section:not(.pub-overview-section) h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+  font-size: clamp(1.22rem, 2.2vw, 1.48rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.publication-page .pub-year-section h2::before,
+.publication-page .section:not(.pub-overview-section) h2::before {
+  content: "";
+  width: 4px;
+  height: 1.05em;
+  border-radius: 2px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.publication-page .section .pub-note {
+  display: none;
+}
+
+.pub-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: pub;
+}
+
+.publication-page .pub-list li {
+  counter-increment: pub;
+  position: relative;
+  margin: 0;
+  padding: 0.9rem 0.5rem 0.9rem 2.35rem;
+  color: var(--pub-gray);
+  font-family: "Source Sans Pro", "Inter", "Segoe UI", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0.015em;
+  line-height: 1.4;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.publication-page .pub-list li::before {
+  content: counter(pub);
+  position: absolute;
+  left: 0.15rem;
+  top: 0.95rem;
+  width: 1.55rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0.65;
+}
+
+.publication-page .pub-list li:hover {
+  border-left-color: var(--accent);
+  background: rgba(158, 36, 53, 0.025);
+}
+
+.publication-page .pub-list li:last-child {
+  border-bottom: none;
+}
+
+.pub-note {
+  margin: 0 0 1rem;
+  max-width: 78ch;
+  color: var(--pub-gray);
+  font-size: 0.92rem;
+}
+
+.pub-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.85rem;
+  margin-left: 0.15rem;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(158, 36, 53, 0.09);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+
+.pub-citation {
+  display: block;
+  color: var(--pub-gray);
+  line-height: 1.62;
+}
+
+.pub-title,
+.pub-authors,
+.pub-meta {
+  display: block;
+}
+
+.pub-title {
+  margin-bottom: 0.12rem;
+  color: var(--pub-black);
+  font-weight: 600;
+  line-height: 1.32;
+}
+
+.pub-authors {
+  color: var(--pub-gray);
+  font-weight: 400;
+  line-height: 1.34;
+}
+
+.pub-meta {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.38;
+}
+
+.publication-page [id^="year-"] {
+  scroll-margin-top: 5.5rem;
+}
