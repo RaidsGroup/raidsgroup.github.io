@@ -1,12 +1,65 @@
 /* Extracted from styles/main.css. */
-/* CobotAI page */
-.cobotai-logo-title {
-  margin-bottom: 1rem;
+/* CobotAI theme */
+.cobotai-page,
+.cobotai-honors-page {
+  --accent: #25568f;
+  --accent-2: #1d4672;
+  --accent-soft: #e9eff7;
+  --cobotai-accent-rgb: 37, 86, 143;
 }
 
-.cobotai-logo-title-image {
+.cobotai-page.people-page {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 280px, #f3f4f6 100%);
+}
+
+.cobotai-honors-page.honors-page {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 320px, #f3f4f6 100%);
+}
+
+.cobotai-page.people-page .people-subtitle {
+  border-left-color: rgba(var(--cobotai-accent-rgb), 0.4);
+}
+
+.cobotai-page.people-page .profile-content a.profile-email:hover,
+.cobotai-page.people-page .profile-content a.profile-email:focus-visible,
+.cobotai-page.people-page .profile-content a[href^="mailto:"]:hover,
+.cobotai-page.people-page .profile-content a[href^="mailto:"]:focus-visible,
+.cobotai-page.people-page .alumni-item .profile-email:hover {
+  background: rgba(var(--cobotai-accent-rgb), 0.08);
+}
+
+.cobotai-honors-page .award-card:hover {
+  border-color: rgba(var(--cobotai-accent-rgb), 0.22);
+}
+
+.cobotai-honors-page .award-year {
+  background: rgba(var(--cobotai-accent-rgb), 0.09);
+}
+
+.cobotai-honors-page .honors-timeline-marker {
+  box-shadow: 0 0 0 1px rgba(var(--cobotai-accent-rgb), 0.25);
+}
+
+.cobotai-honors-page .honors-timeline li:hover .honors-timeline-body {
+  border-color: rgba(var(--cobotai-accent-rgb), 0.22);
+}
+
+/* CobotAI page */
+.cobotai-hero {
+  background: linear-gradient(135deg, #ffffff 0%, #f5f8fc 38%, #f8f9fb 100%);
+}
+
+.cobotai-hero-brand {
+  margin-bottom: 0.5rem;
+}
+
+.cobotai-hero-brand .page-title {
+  margin: 0;
+}
+
+.cobotai-hero-logo {
   display: block;
-  width: clamp(14rem, 42vw, 22rem);
+  width: clamp(11rem, 34vw, 17rem);
   height: auto;
 }
 
@@ -43,8 +96,8 @@
 }
 
 .cobotai-staff-group--leadership {
-  border-color: rgba(158, 36, 53, 0.22);
-  background: linear-gradient(180deg, rgba(158, 36, 53, 0.04) 0%, var(--surface) 100%);
+  border-color: rgba(var(--cobotai-accent-rgb), 0.22);
+  background: linear-gradient(180deg, rgba(var(--cobotai-accent-rgb), 0.04) 0%, var(--surface) 100%);
 }
 
 .cobotai-staff-group .people-subtitle {
@@ -72,7 +125,7 @@
 }
 
 .cobotai-page .profile-card--leadership {
-  border-color: rgba(158, 36, 53, 0.15);
+  border-color: rgba(var(--cobotai-accent-rgb), 0.15);
 }
 
 .cobotai-section-lead {
@@ -162,7 +215,7 @@
 .cobotai-honor-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 26px rgba(20, 20, 20, 0.1);
-  border-color: rgba(158, 36, 53, 0.22);
+  border-color: rgba(var(--cobotai-accent-rgb), 0.22);
 }
 
 .cobotai-honor-media {
