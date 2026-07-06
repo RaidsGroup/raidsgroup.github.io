@@ -5,25 +5,11 @@
   var desktopQuery = window.matchMedia("(min-width: 741px)");
   var body = document.body;
   var typedKeys = "";
-  var konamiKeys = [];
   var eggsPromise = null;
-  var konamiSequence = [
-    "arrowup",
-    "arrowup",
-    "arrowdown",
-    "arrowdown",
-    "arrowleft",
-    "arrowright",
-    "arrowleft",
-    "arrowright",
-    "b",
-    "a"
-  ];
   var hiddenCommands = [
     { length: 6, hash: "fcc15595", action: "piSummon" }
   ];
   var hiddenPiShortcut = { length: 3, hash: "4e55ed59", action: "piMeeting" };
-  var konamiLabStorageKey = "raids-secret-lab-active";
 
   if (!header || !toggle || !nav) {
     return;
@@ -49,14 +35,6 @@
     toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
     if (!open) {
       closeDropdowns();
-    }
-  }
-
-  function hasKonamiLabPersisted() {
-    try {
-      return window.sessionStorage.getItem(konamiLabStorageKey) === "1";
-    } catch (error) {
-      return false;
     }
   }
 
@@ -146,31 +124,23 @@
       return;
     }
 
-    konamiKeys.push(event.key.toLowerCase());
-    konamiKeys = konamiKeys.slice(-konamiSequence.length);
-    if (konamiKeys.join(",") === konamiSequence.join(",")) {
-      konamiKeys = [];
-      triggerEgg("konami", event);
-      return;
-    }
-
     if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) {
       return;
     }
 
     typedKeys = (typedKeys + event.key.toLowerCase()).slice(-32);
-    if (!body.classList.contains("egg-konami") && typedKeys.endsWith("sure")) {
+    if (typedKeys.endsWith("sure")) {
       typedKeys = "";
       triggerEgg("sure", event);
       return;
     }
-    if (!body.classList.contains("egg-konami") && typedKeys.endsWith("debug")) {
+    if (typedKeys.endsWith("debug")) {
       typedKeys = "";
       triggerEgg("debug", event);
       return;
     }
 
-    if (isRaidsPeoplePage() && !body.classList.contains("egg-konami") && hiddenCommands.some(function (command) {
+    if (isRaidsPeoplePage() && hiddenCommands.some(function (command) {
       if (matchesHiddenCommand(command)) {
         typedKeys = "";
         triggerEgg(command.action, event);
@@ -181,7 +151,7 @@
       return;
     }
 
-    if (isRaidsPeoplePage() && !body.classList.contains("egg-konami") && body.classList.contains("egg-pi-summon") && matchesHiddenCommand(hiddenPiShortcut)) {
+    if (isRaidsPeoplePage() && body.classList.contains("egg-pi-summon") && matchesHiddenCommand(hiddenPiShortcut)) {
       typedKeys = "";
       triggerEgg(hiddenPiShortcut.action, event);
     }
@@ -225,9 +195,6 @@
 
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
-      if (window.RAIDSEggs && typeof window.RAIDSEggs.dismissKonamiLab === "function") {
-        window.RAIDSEggs.dismissKonamiLab();
-      }
       setOpen(false);
       closeDropdowns();
       return;
@@ -241,8 +208,4 @@
       setOpen(false);
     }
   });
-
-  if (hasKonamiLabPersisted()) {
-    loadEggs();
-  }
 })();

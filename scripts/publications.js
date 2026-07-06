@@ -87,10 +87,6 @@
   function triggerPublicationCombo(event) {
     var comboStep;
 
-    if (body.classList.contains("egg-konami")) {
-      return;
-    }
-
     loadEffectsCss();
     window.clearTimeout(publicationClickTimer);
     publicationClicks += 1;

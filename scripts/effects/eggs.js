@@ -3,11 +3,9 @@
     return;
   }
 
-  var nav = document.getElementById("site-nav");
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var originalTitle = document.title;
   var typedKeys = "";
-  var konamiKeys = [];
   var titleTimer = null;
   var publicationClicks = 0;
   var publicationClickTimer = null;
@@ -20,21 +18,7 @@
   var piPatrolTimers = [];
   var piPatrolFrames = [];
   var piSummonRun = 0;
-  var konamiLabTimer = null;
-  var konamiLabTimers = [];
   var body = document.body;
-  var konamiSequence = [
-    "arrowup",
-    "arrowup",
-    "arrowdown",
-    "arrowdown",
-    "arrowleft",
-    "arrowright",
-    "arrowleft",
-    "arrowright",
-    "b",
-    "a"
-  ];
 
   var commands = {
     sure: triggerSureDecoder,
@@ -44,60 +28,6 @@
     { length: 6, hash: "fcc15595", action: triggerPiSummon }
   ];
   var hiddenPiShortcut = { length: 3, hash: "4e55ed59", action: triggerPiMeetingShortcut };
-  var konamiLabStorageKey = "raids-secret-lab-active";
-  var konamiWordSwapSelector = ".top-nav > a, .nav-dropdown-toggle, h1.page-title, .people-block > h2, .people-subtitle";
-  var konamiWordSwaps = {
-    "Home": "Base Camp",
-    "Research": "Mad Science",
-    "Projects": "Contraptions",
-    "Demos": "Live Tests",
-    "People": "Personnel",
-    "Publications": "Classified Files",
-    "Honors": "Trophy Vault",
-    "Our Team": "The Roster",
-    "CobotAI Team & Ecosystem": "CobotAI Ops & Network",
-    "Core Research Directions": "Mad-Science Directives",
-    "Awards and Recognition": "Loot & Bragging Rights",
-    "Funded Research Projects": "Funded Contraptions",
-    "Industry & Innovation Awards": "Industry Loot Vault",
-    "Robot and System Demonstrations": "Live Robot Trials",
-    "Faculty": "Mission Control",
-    "PhD / MPhil Students": "Junior Operatives",
-    "MSc": "Trainee Squad",
-    "Research Staff": "Lab Crew",
-    "Visiting Staff and Visiting Students": "Guest Agents",
-    "Former Staff / Student": "Retired Agents",
-    "Alumni": "Lab Legends",
-    "About Us": "Dossier",
-    "Staff": "Field Agents",
-    "Leadership": "Command Deck",
-    "Product & Market": "Ops & Intel",
-    "Future Technology": "R&D Skunkworks",
-    "Software, Ecosystem & Operations": "Systems & Logistics",
-    "Finance & Human Resources": "Resource Vault",
-    "Ecosystem": "Network",
-    "Honors & Awards": "Trophy Wall"
-  };
-
-  function setKonamiLabPersisted(active) {
-    try {
-      if (active) {
-        window.sessionStorage.setItem(konamiLabStorageKey, "1");
-      } else {
-        window.sessionStorage.removeItem(konamiLabStorageKey);
-      }
-    } catch (error) {
-      // Storage may be unavailable in strict privacy contexts.
-    }
-  }
-
-  function isKonamiLabPersisted() {
-    try {
-      return window.sessionStorage.getItem(konamiLabStorageKey) === "1";
-    } catch (error) {
-      return false;
-    }
-  }
 
   function hashTypedCommand(value) {
     var hash = 2166136261;
@@ -115,29 +45,6 @@
 
   function getRaidsPeopleRoot() {
     return document.querySelector("main.people-page");
-  }
-
-  function applyKonamiWordSwaps() {
-    document.querySelectorAll(konamiWordSwapSelector).forEach(function (el) {
-      var current = el.textContent.trim();
-      var replacement = konamiWordSwaps[current];
-
-      if (!replacement) {
-        return;
-      }
-
-      if (!el.hasAttribute("data-egg-original-text")) {
-        el.setAttribute("data-egg-original-text", el.textContent);
-      }
-      el.textContent = replacement;
-    });
-  }
-
-  function restoreKonamiWordSwaps() {
-    document.querySelectorAll("[data-egg-original-text]").forEach(function (el) {
-      el.textContent = el.getAttribute("data-egg-original-text");
-      el.removeAttribute("data-egg-original-text");
-    });
   }
 
   function setTempClass(className, duration, onDone) {
@@ -180,58 +87,6 @@
         }
       }
     }, 28);
-  }
-
-  function clearKonamiLab() {
-    window.clearTimeout(konamiLabTimer);
-    konamiLabTimer = null;
-    konamiLabTimers.forEach(function (timer) {
-      window.clearTimeout(timer);
-    });
-    konamiLabTimers = [];
-    window.clearTimeout(titleTimer);
-    titleTimer = null;
-    document.title = originalTitle;
-    setKonamiLabPersisted(false);
-    piSummonRun += 1;
-    endPiSummon();
-    body.classList.remove(
-      "egg-konami",
-      "egg-konami-global",
-      "egg-konami-home",
-      "egg-konami-people",
-      "egg-konami-publications",
-      "egg-konami-prototypes",
-      "egg-konami-honors"
-    );
-    restoreKonamiWordSwaps();
-    document.querySelectorAll("[data-egg-lab-label], [data-egg-lab-id], [data-egg-clearance]").forEach(function (item) {
-      item.removeAttribute("data-egg-lab-label");
-      item.removeAttribute("data-egg-lab-id");
-      item.removeAttribute("data-egg-clearance");
-      item.style.removeProperty("--egg-lab-index");
-      item.style.removeProperty("--egg-lab-delay");
-      item.style.removeProperty("--egg-lab-tilt");
-      item.classList.remove("is-egg-lab-target", "is-egg-lab-personnel", "is-egg-prime-prototype");
-    });
-    document.querySelectorAll(".egg-konami-panel, .egg-konami-bit, .egg-konami-beacon, .egg-konami-stage").forEach(function (item) {
-      item.remove();
-    });
-  }
-
-  function dismissKonamiLab() {
-    var exitDelay = reducedMotion.matches ? 120 : 420;
-
-    if (!body.classList.contains("egg-konami")) {
-      return;
-    }
-
-    setKonamiLabPersisted(false);
-    window.clearTimeout(konamiLabTimer);
-    document.querySelectorAll(".egg-konami-panel, .egg-konami-bit").forEach(function (item) {
-      item.classList.add("is-leaving");
-    });
-    konamiLabTimer = window.setTimeout(clearKonamiLab, exitDelay);
   }
 
   function triggerSureDecoder() {
@@ -649,7 +504,7 @@
     });
     var piImage = piCard ? piCard.querySelector(".profile-image img") : null;
 
-    if (body.classList.contains("egg-konami") || !peopleRoot || !body.classList.contains("egg-pi-summon")) {
+    if (!peopleRoot || !body.classList.contains("egg-pi-summon")) {
       return;
     }
 
@@ -703,7 +558,7 @@
       "fixing slides"
     ];
 
-    if (body.classList.contains("egg-konami") || !peopleRoot) {
+    if (!peopleRoot) {
       return;
     }
 
@@ -1185,173 +1040,6 @@
     });
   }
 
-  function markKonamiTargets(targets, labels, idPrefix, maxItems) {
-    Array.prototype.forEach.call(targets, function (target, index) {
-      if (maxItems && index >= maxItems) {
-        return;
-      }
-      target.classList.add("is-egg-lab-target");
-      target.setAttribute("data-egg-lab-label", labels[index % labels.length]);
-      target.setAttribute("data-egg-lab-id", idPrefix + "-" + String(index + 1).padStart(2, "0"));
-      target.style.setProperty("--egg-lab-index", index);
-      target.style.setProperty("--egg-lab-delay", (index % 12) * 0.035 + "s");
-      target.style.setProperty("--egg-lab-tilt", ((index % 3) - 1) * 0.45 + "deg");
-    });
-  }
-
-  function markKonamiPageTargets() {
-    var main = document.querySelector("main") || body;
-    var globalLabels = [
-      "classified bay",
-      "prototype cell",
-      "lab clearance",
-      "armory note",
-      "reactor feed",
-      "sealed file",
-      "weapon r&d",
-      "dark lab"
-    ];
-    var peopleLabels = [
-      "CLEARANCE L4",
-      "PROTOTYPE UNIT",
-      "ARMORY CREW",
-      "WEAPON R&D",
-      "FIELD TESTER",
-      "REACTOR TEAM",
-      "ROBOT HANDLER",
-      "CLASSIFIED"
-    ];
-    var peopleRoot = document.querySelector("main.people-page") || (body.classList.contains("people-page") ? main : null);
-    var globalTargets = main.querySelectorAll([
-      ".home-highlights",
-      ".home-pillar",
-      ".home-explore-card",
-      ".home-updates li",
-      ".research-theme",
-      ".research-card",
-      ".projects-stat",
-      ".project-item",
-      ".demo-card",
-      ".pub-stat",
-      ".pub-years-nav a",
-      ".pub-list li",
-      ".award-card",
-      ".honors-stat",
-      ".honors-timeline li",
-      ".cobotai-about",
-      ".cobotai-staff-group"
-    ].join(", "));
-
-    body.classList.add("egg-konami-global");
-    markKonamiTargets(globalTargets, globalLabels, "LAB", 24);
-
-    if (body.classList.contains("home-page")) {
-      body.classList.add("egg-konami-home");
-    }
-    if (peopleRoot) {
-      body.classList.add("egg-konami-people");
-      markKonamiTargets(peopleRoot.querySelectorAll(".profile-card, .faculty-profile"), peopleLabels, "RND");
-      peopleRoot.querySelectorAll(".profile-card, .faculty-profile").forEach(function (card, index) {
-        card.classList.add("is-egg-lab-personnel");
-        card.setAttribute("data-egg-clearance", peopleLabels[index % peopleLabels.length]);
-        if (index % 11 === 0) {
-          card.classList.add("is-egg-prime-prototype");
-        }
-      });
-      markKonamiTargets(peopleRoot.querySelectorAll(".people-block"), [
-        "personnel archive",
-        "prototype roster",
-        "restricted division",
-        "night shift cell"
-      ], "CELL");
-    }
-    if (body.classList.contains("publication-page") || main.querySelector(".pub-list")) {
-      body.classList.add("egg-konami-publications");
-    }
-    if (body.classList.contains("demos-page") || main.querySelector(".research-card, .project-item, .demo-card")) {
-      body.classList.add("egg-konami-prototypes");
-    }
-    if (body.classList.contains("honors-page") || main.querySelector(".award-card, .honors-timeline")) {
-      body.classList.add("egg-konami-honors");
-    }
-  }
-
-  function triggerKonamiLab() {
-    var lines = [
-      "↑ ↑ ↓ ↓ ← → ← → B A opens the Secret Lab",
-      "Press Esc to return to the surface",
-      "Inside: ultra-smart robots, next-gen Skynet prototypes, and suspiciously friendly robot collaborators"
-    ];
-    var glyphs = ["↑", "↓", "←", "→", "B", "A", "LAB", "R&D"];
-    var panel = document.createElement("div");
-    var status = document.createElement("div");
-    var eyebrow = document.createElement("p");
-    var title = document.createElement("h2");
-    var list = document.createElement("ol");
-    var meter = document.createElement("div");
-    var fragment = document.createDocumentFragment();
-    var bitCount = reducedMotion.matches ? 4 : 8;
-
-    clearKonamiLab();
-    setKonamiLabPersisted(true);
-    window.clearTimeout(titleTimer);
-    titleTimer = null;
-    document.title = "RAIDS | Secret Lab";
-    body.classList.add("egg-konami");
-    markKonamiPageTargets();
-    applyKonamiWordSwaps();
-
-    panel.className = "egg-konami-panel";
-    panel.setAttribute("role", "status");
-    panel.setAttribute("aria-live", "polite");
-
-    status.className = "egg-konami-status";
-    eyebrow.className = "egg-konami-eyebrow";
-    eyebrow.textContent = "Konami protocol accepted";
-    title.textContent = "Secret Lab";
-
-    lines.forEach(function (line, index) {
-      var item = document.createElement("li");
-      item.textContent = line;
-      item.style.setProperty("--line-index", index);
-      list.appendChild(item);
-    });
-
-    meter.className = "egg-konami-meter";
-    status.appendChild(eyebrow);
-    status.appendChild(title);
-    status.appendChild(list);
-    status.appendChild(meter);
-    panel.appendChild(status);
-    fragment.appendChild(panel);
-
-    for (var index = 0; index < bitCount; index += 1) {
-      var bit = document.createElement("span");
-      bit.className = "egg-konami-bit";
-      bit.textContent = glyphs[index % glyphs.length];
-      bit.style.setProperty("--bit-left", 8 + ((index * 19) % 84) + "vw");
-      bit.style.setProperty("--bit-top", 12 + ((index * 29) % 68) + "vh");
-      bit.style.setProperty("--bit-delay", (index % 6) * 0.14 + "s");
-      bit.style.setProperty("--bit-drift", (index % 2 === 0 ? 1 : -1) * (18 + (index % 5) * 8) + "px");
-      fragment.appendChild(bit);
-    }
-
-    body.appendChild(fragment);
-  }
-
-  function handleKonami(event) {
-    if (event.target.closest("input, textarea, select, [contenteditable]")) {
-      return;
-    }
-
-    konamiKeys.push(event.key.toLowerCase());
-    konamiKeys = konamiKeys.slice(-konamiSequence.length);
-    if (konamiKeys.join(",") === konamiSequence.join(",")) {
-      konamiKeys = [];
-      triggerKonamiLab();
-    }
-  }
-
   function handleTypedCommand(event) {
     if (
       event.ctrlKey ||
@@ -1364,7 +1052,7 @@
     }
 
     typedKeys = (typedKeys + event.key.toLowerCase()).slice(-32);
-    if (!body.classList.contains("egg-konami") && Object.keys(commands).some(function (command) {
+    if (Object.keys(commands).some(function (command) {
       if (typedKeys.endsWith(command)) {
         commands[command]();
         typedKeys = "";
@@ -1395,15 +1083,11 @@
 
   window.RAIDSEggs = {
     loaded: true,
-    dismissKonamiLab: dismissKonamiLab,
     handleKeydown: function (event) {
-      handleKonami(event);
       handleTypedCommand(event);
     },
-    trigger: function (action, event) {
-      if (action === "konami") {
-        triggerKonamiLab();
-      } else if (action === "sure") {
+    trigger: function (action) {
+      if (action === "sure") {
         triggerSureDecoder();
       } else if (action === "debug") {
         triggerDemoDebug();
@@ -1414,8 +1098,4 @@
       }
     }
   };
-
-  if (isKonamiLabPersisted()) {
-    triggerKonamiLab();
-  }
 })();
