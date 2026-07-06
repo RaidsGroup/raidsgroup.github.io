@@ -1,12 +1,24 @@
 /* Extracted from styles/main.css. */
 /* CobotAI page */
+.cobotai-logo-title {
+  margin-bottom: 1rem;
+}
+
+.cobotai-logo-title-image {
+  display: block;
+  width: clamp(14rem, 42vw, 22rem);
+  height: auto;
+}
+
 .cobotai-page .cobotai-about-kicker {
   margin: 0.15rem 0 0.85rem;
+  max-width: 72ch;
   color: var(--accent);
-  font-size: 0.82rem;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.45;
+  text-transform: none;
 }
 
 .cobotai-page .cobotai-about-text {

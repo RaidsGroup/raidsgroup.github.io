@@ -1,4 +1,4 @@
-/* Hidden interaction effects. Loaded on demand by scripts/nav.js. */
+﻿/* Hidden interaction effects. Loaded on demand by scripts/nav.js. */
 .egg-typewriter {
   border-right: 0.12em solid var(--accent);
   animation: egg-caret 0.75s steps(1) infinite;
