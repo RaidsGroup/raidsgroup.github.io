@@ -128,6 +128,10 @@
     return candidate.length === command.length && hashTypedCommand(candidate) === command.hash;
   }
 
+  function isRaidsPeoplePage() {
+    return !!document.querySelector("main.people-page");
+  }
+
   function shouldIgnoreKeyTarget(event) {
     return event.target.closest("input, textarea, select, [contenteditable]");
   }
@@ -155,18 +159,18 @@
     }
 
     typedKeys = (typedKeys + event.key.toLowerCase()).slice(-32);
-    if (typedKeys.endsWith("sure")) {
+    if (!body.classList.contains("egg-konami") && typedKeys.endsWith("sure")) {
       typedKeys = "";
       triggerEgg("sure", event);
       return;
     }
-    if (typedKeys.endsWith("debug")) {
+    if (!body.classList.contains("egg-konami") && typedKeys.endsWith("debug")) {
       typedKeys = "";
       triggerEgg("debug", event);
       return;
     }
 
-    if (hiddenCommands.some(function (command) {
+    if (isRaidsPeoplePage() && !body.classList.contains("egg-konami") && hiddenCommands.some(function (command) {
       if (matchesHiddenCommand(command)) {
         typedKeys = "";
         triggerEgg(command.action, event);
@@ -177,7 +181,7 @@
       return;
     }
 
-    if (body.classList.contains("egg-pi-summon") && matchesHiddenCommand(hiddenPiShortcut)) {
+    if (isRaidsPeoplePage() && !body.classList.contains("egg-konami") && body.classList.contains("egg-pi-summon") && matchesHiddenCommand(hiddenPiShortcut)) {
       typedKeys = "";
       triggerEgg(hiddenPiShortcut.action, event);
     }

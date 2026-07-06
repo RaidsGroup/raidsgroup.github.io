@@ -45,6 +45,39 @@
   ];
   var hiddenPiShortcut = { length: 3, hash: "4e55ed59", action: triggerPiMeetingShortcut };
   var konamiLabStorageKey = "raids-secret-lab-active";
+  var konamiWordSwapSelector = ".top-nav > a, .nav-dropdown-toggle, h1.page-title, .people-block > h2, .people-subtitle";
+  var konamiWordSwaps = {
+    "Home": "Base Camp",
+    "Research": "Mad Science",
+    "Projects": "Contraptions",
+    "Demos": "Live Tests",
+    "People": "Personnel",
+    "Publications": "Classified Files",
+    "Honors": "Trophy Vault",
+    "Our Team": "The Roster",
+    "CobotAI Team & Ecosystem": "CobotAI Ops & Network",
+    "Core Research Directions": "Mad-Science Directives",
+    "Awards and Recognition": "Loot & Bragging Rights",
+    "Funded Research Projects": "Funded Contraptions",
+    "Industry & Innovation Awards": "Industry Loot Vault",
+    "Robot and System Demonstrations": "Live Robot Trials",
+    "Faculty": "Mission Control",
+    "PhD / MPhil Students": "Junior Operatives",
+    "MSc": "Trainee Squad",
+    "Research Staff": "Lab Crew",
+    "Visiting Staff and Visiting Students": "Guest Agents",
+    "Former Staff / Student": "Retired Agents",
+    "Alumni": "Lab Legends",
+    "About Us": "Dossier",
+    "Staff": "Field Agents",
+    "Leadership": "Command Deck",
+    "Product & Market": "Ops & Intel",
+    "Future Technology": "R&D Skunkworks",
+    "Software, Ecosystem & Operations": "Systems & Logistics",
+    "Finance & Human Resources": "Resource Vault",
+    "Ecosystem": "Network",
+    "Honors & Awards": "Trophy Wall"
+  };
 
   function setKonamiLabPersisted(active) {
     try {
@@ -78,6 +111,33 @@
   function matchesHiddenCommand(command) {
     var candidate = typedKeys.slice(-command.length);
     return candidate.length === command.length && hashTypedCommand(candidate) === command.hash;
+  }
+
+  function getRaidsPeopleRoot() {
+    return document.querySelector("main.people-page");
+  }
+
+  function applyKonamiWordSwaps() {
+    document.querySelectorAll(konamiWordSwapSelector).forEach(function (el) {
+      var current = el.textContent.trim();
+      var replacement = konamiWordSwaps[current];
+
+      if (!replacement) {
+        return;
+      }
+
+      if (!el.hasAttribute("data-egg-original-text")) {
+        el.setAttribute("data-egg-original-text", el.textContent);
+      }
+      el.textContent = replacement;
+    });
+  }
+
+  function restoreKonamiWordSwaps() {
+    document.querySelectorAll("[data-egg-original-text]").forEach(function (el) {
+      el.textContent = el.getAttribute("data-egg-original-text");
+      el.removeAttribute("data-egg-original-text");
+    });
   }
 
   function setTempClass(className, duration, onDone) {
@@ -133,6 +193,8 @@
     titleTimer = null;
     document.title = originalTitle;
     setKonamiLabPersisted(false);
+    piSummonRun += 1;
+    endPiSummon();
     body.classList.remove(
       "egg-konami",
       "egg-konami-global",
@@ -142,9 +204,7 @@
       "egg-konami-prototypes",
       "egg-konami-honors"
     );
-    nav.querySelectorAll("[data-konami-label]").forEach(function (item) {
-      item.removeAttribute("data-konami-label");
-    });
+    restoreKonamiWordSwaps();
     document.querySelectorAll("[data-egg-lab-label], [data-egg-lab-id], [data-egg-clearance]").forEach(function (item) {
       item.removeAttribute("data-egg-lab-label");
       item.removeAttribute("data-egg-lab-id");
@@ -271,6 +331,64 @@
       pulsePublicationCombo(true);
       showPublicationComboToast("H-index aura increased.", event);
     }
+  }
+
+  function endPiSummon() {
+    window.clearTimeout(piSummonTimer);
+    piSummonTimer = null;
+    clearPiPatrolTimers();
+    body.classList.remove("egg-pi-summon", "egg-pi-meeting");
+    document.querySelectorAll("[data-egg-mission], [data-egg-task-badge], [data-egg-work-status]").forEach(function (card) {
+      card.removeAttribute("data-egg-mission");
+      card.removeAttribute("data-egg-task-badge");
+      card.removeAttribute("data-egg-work-status");
+      card.style.removeProperty("--egg-scatter-x");
+      card.style.removeProperty("--egg-scatter-y");
+      card.style.removeProperty("--egg-scatter-rot");
+    });
+    document.querySelectorAll(".is-egg-raid-target, .is-egg-patrol-stop").forEach(function (card) {
+      card.classList.remove("is-egg-raid-target", "is-egg-patrol-stop");
+    });
+    document.querySelectorAll(".egg-pi-target").forEach(function (card) {
+      card.classList.remove("egg-pi-target");
+    });
+    document.querySelectorAll(".egg-pi-meeting-banner").forEach(function (banner) {
+      banner.classList.remove("is-visible");
+      window.setTimeout(function () {
+        banner.remove();
+      }, 220);
+    });
+    document.querySelectorAll(".egg-pi-megaphone").forEach(function (item) {
+      item.classList.remove("is-visible");
+      window.setTimeout(function () {
+        item.remove();
+      }, 220);
+    });
+    document.querySelectorAll(".egg-pi-hammer").forEach(function (item) {
+      item.classList.add("is-leaving");
+      window.setTimeout(function () {
+        item.remove();
+      }, 180);
+    });
+    document.querySelectorAll(".egg-pi-meeting-speech").forEach(function (item) {
+      item.classList.remove("is-visible");
+      window.setTimeout(function () {
+        item.remove();
+      }, 220);
+    });
+    document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (item) {
+      item.classList.remove("is-patrolling", "is-raiding", "is-meeting", "is-facing-left");
+      item.classList.add("is-leaving");
+      window.setTimeout(function () {
+        item.remove();
+      }, 420);
+    });
+    document.querySelectorAll(".egg-pi-sound-wave").forEach(function (item) {
+      item.classList.add("is-leaving");
+      window.setTimeout(function () {
+        item.remove();
+      }, 260);
+    });
   }
 
   function clearPiPatrolTimers() {
@@ -443,7 +561,7 @@
       var megaphoneY;
 
       if (!reducedMotion.matches) {
-        window.scrollTo(window.scrollX, targetScrollY);
+        window.scrollTo({ left: window.scrollX, top: targetScrollY, behavior: "auto" });
       }
 
       viewportX = clamp(docPoint.x - window.scrollX, avatarMargin, window.innerWidth - avatarMargin);
@@ -520,69 +638,18 @@
       }
       window.clearInterval(piMeetingSpeechTimer);
       piMeetingSpeechTimer = null;
-      body.classList.remove("egg-pi-summon", "egg-pi-meeting");
-      document.querySelectorAll("[data-egg-mission], [data-egg-task-badge], [data-egg-work-status]").forEach(function (card) {
-        card.removeAttribute("data-egg-mission");
-        card.removeAttribute("data-egg-task-badge");
-        card.removeAttribute("data-egg-work-status");
-        card.style.removeProperty("--egg-scatter-x");
-        card.style.removeProperty("--egg-scatter-y");
-        card.style.removeProperty("--egg-scatter-rot");
-      });
-      document.querySelectorAll(".is-egg-raid-target, .is-egg-patrol-stop").forEach(function (card) {
-        card.classList.remove("is-egg-raid-target", "is-egg-patrol-stop");
-      });
-      document.querySelectorAll(".egg-pi-target").forEach(function (card) {
-        card.classList.remove("egg-pi-target");
-      });
-      document.querySelectorAll(".egg-pi-meeting-banner").forEach(function (banner) {
-        banner.classList.remove("is-visible");
-        window.setTimeout(function () {
-          banner.remove();
-        }, 220);
-      });
-      document.querySelectorAll(".egg-pi-megaphone").forEach(function (item) {
-        item.classList.remove("is-visible");
-        window.setTimeout(function () {
-          item.remove();
-        }, 220);
-      });
-      document.querySelectorAll(".egg-pi-hammer").forEach(function (item) {
-        item.classList.add("is-leaving");
-        window.setTimeout(function () {
-          item.remove();
-        }, 180);
-      });
-      document.querySelectorAll(".egg-pi-meeting-speech").forEach(function (item) {
-        item.classList.remove("is-visible");
-        window.setTimeout(function () {
-          item.remove();
-        }, 220);
-      });
-      document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (item) {
-        item.classList.remove("is-patrolling", "is-raiding", "is-meeting", "is-facing-left");
-        item.classList.add("is-leaving");
-        window.setTimeout(function () {
-          item.remove();
-        }, 420);
-      });
-      document.querySelectorAll(".egg-pi-sound-wave").forEach(function (item) {
-        item.classList.add("is-leaving");
-        window.setTimeout(function () {
-          item.remove();
-        }, 260);
-      });
+      endPiSummon();
     }, 9000);
   }
 
   function triggerPiMeetingShortcut() {
-    var peopleRoot = document.querySelector("main.people-page") || (body.classList.contains("people-page") ? document.querySelector("main") : null);
+    var peopleRoot = getRaidsPeopleRoot();
     var piCard = Array.prototype.find.call((peopleRoot || document).querySelectorAll(".faculty-profile, .profile-card"), function (profile) {
       return /pai\s+zheng/i.test(profile.textContent);
     });
     var piImage = piCard ? piCard.querySelector(".profile-image img") : null;
 
-    if (!peopleRoot || !body.classList.contains("egg-pi-summon")) {
+    if (body.classList.contains("egg-konami") || !peopleRoot || !body.classList.contains("egg-pi-summon")) {
       return;
     }
 
@@ -591,7 +658,7 @@
 
   function triggerPiSummon() {
     var runId = piSummonRun + 1;
-    var peopleRoot = document.querySelector("main.people-page") || (body.classList.contains("people-page") ? document.querySelector("main") : null);
+    var peopleRoot = getRaidsPeopleRoot();
     var allCards = peopleRoot ? Array.prototype.slice.call(peopleRoot.querySelectorAll(".profile-card")) : [];
     var piCard = Array.prototype.find.call((peopleRoot || document).querySelectorAll(".faculty-profile, .profile-card"), function (profile) {
       return /pai\s+zheng/i.test(profile.textContent);
@@ -602,9 +669,11 @@
     var visitedCards = [];
     var raidEvents = [];
     var patrolStartDelay = reducedMotion.matches ? 20 : 80;
-    var patrolInterval = reducedMotion.matches ? 360 : 1250;
-    var patrolTravelDuration = reducedMotion.matches ? 1 : 1220;
+    var patrolSpeed = 0.22;
+    var patrolMinDuration = reducedMotion.matches ? 1 : 320;
+    var patrolMaxDuration = reducedMotion.matches ? 1 : 2400;
     var raidTravelDuration = reducedMotion.matches ? 1 : 220;
+    var raidReactionDelay = reducedMotion.matches ? 0 : 120;
     var raidPause = reducedMotion.matches ? 520 : 1050;
     var piSummonDuration = reducedMotion.matches ? 7600 : 18500;
     var missions = [
@@ -634,7 +703,7 @@
       "fixing slides"
     ];
 
-    if (!peopleRoot) {
+    if (body.classList.contains("egg-konami") || !peopleRoot) {
       return;
     }
 
@@ -647,6 +716,21 @@
       return items.slice().sort(function () {
         return Math.random() - 0.5;
       });
+    }
+
+    function estimateTravelDuration(distance) {
+      if (reducedMotion.matches) {
+        return 1;
+      }
+      return Math.min(patrolMaxDuration, Math.max(patrolMinDuration, distance / patrolSpeed));
+    }
+
+    function pointCenter(card) {
+      var rect = card.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + Math.min(rect.height / 2, 150)
+      };
     }
 
     function buildSnakeRoute(cards, endCard) {
@@ -730,7 +814,13 @@
         });
       });
     }
-    piSummonDuration = Math.max(piSummonDuration, patrolStartDelay + routeCards.length * patrolInterval + raidEvents.length * raidPause + 1800);
+    var estimatedPatrolDuration = 0;
+    for (var routeIndex = 1; routeIndex < routeCards.length; routeIndex += 1) {
+      var fromPoint = pointCenter(routeCards[routeIndex - 1]);
+      var toPoint = pointCenter(routeCards[routeIndex]);
+      estimatedPatrolDuration += estimateTravelDuration(Math.hypot(toPoint.x - fromPoint.x, toPoint.y - fromPoint.y));
+    }
+    piSummonDuration = Math.max(piSummonDuration, patrolStartDelay + estimatedPatrolDuration + raidEvents.length * (raidTravelDuration + raidReactionDelay + raidPause) + 1800);
 
     window.clearTimeout(piSummonTimer);
     clearPiPatrolTimers();
@@ -777,18 +867,6 @@
       }
 
       var landingCard = routeCards[0] || piCard || peopleRoot;
-      var avatarMargin = Math.max(44, Math.min(78, window.innerWidth / 2 - 8, window.innerHeight / 2 - 8));
-      var maxX = Math.max(avatarMargin, window.innerWidth - avatarMargin);
-      var maxY = Math.max(avatarMargin, window.innerHeight - avatarMargin);
-      var startRect = landingCard.getBoundingClientRect();
-      var startPoint = {
-        x: clamp(startRect.left + startRect.width / 2, avatarMargin, maxX),
-        y: clamp(startRect.top + Math.min(startRect.height / 2, 150), avatarMargin, maxY)
-      };
-      var currentDocPoint = {
-        x: window.scrollX + startPoint.x,
-        y: window.scrollY + startRect.top + Math.min(startRect.height / 2, 150)
-      };
       var activeFrame = null;
       var avatar = document.createElement("img");
       var wave = document.createElement("span");
@@ -796,9 +874,26 @@
       var facingDirection = 1;
       var scatterScale = window.matchMedia("(max-width: 740px)").matches ? 0.55 : 1;
       var assignedMissions = shuffled(missions);
+      var startRect;
+      var startPoint;
+      var currentDocPoint;
 
       function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
+      }
+
+      function getAvatarMargin() {
+        return Math.max(44, Math.min(78, window.innerWidth / 2 - 8, window.innerHeight / 2 - 8));
+      }
+
+      function getMaxX() {
+        var margin = getAvatarMargin();
+        return Math.max(margin, window.innerWidth - margin);
+      }
+
+      function getMaxY() {
+        var margin = getAvatarMargin();
+        return Math.max(margin, window.innerHeight - margin);
       }
 
       function maxScrollTop() {
@@ -807,32 +902,46 @@
 
       function cardCenter(card) {
         var rect = card.getBoundingClientRect();
+        var margin = getAvatarMargin();
         return {
-          x: window.scrollX + clamp(rect.left + rect.width / 2, avatarMargin, maxX),
+          x: window.scrollX + clamp(rect.left + rect.width / 2, margin, getMaxX()),
           y: window.scrollY + rect.top + Math.min(rect.height / 2, 150)
         };
       }
 
       function renderAvatarAt(docPoint, followScroll) {
+        var margin = getAvatarMargin();
+        var maxX = getMaxX();
+        var maxY = getMaxY();
         var desiredScrollY = clamp(docPoint.y - window.innerHeight * 0.46, 0, maxScrollTop());
         var viewportX;
         var viewportY;
 
         if (followScroll !== false && !reducedMotion.matches) {
-          window.scrollTo(window.scrollX, desiredScrollY);
+          window.scrollTo({ left: window.scrollX, top: desiredScrollY, behavior: "auto" });
         }
 
-        viewportX = clamp(docPoint.x - window.scrollX, avatarMargin, maxX);
-        viewportY = clamp(docPoint.y - window.scrollY, avatarMargin, maxY);
+        viewportX = clamp(docPoint.x - window.scrollX, margin, maxX);
+        viewportY = clamp(docPoint.y - window.scrollY, margin, maxY);
         avatar.style.left = viewportX + "px";
         avatar.style.top = viewportY + "px";
         avatar.style.setProperty("--egg-drop-x", "0px");
         avatar.style.setProperty("--egg-drop-y", "0px");
         wave.style.left = viewportX + "px";
         wave.style.top = viewportY + "px";
-        hammer.style.left = clamp(viewportX + avatarMargin * 0.56 * facingDirection, avatarMargin, maxX) + "px";
-        hammer.style.top = clamp(viewportY + avatarMargin * 0.12, avatarMargin, maxY) + "px";
+        hammer.style.left = clamp(viewportX + margin * 0.56 * facingDirection, margin, maxX) + "px";
+        hammer.style.top = clamp(viewportY + margin * 0.12, margin, maxY) + "px";
       }
+
+      startRect = landingCard.getBoundingClientRect();
+      startPoint = {
+        x: clamp(startRect.left + startRect.width / 2, getAvatarMargin(), getMaxX()),
+        y: clamp(startRect.top + Math.min(startRect.height / 2, 150), getAvatarMargin(), getMaxY())
+      };
+      currentDocPoint = {
+        x: window.scrollX + startPoint.x,
+        y: window.scrollY + startRect.top + Math.min(startRect.height / 2, 150)
+      };
 
       function updateFacing(targetDocPoint) {
         var deltaX = targetDocPoint.x - currentDocPoint.x;
@@ -904,16 +1013,21 @@
       }
 
       function pickNearbyRaidTarget(anchorCard) {
+        var margin = getAvatarMargin();
         var visibleCards = routeCards.filter(function (card) {
           var rect = card.getBoundingClientRect();
-          return card !== anchorCard && rect.bottom > avatarMargin && rect.top < window.innerHeight - avatarMargin;
+          return card !== anchorCard && rect.bottom > margin && rect.top < window.innerHeight - margin;
         });
+        var unvisitedVisibleCards = visibleCards.filter(function (card) {
+          return visitedCards.indexOf(card) === -1;
+        });
+        var candidates = unvisitedVisibleCards.length ? unvisitedVisibleCards : visibleCards;
 
-        if (!visibleCards.length) {
+        if (!candidates.length) {
           return anchorCard;
         }
 
-        return visibleCards.sort(function (a, b) {
+        return candidates.sort(function (a, b) {
           var aPoint = cardCenter(a);
           var bPoint = cardCenter(b);
           var aDistance = Math.abs(aPoint.x - currentDocPoint.x) + Math.abs(aPoint.y - currentDocPoint.y);
@@ -948,11 +1062,17 @@
         }
       }
 
-      function moveAvatarTo(card, index, isRaid) {
+      function moveAvatarTo(card, index, isRaid, onArrive) {
+        var targetPoint = cardCenter(card);
+        var duration = isRaid ? raidTravelDuration : estimateTravelDuration(Math.hypot(targetPoint.x - currentDocPoint.x, targetPoint.y - currentDocPoint.y));
+
         avatar.classList.toggle("is-raiding", !!isRaid);
         hammer.classList.toggle("is-raiding", !!isRaid);
-        animateAvatarTo(cardCenter(card), isRaid ? raidTravelDuration : patrolTravelDuration, !isRaid, function () {
+        animateAvatarTo(targetPoint, duration, !isRaid, function () {
           markPatrolStop(card, index, isRaid);
+          if (onArrive) {
+            onArrive();
+          }
         });
       }
 
@@ -976,37 +1096,45 @@
 
       animateAvatarTo(cardCenter(landingCard), 1, true);
 
-      routeCards.forEach(function (card, index) {
-        var earlierRaids = raidEvents.filter(function (event) {
-          return event.step < index;
-        }).length;
-        var timeCursor;
-        var patrolDelay;
-
-        if (index === 0) {
+      function visitIndex(index) {
+        if (runId !== piSummonRun || index >= routeCards.length) {
           return;
         }
 
-        timeCursor = patrolStartDelay + patrolInterval * (index - 1) + earlierRaids * raidPause;
-        patrolDelay = timeCursor;
-        var timer = window.setTimeout(function () {
-          if (runId === piSummonRun) {
-            moveAvatarTo(card, index, false);
-          }
-        }, patrolDelay);
-        piPatrolTimers.push(timer);
+        moveAvatarTo(routeCards[index], index, false, function () {
+          var isRaidStep = raidEvents.some(function (event) {
+            return event.step === index;
+          });
 
-        raidEvents.filter(function (event) {
-          return event.step === index;
-        }).forEach(function (event) {
+          if (!isRaidStep) {
+            visitIndex(index + 1);
+            return;
+          }
+
           piPatrolTimers.push(window.setTimeout(function () {
-            if (runId === piSummonRun) {
-              var raidTarget = pickNearbyRaidTarget(card);
-              moveAvatarTo(raidTarget, Math.max(0, routeCards.indexOf(raidTarget)), true);
+            if (runId !== piSummonRun) {
+              return;
             }
-          }, timeCursor + patrolTravelDuration + 120));
+
+            var raidTarget = pickNearbyRaidTarget(routeCards[index]);
+            moveAvatarTo(raidTarget, Math.max(0, routeCards.indexOf(raidTarget)), true, function () {
+              piPatrolTimers.push(window.setTimeout(function () {
+                if (runId === piSummonRun) {
+                  visitIndex(index + 1);
+                }
+              }, raidPause));
+            });
+          }, raidReactionDelay));
         });
-      });
+      }
+
+      if (routeCards.length > 1) {
+        piPatrolTimers.push(window.setTimeout(function () {
+          if (runId === piSummonRun) {
+            visitIndex(1);
+          }
+        }, patrolStartDelay));
+      }
     }, reducedMotion.matches ? 20 : 40);
 
     piSummonTimer = window.setTimeout(function () {
@@ -1014,59 +1142,7 @@
         return;
       }
 
-      body.classList.remove("egg-pi-summon", "egg-pi-meeting");
-      clearPiPatrolTimers();
-      document.querySelectorAll("[data-egg-mission], [data-egg-task-badge], [data-egg-work-status]").forEach(function (card) {
-        card.removeAttribute("data-egg-mission");
-        card.removeAttribute("data-egg-task-badge");
-        card.removeAttribute("data-egg-work-status");
-        card.style.removeProperty("--egg-scatter-x");
-        card.style.removeProperty("--egg-scatter-y");
-        card.style.removeProperty("--egg-scatter-rot");
-      });
-      document.querySelectorAll(".is-egg-patrol-stop").forEach(function (card) {
-        card.classList.remove("is-egg-patrol-stop");
-      });
-      document.querySelectorAll(".is-egg-raid-target").forEach(function (card) {
-        card.classList.remove("is-egg-raid-target");
-      });
-      document.querySelectorAll(".egg-pi-target").forEach(function (card) {
-        card.classList.remove("egg-pi-target");
-      });
-      document.querySelectorAll(".egg-pi-meeting-banner").forEach(function (banner) {
-        banner.remove();
-      });
-      document.querySelectorAll(".egg-pi-drop-avatar").forEach(function (avatar) {
-        avatar.classList.remove("is-patrolling", "is-raiding", "is-meeting", "is-facing-left");
-        avatar.classList.add("is-leaving");
-        window.setTimeout(function () {
-          avatar.remove();
-        }, 420);
-      });
-      document.querySelectorAll(".egg-pi-sound-wave").forEach(function (effect) {
-        effect.classList.add("is-leaving");
-        window.setTimeout(function () {
-          effect.remove();
-        }, 260);
-      });
-      document.querySelectorAll(".egg-pi-hammer").forEach(function (item) {
-        item.classList.add("is-leaving");
-        window.setTimeout(function () {
-          item.remove();
-        }, 180);
-      });
-      document.querySelectorAll(".egg-pi-megaphone").forEach(function (item) {
-        item.classList.remove("is-visible");
-        window.setTimeout(function () {
-          item.remove();
-        }, 220);
-      });
-      document.querySelectorAll(".egg-pi-meeting-speech").forEach(function (item) {
-        item.classList.remove("is-visible");
-        window.setTimeout(function () {
-          item.remove();
-        }, 220);
-      });
+      endPiSummon();
     }, piSummonDuration);
   }
 
@@ -1201,17 +1277,6 @@
   }
 
   function triggerKonamiLab() {
-    var aliases = [
-      "prototype bay",
-      "paper cannon",
-      "robot armory",
-      "grant vault",
-      "citation radar",
-      "human lab",
-      "demo reactor",
-      "badge vault",
-      "coffee core"
-    ];
     var lines = [
       "↑ ↑ ↓ ↓ ← → ← → B A opens the Secret Lab",
       "Press Esc to return to the surface",
@@ -1225,7 +1290,6 @@
     var list = document.createElement("ol");
     var meter = document.createElement("div");
     var fragment = document.createDocumentFragment();
-    var navItems = nav.querySelectorAll("a, .nav-dropdown-toggle");
     var bitCount = reducedMotion.matches ? 4 : 8;
 
     clearKonamiLab();
@@ -1235,10 +1299,7 @@
     document.title = "RAIDS | Secret Lab";
     body.classList.add("egg-konami");
     markKonamiPageTargets();
-
-    navItems.forEach(function (item, index) {
-      item.setAttribute("data-konami-label", aliases[index % aliases.length]);
-    });
+    applyKonamiWordSwaps();
 
     panel.className = "egg-konami-panel";
     panel.setAttribute("role", "status");
@@ -1303,7 +1364,7 @@
     }
 
     typedKeys = (typedKeys + event.key.toLowerCase()).slice(-32);
-    if (Object.keys(commands).some(function (command) {
+    if (!body.classList.contains("egg-konami") && Object.keys(commands).some(function (command) {
       if (typedKeys.endsWith(command)) {
         commands[command]();
         typedKeys = "";
@@ -1314,7 +1375,7 @@
       return;
     }
 
-    if (hiddenCommands.some(function (command) {
+    if (getRaidsPeopleRoot() && hiddenCommands.some(function (command) {
       if (matchesHiddenCommand(command)) {
         command.action();
         typedKeys = "";
@@ -1325,7 +1386,7 @@
       return;
     }
 
-    if (body.classList.contains("egg-pi-summon") && matchesHiddenCommand(hiddenPiShortcut)) {
+    if (getRaidsPeopleRoot() && body.classList.contains("egg-pi-summon") && matchesHiddenCommand(hiddenPiShortcut)) {
       triggerPiMeetingShortcut();
       typedKeys = "";
     }
