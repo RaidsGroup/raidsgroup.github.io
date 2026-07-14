@@ -51,7 +51,8 @@
 }
 
 .home-hero .btn-primary:hover,
-.home-hero .btn-primary:focus-visible {
+.home-hero .btn-primary:focus-visible,
+.home-hero .btn-primary:active {
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(158, 36, 53, 0.32);
   text-decoration: none;
@@ -199,17 +200,17 @@
   padding-bottom: 2.6rem;
 }
 
+.home-updates-section .honors-block-lead {
+  margin-bottom: 0;
+}
+
 .home-updates-head {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 0.75rem 1.25rem;
-  margin-bottom: 1.25rem;
-}
-
-.home-updates-head .home-section-lead {
-  margin-bottom: 0;
+  margin-bottom: 1.35rem;
 }
 
 .home-updates-link {
@@ -223,8 +224,107 @@
   text-decoration: none;
 }
 
-.home-updates {
-  max-width: 52rem;
+.home-update-congrats .honors-timeline-body {
+  overflow: visible;
+}
+
+.home-congrats-title {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  z-index: 1;
+}
+
+.home-congrats-trigger {
+  display: inline;
+  cursor: default;
+  border-radius: 0.2em;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.home-congrats-trigger:hover,
+.home-congrats-trigger:focus-visible {
+  color: var(--accent);
+  text-shadow: 0 0 18px rgba(158, 36, 53, 0.22);
+  outline: none;
+}
+
+.home-congrats-fx {
+  position: absolute;
+  left: 0.2rem;
+  top: -0.15rem;
+  width: min(16rem, 70vw);
+  height: 3.8rem;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+}
+
+.home-congrats-trigger:hover + .home-congrats-fx,
+.home-congrats-trigger:focus-visible + .home-congrats-fx {
+  opacity: 1;
+}
+
+.home-congrats-fx i {
+  position: absolute;
+  left: 4.8rem;
+  top: 0.2rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 1px;
+  opacity: 0;
+  transform: translate(0, 0) rotate(0deg) scale(0.4);
+}
+
+.home-congrats-fx i:nth-child(1) { background: #9e2435; --dx: -2.1rem; --dy: -1.5rem; --rot: -28deg; }
+.home-congrats-fx i:nth-child(2) { background: #d97706; --dx: -0.6rem; --dy: -2.1rem; --rot: 18deg; width: 0.34rem; height: 0.55rem; }
+.home-congrats-fx i:nth-child(3) { background: #0f766e; --dx: 1.1rem; --dy: -1.9rem; --rot: 42deg; }
+.home-congrats-fx i:nth-child(4) { background: #b45309; --dx: 2.4rem; --dy: -1.35rem; --rot: -16deg; width: 0.5rem; height: 0.28rem; }
+.home-congrats-fx i:nth-child(5) { background: #9e2435; --dx: 3.4rem; --dy: -0.55rem; --rot: 55deg; }
+.home-congrats-fx i:nth-child(6) { background: #ca8a04; --dx: -2.8rem; --dy: -0.35rem; --rot: -48deg; width: 0.3rem; height: 0.5rem; }
+.home-congrats-fx i:nth-child(7) { background: #be123c; --dx: 0.2rem; --dy: -2.55rem; --rot: 8deg; }
+.home-congrats-fx i:nth-child(8) { background: #047857; --dx: 4.2rem; --dy: -1.7rem; --rot: -34deg; width: 0.36rem; height: 0.36rem; border-radius: 50%; }
+
+.home-congrats-trigger:hover + .home-congrats-fx i,
+.home-congrats-trigger:focus-visible + .home-congrats-fx i {
+  animation: home-congrats-burst 1.15s ease forwards;
+}
+
+.home-congrats-trigger:hover + .home-congrats-fx i:nth-child(2),
+.home-congrats-trigger:focus-visible + .home-congrats-fx i:nth-child(2) { animation-delay: 0.04s; }
+.home-congrats-trigger:hover + .home-congrats-fx i:nth-child(3),
+.home-congrats-trigger:focus-visible + .home-congrats-fx i:nth-child(3) { animation-delay: 0.07s; }
+.home-congrats-trigger:hover + .home-congrats-fx i:nth-child(4),
+.home-congrats-trigger:focus-visible + .home-congrats-fx i:nth-child(4) { animation-delay: 0.02s; }
+.home-congrats-trigger:hover + .home-congrats-fx i:nth-child(5),
+.home-congrats-trigger:focus-visible + .home-congrats-fx i:nth-child(5) { animation-delay: 0.1s; }
+.home-congrats-trigger:hover + .home-congrats-fx i:nth-child(6),
+.home-congrats-trigger:focus-visible + .home-congrats-fx i:nth-child(6) { animation-delay: 0.06s; }
+.home-congrats-trigger:hover + .home-congrats-fx i:nth-child(7),
+.home-congrats-trigger:focus-visible + .home-congrats-fx i:nth-child(7) { animation-delay: 0.03s; }
+.home-congrats-trigger:hover + .home-congrats-fx i:nth-child(8),
+.home-congrats-trigger:focus-visible + .home-congrats-fx i:nth-child(8) { animation-delay: 0.09s; }
+
+@keyframes home-congrats-burst {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.35);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-congrats-fx {
+    display: none;
+  }
 }
 
 .home-explore-section {

@@ -363,7 +363,10 @@ h1 {
   text-decoration: none;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus-visible,
+.btn-primary:active {
   color: #ffffff;
   background: linear-gradient(120deg, var(--accent), var(--accent-2));
 }
@@ -507,6 +510,10 @@ p:last-child {
   border: 1px solid var(--line);
   background: #ffffff;
   box-shadow: var(--shadow);
+}
+
+.scope-figure + .scope-figure {
+  margin-top: 1rem;
 }
 
 .scope-figure img {

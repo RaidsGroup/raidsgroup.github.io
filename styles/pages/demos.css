@@ -176,3 +176,29 @@
   line-height: 1.62;
   text-wrap: pretty;
 }
+
+.demo-card-meta {
+  margin: 0 0 0.65rem;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+.demo-card-meta time {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-card-meta-sep {
+  margin: 0 0.4rem;
+  color: #b8bec8;
+  font-weight: 500;
+}
+
+.demo-card-meta-label {
+  margin-right: 0.3rem;
+  color: var(--muted);
+  font-weight: 500;
+}
