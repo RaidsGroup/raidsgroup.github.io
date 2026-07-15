@@ -28,7 +28,7 @@
   --accent: #9e2435;
   --accent-2: #7b1c2a;
   --accent-soft: #f7e9ec;
-  --max-width: 1120px;
+  --max-width: 1200px;
   --radius: 14px;
   --shadow: 0 8px 22px rgba(20, 20, 20, 0.07);
   --font-body: "Inter", "Segoe UI", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -795,104 +795,48 @@ time {
   }
 }
 
-/* Shared responsive layout rules. */
+/* Shared responsive layout rules.
+   Breakpoint ladder: 960px (tablet) / 740px (phone; must match the 741px in
+   scripts/nav.js and scripts/people.js) / 520px (small phone).
+   Grids whose base columns live in styles/pages/*.css must collapse in that
+   same file — page sheets load after main.css, so collapse rules placed here
+   lose the cascade. main.css only adapts what it declares itself. */
 @media (max-width: 960px) {
   .hero-grid,
   .section-grid,
   .demo-grid,
   .people-grid,
   .card-grid,
-  .about-pillars,
-  .honors-stats,
-  .projects-stats,
-  .pub-stats,
-  .awards-grid,
-  .research-themes,
-  .research-grid,
-  .demos-gallery-grid,
-  .home-explore-grid {
+  .about-pillars {
     grid-template-columns: 1fr;
-  }
-
-  .awards-grid-compact {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .about-pillar-wide {
     grid-column: auto;
   }
-
-  .people-page .profile-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 2.475rem 2.025rem;
-  }
-
-  .hero {
-    padding-top: 2.5rem;
-  }
 }
 
-@media (max-width: 860px) {
-  .faculty-profile {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .faculty-summary {
-    max-width: none;
-    width: 100%;
-    flex-direction: row;
-    align-items: stretch;
-  }
-
-  .faculty-summary .profile-image {
-    flex: 0 0 clamp(6.5rem, 28vw, 8.75rem);
-    aspect-ratio: 3 / 4;
-    min-height: 0;
-  }
-
-  .people-page .faculty-summary .profile-content {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0.75rem 0.9rem 0.75rem 0.55rem;
-  }
-
-  .people-page .faculty-detail {
-    border-radius: 12px;
-    padding: 1rem 1.05rem;
-  }
-
-  .people-page .faculty-bio {
-    font-size: 0.9rem;
-    line-height: 1.62;
+/* Keep the desktop nav on one line between the hamburger cutoff and tablet width. */
+@media (min-width: 741px) and (max-width: 960px) {
+  .top-nav a,
+  .nav-dropdown-toggle {
+    font-size: 0.88rem;
+    padding: 0.4rem 0.55rem;
   }
 }
 
 @media (max-width: 740px) {
+  .wrap {
+    width: min(100% - 1.5rem, var(--max-width));
+  }
+
   .footer-row {
     flex-direction: column;
     gap: 0.55rem;
   }
 
-  .home-hero {
-    padding-top: 2.5rem;
-  }
-
-  .home-updates-head {
-    align-items: flex-start;
-  }
-
-  .honors-stats,
-  .projects-stats,
-  .pub-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .awards-grid-compact {
-    grid-template-columns: 1fr;
+  .page-hero {
+    padding-top: 1.85rem;
   }
 
   .nav-wrap {
@@ -923,7 +867,7 @@ time {
   }
 
   .site-header.is-nav-open .top-nav {
-    max-height: 28rem;
+    max-height: 36rem;
     opacity: 1;
     pointer-events: auto;
     padding: 0.35rem 0 0.65rem;
@@ -985,39 +929,14 @@ time {
   .nav-dropdown.is-open .nav-submenu {
     display: flex;
   }
-
-
-@media (max-width: 740px) {
-  .faculty-profile {
-    padding-bottom: 2rem;
-  }
-
-  .people-page .profile-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.25rem 1.8rem;
-  }
-
-  .people-page .profile-grid .profile-content {
-    padding: 0.34rem 0.38rem 0.38rem;
-  }
-
-  .people-page .profile-grid .profile-name {
-    font-size: 0.82rem;
-  }
-
-  .people-page .profile-grid .profile-role,
-  .people-page .profile-grid .profile-meta {
-    font-size: 0.72rem;
-  }
-
-  .alumni-list {
-    grid-template-columns: 1fr;
-  }
 }
-}
-@media (max-width: 740px) and (min-width: 520px) {
-  .people-page .profile-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2.325rem 1.875rem;
+
+@media (max-width: 520px) {
+  .wrap {
+    width: min(100% - 1.2rem, var(--max-width));
+  }
+
+  .brand-mark {
+    font-size: 1.12rem;
   }
 }

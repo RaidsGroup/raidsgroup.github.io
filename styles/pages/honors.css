@@ -213,3 +213,27 @@
   font-size: 0.9rem;
   line-height: 1.5;
 }
+
+@media (max-width: 960px) {
+  .honors-stats,
+  .awards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 740px) {
+  .honors-block,
+  .projects-block {
+    padding-top: 2rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .honors-stat,
+  .projects-stat {
+    padding: 0.85rem 0.75rem;
+  }
+
+  .awards-grid {
+    grid-template-columns: 1fr;
+  }
+}

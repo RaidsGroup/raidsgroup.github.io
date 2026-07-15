@@ -202,3 +202,41 @@
   color: var(--muted);
   font-weight: 500;
 }
+
+@media (max-width: 740px) {
+  .demos-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-card-body {
+    padding: 0.95rem 1rem 1.05rem;
+  }
+
+  .demo-card-head h3 {
+    font-size: 1rem;
+  }
+
+  .demo-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-features li {
+    font-size: 0.8rem;
+    min-height: 2.45rem;
+    padding: 0.5rem 0.45rem;
+  }
+
+  .demo-card-meta {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 520px) {
+  .demo-features {
+    grid-template-columns: 1fr;
+  }
+
+  .demos-gallery-section {
+    padding-bottom: 2.25rem;
+  }
+}

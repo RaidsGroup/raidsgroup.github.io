@@ -321,12 +321,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .home-congrats-fx {
-    display: none;
-  }
-}
-
 .home-explore-section {
   padding-top: 2.2rem;
   padding-bottom: 3rem;
@@ -374,4 +368,75 @@
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-congrats-fx {
+    display: none;
+  }
+}
+
+@media (max-width: 740px) {
+  .home-hero {
+    padding-top: 2.5rem;
+  }
+
+  .home-updates-head {
+    align-items: flex-start;
+  }
+
+  .home-hero-brand {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .home-hero .hero-tagline {
+    font-size: 0.98rem;
+  }
+
+  .home-updates-link {
+    white-space: normal;
+  }
+
+  .home-about-section,
+  .home-updates-section,
+  .home-explore-section {
+    padding-top: 2rem;
+    padding-bottom: 2.25rem;
+  }
+
+  /* Explore: one card per row on phone */
+  .home-explore-grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .home-explore-card {
+    gap: 0.35rem;
+    padding: 0.9rem 0.85rem;
+  }
+
+  .home-explore-label {
+    font-size: 0.95rem;
+  }
+
+  .home-explore-desc {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-explore-card {
+    padding: 0.8rem 0.75rem;
+  }
+
+  .home-explore-label {
+    font-size: 0.9rem;
+  }
+
+  .home-explore-desc {
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
 }

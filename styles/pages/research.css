@@ -215,3 +215,30 @@
 .research-card--pending .research-card-desc {
   font-style: italic;
 }
+
+@media (max-width: 740px) {
+  .research-themes,
+  .research-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .research-card {
+    padding: 1.05rem 1.05rem 1rem;
+  }
+
+  .research-card-head {
+    gap: 0.4rem 0.55rem;
+  }
+
+  .research-badge {
+    margin-left: 0;
+  }
+
+  .research-theme {
+    padding: 1rem 1rem 0.95rem;
+  }
+
+  .research-programs-section {
+    padding-bottom: 2.25rem;
+  }
+}

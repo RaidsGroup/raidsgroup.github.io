@@ -236,3 +236,30 @@
 .publication-page [id^="year-"] {
   scroll-margin-top: 5.5rem;
 }
+
+@media (max-width: 960px) {
+  .pub-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 740px) {
+  .pub-years-nav {
+    gap: 0.35rem;
+  }
+
+  .pub-years-nav a {
+    font-size: 0.78rem;
+    padding: 0.24rem 0.62rem;
+  }
+
+  .publication-page .pub-list li {
+    padding: 0.85rem 0.35rem 0.85rem 2rem;
+  }
+
+  .pub-citation,
+  .pub-title,
+  .pub-authors {
+    overflow-wrap: anywhere;
+  }
+}

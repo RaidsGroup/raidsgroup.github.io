@@ -724,15 +724,6 @@ body.egg-demo-debug .demo-video-wrap::after {
 
 
 @media (prefers-reduced-motion: reduce) {
-  .back-to-top {
-    transition: opacity 0.01ms, visibility 0.01ms;
-    transform: none;
-  }
-
-  .back-to-top.is-visible {
-    transform: none;
-  }
-
   body.egg-pi-summon .egg-pi-target,
   body.egg-pi-summon .profile-card.is-egg-patrol-stop,
   body.egg-pi-summon .profile-card.is-egg-raid-target,
