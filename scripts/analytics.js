@@ -5,7 +5,7 @@
 
   // Read-only API key for live visitor map (User menu → API).
   // Create a key with stats/read permission only, then paste it here.
-  var GOATCOUNTER_API_KEY = "";
+  var GOATCOUNTER_API_KEY = "23d7c2z4v4b8919senl2h6hokj17yskwwl0n5ah108ko9l9uq4do";
 
   var host = window.location.hostname;
   var isLocal =

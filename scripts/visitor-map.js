@@ -203,26 +203,44 @@
     return date.toISOString().replace(/\.\d{3}Z$/, "Z");
   }
 
+  function apiHeaders() {
+    return {
+      Authorization: "Bearer " + apiKey,
+      "Content-Type": "application/json",
+    };
+  }
+
   function fetchLiveLocations() {
     if (!apiKey || !siteBase) {
       return Promise.resolve(null);
     }
 
-    var end = new Date();
-    var start = new Date("2020-01-01T00:00:00Z");
-    var url =
-      siteBase +
-      "/api/v0/stats/locations?limit=100&start=" +
-      encodeURIComponent(isoDateTime(start)) +
-      "&end=" +
-      encodeURIComponent(isoDateTime(end));
+    // GoatCounter rejects start dates before the site existed ("not found").
+    return fetch(siteBase + "/api/v0/me", { headers: apiHeaders() })
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error("GoatCounter me API " + res.status);
+        }
+        return res.json();
+      })
+      .then(function (me) {
+        var created =
+          (me.user && me.user.created_at) || new Date().toISOString();
+        var start = new Date(created);
+        // Round down to the hour as required by the API.
+        start.setUTCMinutes(0, 0, 0);
+        var end = new Date();
+        end.setUTCMinutes(0, 0, 0);
 
-    return fetch(url, {
-      headers: {
-        Authorization: "Bearer " + apiKey,
-        "Content-Type": "application/json",
-      },
-    })
+        var url =
+          siteBase +
+          "/api/v0/stats/locations?limit=100&start=" +
+          encodeURIComponent(isoDateTime(start)) +
+          "&end=" +
+          encodeURIComponent(isoDateTime(end));
+
+        return fetch(url, { headers: apiHeaders() });
+      })
       .then(function (res) {
         if (!res.ok) {
           throw new Error("GoatCounter locations API " + res.status);
