@@ -47,44 +47,84 @@
     document.head.appendChild(script);
   }
 
-  function fetchCount(path) {
-    return fetch(siteBase + "/counter/" + encodeURIComponent(path) + ".json")
+  function apiHeaders() {
+    return {
+      Authorization: "Bearer " + GOATCOUNTER_API_KEY,
+      "Content-Type": "application/json",
+    };
+  }
+
+  function isoDateTime(date) {
+    return date.toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
+  // Prefer the stats API when we have a key (public /counter/TOTAL.json is often 0 / heavily cached).
+  function fetchSiteTotalFromApi() {
+    if (!GOATCOUNTER_API_KEY || !siteBase) {
+      return Promise.resolve(null);
+    }
+
+    return fetch(siteBase + "/api/v0/me", { headers: apiHeaders() })
       .then(function (res) {
-        if (res.status === 404) {
-          return { count: "0" };
-        }
         if (!res.ok) {
-          return null;
+          throw new Error("me " + res.status);
+        }
+        return res.json();
+      })
+      .then(function (me) {
+        var created =
+          (me.user && me.user.created_at) || new Date().toISOString();
+        var start = new Date(created);
+        start.setUTCMinutes(0, 0, 0);
+        var end = new Date();
+        end.setUTCMinutes(0, 0, 0);
+
+        var url =
+          siteBase +
+          "/api/v0/stats/total?start=" +
+          encodeURIComponent(isoDateTime(start)) +
+          "&end=" +
+          encodeURIComponent(isoDateTime(end));
+
+        return fetch(url, { headers: apiHeaders() });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error("total " + res.status);
         }
         return res.json();
       })
       .then(function (data) {
-        return data && data.count != null ? String(data.count) : null;
+        if (data && data.total != null) {
+          return String(data.total);
+        }
+        return null;
       })
       .catch(function () {
         return null;
       });
   }
 
-  function pagePathForCounter() {
-    if (window.goatcounter && typeof window.goatcounter.get_data === "function") {
-      try {
-        var data = window.goatcounter.get_data();
-        if (data && data.p) {
-          return data.p;
-        }
-      } catch (e) {
-        /* fall through */
+  function fetchSiteTotal() {
+    return fetchSiteTotalFromApi().then(function (count) {
+      if (count != null) {
+        return count;
       }
-    }
-    return window.location.pathname || "/";
-  }
 
-  function setStat(root, key, value) {
-    var el = (root || document).querySelector('[data-stat="' + key + '"]');
-    if (el && value != null) {
-      el.textContent = value;
-    }
+      return fetch(siteBase + "/counter/" + encodeURIComponent("TOTAL") + ".json")
+        .then(function (res) {
+          if (!res.ok) {
+            return null;
+          }
+          return res.json();
+        })
+        .then(function (data) {
+          return data && data.count != null ? String(data.count) : null;
+        })
+        .catch(function () {
+          return null;
+        });
+    });
   }
 
   function fillHomeTotal() {
@@ -97,75 +137,18 @@
       return;
     }
 
-    fetchCount("TOTAL").then(function (count) {
+    fetchSiteTotal().then(function (count) {
       if (count != null) {
         homeTotal.textContent = count;
       }
     });
   }
 
-  function renderFooterStats() {
-    if (!siteBase) {
-      return;
-    }
-
-    var footerInner = document.querySelector(".footer-inner");
-    if (!footerInner || footerInner.querySelector(".footer-stats")) {
-      return;
-    }
-
-    var stats = document.createElement("p");
-    stats.className = "footer-stats";
-    stats.setAttribute("aria-live", "polite");
-    stats.innerHTML =
-      '<span class="footer-stats-item">Site visitors: <span data-stat="total">…</span></span>' +
-      '<span class="footer-stats-sep" aria-hidden="true">·</span>' +
-      '<span class="footer-stats-item">This page: <span data-stat="page">…</span></span>' +
-      '<span class="footer-stats-sep" aria-hidden="true">·</span>' +
-      '<a class="footer-stats-map" href="' +
-      siteBase +
-      '" target="_blank" rel="noopener noreferrer">Visitor map</a>';
-
-    footerInner.appendChild(stats);
-
-    fetchCount("TOTAL").then(function (count) {
-      setStat(stats, "total", count);
-    });
-
-    function fillPageCount() {
-      fetchCount(pagePathForCounter()).then(function (count) {
-        setStat(stats, "page", count != null ? count : "0");
-      });
-    }
-
-    if (window.goatcounter && typeof window.goatcounter.get_data === "function") {
-      fillPageCount();
-      return;
-    }
-
-    var tries = 0;
-    var timer = setInterval(function () {
-      tries += 1;
-      if (
-        (window.goatcounter && typeof window.goatcounter.get_data === "function") ||
-        tries >= 20
-      ) {
-        clearInterval(timer);
-        fillPageCount();
-      }
-    }, 100);
-  }
-
-  function initStatsUi() {
-    fillHomeTotal();
-    renderFooterStats();
-  }
-
   loadCounterScript();
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initStatsUi);
+    document.addEventListener("DOMContentLoaded", fillHomeTotal);
   } else {
-    initStatsUi();
+    fillHomeTotal();
   }
 })();
