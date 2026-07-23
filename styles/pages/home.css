@@ -375,33 +375,12 @@
   padding-bottom: 2.75rem;
 }
 
-.home-visitors-total {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.45rem 1rem;
-  margin: 0 0 1.15rem;
-  font-size: 1.05rem;
-  color: var(--muted);
-}
-
-.home-visitors-total [data-stat] {
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  font-size: 1.35rem;
-}
-
-.home-visitors-status {
-  font-size: 0.82rem;
-  color: #8a9096;
-}
-
 .home-visitors-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
   gap: 1.25rem 1.75rem;
   align-items: start;
+  margin-top: 0.35rem;
 }
 
 .home-visitors-map {

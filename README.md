@@ -55,14 +55,13 @@ If you want a custom domain:
 
 Visitor counts and geographic map are provided by [GoatCounter](https://www.goatcounter.com/) (privacy-friendly, no cookies).
 
-- **Home page:** site visitor total + live country map from the GoatCounter API when `GOATCOUNTER_API_KEY` is set; falls back to `assets/data/visitor-locations.json` for the map otherwise.
+- **Home page:** live country map from the GoatCounter API when `GOATCOUNTER_API_KEY` is set; falls back to `assets/data/visitor-locations.json` otherwise.
 
 1. Create a free GoatCounter site for your Pages domain (this repo uses `raidsgroup`).
 2. Set `GOATCOUNTER_ENDPOINT` in `scripts/analytics.js`.
 3. In GoatCounter: **User menu → API** → create a key with **stats / read** permission only.
 4. Paste that key into `GOATCOUNTER_API_KEY` in `scripts/analytics.js`.
-5. In site settings, enable **Allow adding visitor counts on your website** (footer / home totals).
-6. Deploy, open the home page, and confirm the Visitors status shows `Live`.
+5. Deploy and confirm the home Visitors map loads.
 
 Notes:
 

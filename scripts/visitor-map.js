@@ -6,7 +6,6 @@
 
   var svgEl = section.querySelector(".home-visitors-map-svg");
   var listEl = section.querySelector(".home-visitors-list");
-  var statusEl = section.querySelector(".home-visitors-status");
   if (!svgEl || !listEl) {
     return;
   }
@@ -22,12 +21,6 @@
       return new URL(path, window.location.href).href;
     } catch (e) {
       return path;
-    }
-  }
-
-  function setStatus(text) {
-    if (statusEl) {
-      statusEl.textContent = text || "";
     }
   }
 
@@ -279,19 +272,8 @@
       var payload = results[3] || { locations: [] };
 
       renderMap(topo, centroids, payload.locations || []);
-
-      if (payload.source === "live") {
-        setStatus(payload.updated ? "Live · " + payload.updated : "Live");
-      } else if (payload.updated) {
-        setStatus("Cached · " + payload.updated);
-      } else if (!apiKey) {
-        setStatus("Add API key for live map");
-      } else {
-        setStatus("");
-      }
     })
     .catch(function () {
-      setStatus("Could not load visitor map.");
       listEl.innerHTML = "<li class=\"home-visitors-empty\">Could not load visitor map.</li>";
     });
 })();
