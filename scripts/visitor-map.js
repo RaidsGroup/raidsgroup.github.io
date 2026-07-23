@@ -62,13 +62,37 @@
     });
   }
 
-  function renderMap(topo, centroids, locations) {
+  function renderMap(topo, locations) {
+    // 110m land polygons omit HK/MO; fold them into CN for choropleth only.
+    var mapAlias = { HK: "CN", MO: "CN" };
     var byCode = {};
     var max = 0;
+
     locations.forEach(function (row) {
-      byCode[row.code] = row;
-      if (row.count > max) {
-        max = row.count;
+      var mapCode = mapAlias[row.code] || row.code;
+      if (!byCode[mapCode]) {
+        byCode[mapCode] = {
+          code: mapCode,
+          name: mapCode === "CN" && row.code !== "CN" ? "China" : row.name,
+          count: 0,
+        };
+      }
+      byCode[mapCode].count += row.count;
+      if (row.code === mapCode) {
+        byCode[mapCode].name = row.name;
+      }
+    });
+
+    Object.keys(byCode).forEach(function (code) {
+      if (byCode[code].count > max) {
+        max = byCode[code].count;
+      }
+    });
+
+    var listMax = 0;
+    locations.forEach(function (row) {
+      if (row.count > listMax) {
+        listMax = row.count;
       }
     });
 
@@ -108,32 +132,7 @@
         return row ? row.name + ": " + row.count : a2 || String(d.id);
       });
 
-    var bubbles = locations.filter(function (row) {
-      return centroids[row.code];
-    });
-
-    svg
-      .append("g")
-      .attr("class", "home-visitors-bubbles")
-      .selectAll("circle")
-      .data(bubbles)
-      .join("circle")
-      .attr("class", "home-visitors-bubble")
-      .attr("cx", function (d) {
-        return projection([centroids[d.code].lon, centroids[d.code].lat])[0];
-      })
-      .attr("cy", function (d) {
-        return projection([centroids[d.code].lon, centroids[d.code].lat])[1];
-      })
-      .attr("r", function (d) {
-        return 4 + Math.sqrt(d.count / Math.max(max, 1)) * 14;
-      })
-      .append("title")
-      .text(function (d) {
-        return d.name + ": " + d.count;
-      });
-
-    renderList(locations, max);
+    renderList(locations, listMax);
   }
 
   function loadIsoNumeric() {
@@ -261,17 +260,13 @@
     fetch(assetUrl("assets/data/countries-110m.json")).then(function (r) {
       return r.json();
     }),
-    fetch(assetUrl("assets/data/country-centroids.json")).then(function (r) {
-      return r.json();
-    }),
     loadLocations(),
   ])
     .then(function (results) {
       var topo = results[1];
-      var centroids = results[2];
-      var payload = results[3] || { locations: [] };
+      var payload = results[2] || { locations: [] };
 
-      renderMap(topo, centroids, payload.locations || []);
+      renderMap(topo, payload.locations || []);
     })
     .catch(function () {
       listEl.innerHTML = "<li class=\"home-visitors-empty\">Could not load visitor map.</li>";

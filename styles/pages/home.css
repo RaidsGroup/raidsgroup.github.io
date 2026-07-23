@@ -410,14 +410,6 @@
   vector-effect: non-scaling-stroke;
 }
 
-.home-visitors-bubble {
-  fill: var(--accent);
-  fill-opacity: 0.78;
-  stroke: #ffffff;
-  stroke-width: 1.25;
-  vector-effect: non-scaling-stroke;
-}
-
 .home-visitors-list {
   list-style: none;
   margin: 0;
