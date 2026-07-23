@@ -3,8 +3,7 @@
   // Example: "https://YOURCODE.goatcounter.com/count"
   var GOATCOUNTER_ENDPOINT = "https://raidsgroup.goatcounter.com/count";
 
-  // Read-only API key for live visitor map (User menu → API).
-  // Create a key with stats/read permission only, then paste it here.
+  // Read-only API key for live visitor totals / map (User menu → API).
   var GOATCOUNTER_API_KEY = "23d7c2z4v4b8919senl2h6hokj17yskwwl0n5ah108ko9l9uq4do";
 
   var host = window.location.hostname;
@@ -48,46 +47,34 @@
   }
 
   function apiHeaders() {
+    // Only Authorization — avoid Content-Type on GET (extra CORS preflight).
     return {
       Authorization: "Bearer " + GOATCOUNTER_API_KEY,
-      "Content-Type": "application/json",
     };
   }
 
-  function isoDateTime(date) {
-    return date.toISOString().replace(/\.\d{3}Z$/, "Z");
+  function formatCount(n) {
+    var num = Number(n);
+    if (!isFinite(num)) {
+      return null;
+    }
+    try {
+      return num.toLocaleString("en-US");
+    } catch (e) {
+      return String(num);
+    }
   }
 
-  // Prefer the stats API when we have a key (public /counter/TOTAL.json is often 0 / heavily cached).
+  // Default GoatCounter range is the last week; that matches the dashboard and
+  // avoids "not found" when start is before the site existed.
   function fetchSiteTotalFromApi() {
     if (!GOATCOUNTER_API_KEY || !siteBase) {
       return Promise.resolve(null);
     }
 
-    return fetch(siteBase + "/api/v0/me", { headers: apiHeaders() })
-      .then(function (res) {
-        if (!res.ok) {
-          throw new Error("me " + res.status);
-        }
-        return res.json();
-      })
-      .then(function (me) {
-        var created =
-          (me.user && me.user.created_at) || new Date().toISOString();
-        var start = new Date(created);
-        start.setUTCMinutes(0, 0, 0);
-        var end = new Date();
-        end.setUTCMinutes(0, 0, 0);
-
-        var url =
-          siteBase +
-          "/api/v0/stats/total?start=" +
-          encodeURIComponent(isoDateTime(start)) +
-          "&end=" +
-          encodeURIComponent(isoDateTime(end));
-
-        return fetch(url, { headers: apiHeaders() });
-      })
+    return fetch(siteBase + "/api/v0/stats/total", {
+      headers: apiHeaders(),
+    })
       .then(function (res) {
         if (!res.ok) {
           throw new Error("total " + res.status);
@@ -95,36 +82,21 @@
         return res.json();
       })
       .then(function (data) {
-        if (data && data.total != null) {
-          return String(data.total);
+        if (!data) {
+          return null;
+        }
+        // Prefer overall total; fall back to UTC total.
+        if (data.total != null) {
+          return formatCount(data.total);
+        }
+        if (data.total_utc != null) {
+          return formatCount(data.total_utc);
         }
         return null;
       })
       .catch(function () {
         return null;
       });
-  }
-
-  function fetchSiteTotal() {
-    return fetchSiteTotalFromApi().then(function (count) {
-      if (count != null) {
-        return count;
-      }
-
-      return fetch(siteBase + "/counter/" + encodeURIComponent("TOTAL") + ".json")
-        .then(function (res) {
-          if (!res.ok) {
-            return null;
-          }
-          return res.json();
-        })
-        .then(function (data) {
-          return data && data.count != null ? String(data.count) : null;
-        })
-        .catch(function () {
-          return null;
-        });
-    });
   }
 
   function fillHomeTotal() {
@@ -137,10 +109,13 @@
       return;
     }
 
-    fetchSiteTotal().then(function (count) {
+    fetchSiteTotalFromApi().then(function (count) {
       if (count != null) {
         homeTotal.textContent = count;
+        return;
       }
+      // Keep ellipsis rather than a misleading public-counter "0".
+      homeTotal.textContent = "—";
     });
   }
 

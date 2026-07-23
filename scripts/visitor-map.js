@@ -199,14 +199,10 @@
       });
   }
 
-  function isoDateTime(date) {
-    return date.toISOString().replace(/\.\d{3}Z$/, "Z");
-  }
-
   function apiHeaders() {
+    // Only Authorization — avoid Content-Type on GET (extra CORS preflight).
     return {
       Authorization: "Bearer " + apiKey,
-      "Content-Type": "application/json",
     };
   }
 
@@ -215,32 +211,10 @@
       return Promise.resolve(null);
     }
 
-    // GoatCounter rejects start dates before the site existed ("not found").
-    return fetch(siteBase + "/api/v0/me", { headers: apiHeaders() })
-      .then(function (res) {
-        if (!res.ok) {
-          throw new Error("GoatCounter me API " + res.status);
-        }
-        return res.json();
-      })
-      .then(function (me) {
-        var created =
-          (me.user && me.user.created_at) || new Date().toISOString();
-        var start = new Date(created);
-        // Round down to the hour as required by the API.
-        start.setUTCMinutes(0, 0, 0);
-        var end = new Date();
-        end.setUTCMinutes(0, 0, 0);
-
-        var url =
-          siteBase +
-          "/api/v0/stats/locations?limit=100&start=" +
-          encodeURIComponent(isoDateTime(start)) +
-          "&end=" +
-          encodeURIComponent(isoDateTime(end));
-
-        return fetch(url, { headers: apiHeaders() });
-      })
+    // Default range is last week (same as GoatCounter dashboard).
+    return fetch(siteBase + "/api/v0/stats/locations?limit=100", {
+      headers: apiHeaders(),
+    })
       .then(function (res) {
         if (!res.ok) {
           throw new Error("GoatCounter locations API " + res.status);
