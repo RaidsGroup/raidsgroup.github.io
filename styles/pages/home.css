@@ -370,6 +370,39 @@
   line-height: 1.55;
 }
 
+.home-visitors-section {
+  padding-top: 2.5rem;
+  padding-bottom: 2.75rem;
+}
+
+.home-visitors-total {
+  margin: 0 0 1.1rem;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+.home-visitors-total [data-stat] {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.35rem;
+}
+
+.home-visitors-frame-wrap {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.home-visitors-frame-wrap iframe {
+  display: block;
+  width: 100%;
+  height: min(70vh, 36rem);
+  border: 0;
+  background: var(--surface);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-congrats-fx {
     display: none;
@@ -400,9 +433,14 @@
 
   .home-about-section,
   .home-updates-section,
-  .home-explore-section {
+  .home-explore-section,
+  .home-visitors-section {
     padding-top: 2rem;
     padding-bottom: 2.25rem;
+  }
+
+  .home-visitors-frame-wrap iframe {
+    height: min(65vh, 28rem);
   }
 
   /* Explore: one card per row on phone */

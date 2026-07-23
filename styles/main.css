@@ -730,6 +730,36 @@ time {
   color: #7a8087;
 }
 
+.footer-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.82rem;
+  color: #7a8087;
+}
+
+.footer-stats [data-stat] {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.footer-stats-sep {
+  color: var(--line);
+}
+
+.footer-stats-map {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-stats-map:hover,
+.footer-stats-map:focus-visible {
+  text-decoration: underline;
+}
+
 .back-to-top {
   position: fixed;
   right: max(1.15rem, env(safe-area-inset-right, 0px));
