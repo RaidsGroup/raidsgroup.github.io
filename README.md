@@ -55,18 +55,19 @@ If you want a custom domain:
 
 Visitor counts and geographic map are provided by [GoatCounter](https://www.goatcounter.com/) (privacy-friendly, no cookies).
 
-- **All pages (footer):** site visitors, this page, and a Visitor map link.
-- **Home page:** a **Visitors** section with the site total and an embedded GoatCounter dashboard iframe (includes the world map), using `https://raidsgroup.goatcounter.com?hideui=1`.
+- **All pages (footer):** site visitors, this page, and a Visitor map link (pulled live from GoatCounter counter JSON).
+- **Home page map:** loads **live** country stats from the GoatCounter API when `GOATCOUNTER_API_KEY` is set; falls back to `assets/data/visitor-locations.json` otherwise.
 
 1. Create a free GoatCounter site for your Pages domain (this repo uses `raidsgroup`).
-2. Set `GOATCOUNTER_ENDPOINT` in `scripts/analytics.js` (e.g. `https://raidsgroup.goatcounter.com/count`).
-3. In GoatCounter site settings, enable all three:
-   - **Allow adding visitor counts on your website** (footer / home totals)
-   - **Dashboard viewable by** → anyone (public dashboard; required for iframe and map link without login)
-   - **Sites that can embed GoatCounter** → add your live site domain (e.g. `xxx.github.io` or your custom domain)
-4. Deploy, then confirm footer numbers, home Visitors embed, and dashboard hits.
+2. Set `GOATCOUNTER_ENDPOINT` in `scripts/analytics.js`.
+3. In GoatCounter: **User menu → API** → create a key with **stats / read** permission only.
+4. Paste that key into `GOATCOUNTER_API_KEY` in `scripts/analytics.js`.
+5. In site settings, enable **Allow adding visitor counts on your website** (footer / home totals).
+6. Deploy, open the home page, and confirm the Visitors status shows `Live`.
 
-Without the public dashboard and embed allowlist, the home iframe will show a sign-in page or stay blank.
+Notes:
 
-Local previews (`file://`, `localhost`, `127.0.0.1`) do not send pageviews. The `YOURCODE` placeholder disables both tracking and the footer stats UI.
+- The API key is readable in the frontend on purpose (stats are already public). Use a **read-only** key; do not grant export/admin permissions.
+- Without an API key, the map uses the cached JSON (refreshed on deploy by `scripts/fetch-visitor-locations.py`).
+- Local previews (`file://`, `localhost`, `127.0.0.1`) do not send pageviews.
 

@@ -3,6 +3,10 @@
   // Example: "https://YOURCODE.goatcounter.com/count"
   var GOATCOUNTER_ENDPOINT = "https://raidsgroup.goatcounter.com/count";
 
+  // Read-only API key for live visitor map (User menu → API).
+  // Create a key with stats/read permission only, then paste it here.
+  var GOATCOUNTER_API_KEY = "";
+
   var host = window.location.hostname;
   var isLocal =
     !host ||
@@ -22,6 +26,12 @@
   }
 
   var siteBase = isConfigured ? siteBaseFromEndpoint(GOATCOUNTER_ENDPOINT) : null;
+
+  window.RAIDS_ANALYTICS = {
+    endpoint: GOATCOUNTER_ENDPOINT,
+    apiKey: GOATCOUNTER_API_KEY,
+    siteBase: siteBase,
+  };
 
   function loadCounterScript() {
     if (!isConfigured || isLocal || !siteBase) {

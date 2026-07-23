@@ -1,0 +1,11 @@
+{
+  "updated": "2026-07-23",
+  "period": "dashboard-default",
+  "locations": [
+    {
+      "code": "HK",
+      "name": "Hong Kong",
+      "count": 1
+    }
+  ]
+}

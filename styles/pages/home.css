@@ -376,7 +376,11 @@
 }
 
 .home-visitors-total {
-  margin: 0 0 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem 1rem;
+  margin: 0 0 1.15rem;
   font-size: 1.05rem;
   color: var(--muted);
 }
@@ -388,19 +392,104 @@
   font-size: 1.35rem;
 }
 
-.home-visitors-frame-wrap {
+.home-visitors-status {
+  font-size: 0.82rem;
+  color: #8a9096;
+}
+
+.home-visitors-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
+  gap: 1.25rem 1.75rem;
+  align-items: start;
+}
+
+.home-visitors-map {
   width: 100%;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(158, 36, 53, 0.06), transparent 55%),
+    linear-gradient(180deg, #fbfbfc 0%, #f3f4f5 100%);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
 
-.home-visitors-frame-wrap iframe {
+.home-visitors-map-svg {
   display: block;
   width: 100%;
-  height: min(70vh, 36rem);
-  border: 0;
-  background: var(--surface);
+  height: auto;
+  max-height: min(52vh, 28rem);
+}
+
+.home-visitors-sphere {
+  fill: #eef1f4;
+}
+
+.home-visitors-country {
+  stroke: #ffffff;
+  stroke-width: 0.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.home-visitors-bubble {
+  fill: var(--accent);
+  fill-opacity: 0.78;
+  stroke: #ffffff;
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+
+.home-visitors-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.home-visitors-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name count"
+    "bar bar";
+  gap: 0.15rem 0.75rem;
+  align-items: baseline;
+}
+
+.home-visitors-list-name {
+  grid-area: name;
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.home-visitors-list-count {
+  grid-area: count;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.home-visitors-list-bar {
+  grid-area: bar;
+  display: block;
+  height: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.home-visitors-list-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.home-visitors-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -439,8 +528,12 @@
     padding-bottom: 2.25rem;
   }
 
-  .home-visitors-frame-wrap iframe {
-    height: min(65vh, 28rem);
+  .home-visitors-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .home-visitors-map-svg {
+    max-height: min(42vh, 22rem);
   }
 
   /* Explore: one card per row on phone */
