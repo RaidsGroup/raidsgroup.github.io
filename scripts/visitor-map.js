@@ -38,6 +38,13 @@
     return "rgb(" + r + "," + g + "," + b + ")";
   }
 
+  function displayName(code, name) {
+    if (code === "CN" || name === "China") {
+      return "Mainland China";
+    }
+    return name || code;
+  }
+
   function renderList(locations, max) {
     listEl.innerHTML = "";
     if (!locations.length) {
@@ -50,7 +57,7 @@
       var pct = max ? Math.round((row.count / max) * 100) : 0;
       li.innerHTML =
         '<span class="home-visitors-list-name">' +
-        row.name +
+        displayName(row.code, row.name) +
         "</span>" +
         '<span class="home-visitors-list-bar" aria-hidden="true"><span style="width:' +
         pct +
@@ -73,13 +80,13 @@
       if (!byCode[mapCode]) {
         byCode[mapCode] = {
           code: mapCode,
-          name: mapCode === "CN" && row.code !== "CN" ? "China" : row.name,
+          name: displayName(mapCode, row.name),
           count: 0,
         };
       }
       byCode[mapCode].count += row.count;
       if (row.code === mapCode) {
-        byCode[mapCode].name = row.name;
+        byCode[mapCode].name = displayName(mapCode, row.name);
       }
     });
 
@@ -129,7 +136,9 @@
       .text(function (d) {
         var a2 = numericToA2[String(d.id)];
         var row = a2 ? byCode[a2] : null;
-        return row ? row.name + ": " + row.count : a2 || String(d.id);
+        return row
+          ? displayName(row.code, row.name) + ": " + row.count
+          : a2 || String(d.id);
       });
 
     renderList(locations, listMax);
