@@ -45,13 +45,41 @@
     return name || code;
   }
 
-  function renderList(locations, max) {
+  function groupVisitorLocations(locations) {
+    var hmtCodes = { HK: true, MO: true, TW: true };
+    var hmtCode = "HK-MO-TW";
+    var byCategory = {};
+
+    locations.forEach(function (row) {
+      var code = hmtCodes[row.code] ? hmtCode : row.code;
+      if (!byCategory[code]) {
+        byCategory[code] = {
+          code: code,
+          name: code === hmtCode ? "Hong Kong, Macau & Taiwan" : row.name,
+          count: 0,
+        };
+      }
+      byCategory[code].count += row.count;
+    });
+
+    return Object.keys(byCategory)
+      .map(function (code) {
+        return byCategory[code];
+      })
+      .sort(function (a, b) {
+        return b.count - a.count;
+      });
+  }
+
+  function renderList(locations) {
+    locations = groupVisitorLocations(locations);
     listEl.innerHTML = "";
     if (!locations.length) {
       listEl.innerHTML = "<li class=\"home-visitors-empty\">No location data yet.</li>";
       return;
     }
 
+    var max = locations[0].count;
     locations.slice(0, 8).forEach(function (row) {
       var li = document.createElement("li");
       var pct = max ? Math.round((row.count / max) * 100) : 0;
@@ -96,13 +124,6 @@
       }
     });
 
-    var listMax = 0;
-    locations.forEach(function (row) {
-      if (row.count > listMax) {
-        listMax = row.count;
-      }
-    });
-
     var numericToA2 = window.__RAIDS_ISO_NUMERIC__ || {};
     var projection = d3.geoNaturalEarth1().fitSize([width, height], { type: "Sphere" });
     var path = d3.geoPath(projection);
@@ -141,7 +162,7 @@
           : a2 || String(d.id);
       });
 
-    renderList(locations, listMax);
+    renderList(locations);
   }
 
   function loadIsoNumeric() {
