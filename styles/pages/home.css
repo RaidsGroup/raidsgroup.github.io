@@ -413,10 +413,14 @@
 .home-visitors-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0.45rem 0 0;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+  max-height: min(52vh, 28rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .home-visitors-list li {
@@ -504,6 +508,10 @@
   }
 
   .home-visitors-map-svg {
+    max-height: min(42vh, 22rem);
+  }
+
+  .home-visitors-list {
     max-height: min(42vh, 22rem);
   }
 

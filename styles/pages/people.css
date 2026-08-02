@@ -26,11 +26,16 @@
   color: var(--muted);
 }
 
-.people-hero-logo {
+.people-hero-logo-link {
   display: block;
   flex: 0 1 auto;
   width: clamp(11rem, 22vw, 17rem);
   max-width: 42%;
+}
+
+.people-hero-logo {
+  display: block;
+  width: 100%;
   height: auto;
 }
 
@@ -471,7 +476,7 @@
     gap: 0.75rem 1.25rem;
   }
 
-  .people-hero-logo {
+  .people-hero-logo-link {
     width: clamp(8.5rem, 36vw, 12rem);
     max-width: 46%;
   }

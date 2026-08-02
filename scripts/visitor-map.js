@@ -80,7 +80,7 @@
     }
 
     var max = locations[0].count;
-    locations.slice(0, 8).forEach(function (row) {
+    locations.forEach(function (row) {
       var li = document.createElement("li");
       var pct = max ? Math.round((row.count / max) * 100) : 0;
       li.innerHTML =
